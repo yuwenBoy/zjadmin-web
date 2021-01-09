@@ -4,13 +4,6 @@
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>菜单列表</span>
-          <el-button
-            style="float: right; padding: 3px 0"
-            type="text"
-            v-model="queryInfo.open"
-            @click="isOpen"
-            :icon="queryInfo.isQueryOpen==true?'el-icon-arrow-down':'el-icon-arrow-up'"
-          >{{queryInfo.queryMsg}}</el-button>
         </div>
         <div class="text item">
           <el-form label-width="100px" label-position="right">
@@ -33,7 +26,6 @@
                   type="success"
                   @click="crud.toQuery"
                   icon="el-icon-search"
-                  round
                 >搜索</el-button>
                 <el-button
                   class="filter-item"
@@ -41,14 +33,12 @@
                   type="warning"
                   icon="el-icon-refresh-left"
                   @click="crud.resetQuery"
-                  round
                 >重置</el-button>
                 <el-button
                   class="filter-item"
                   size="mini"
                   type="primary"
                   icon="el-icon-plus"
-                  round
                   @click="crud.toAdd"
                   v-if="crud.optShow.add"
                    v-authority="['module:add']"
@@ -62,7 +52,6 @@
                   :disabled="crud.selections.length === 0"
                   @click="toDelete(crud.selections)"
                    v-authority="['module:delete']"
-                  round
                 >删除</el-button>
               </el-col>
             </el-row>
@@ -292,11 +281,6 @@ export default {
   mixins: [presenter(), form(defaultForm)],
   data() {
     return {
-      queryInfo: {
-        isQueryOpen: false,
-        queryMsg: "收起",
-        open: "close",
-      },
       rules: {
         name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
         menuPath: [{ required: true, message: "请输入路径", trigger: "blur" }],
@@ -319,17 +303,6 @@ export default {
         //this.getSupDepts(form.id);
       } else {
         this.menus.push({ id: 0, label: "顶级类目", children: null });
-      }
-    },
-    isOpen() {
-      if (this.queryInfo.open == "open") {
-        this.queryInfo.isQueryOpen = false;
-        this.queryInfo.queryMsg = "收起";
-        this.queryInfo.open = "close";
-      } else if (this.queryInfo.open === "close") {
-        this.queryInfo.isQueryOpen = true;
-        this.queryInfo.queryMsg = "展开";
-        this.queryInfo.open = "open";
       }
     },
     getMenus(tree, treeNode, resolve) {

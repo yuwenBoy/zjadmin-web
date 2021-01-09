@@ -20,7 +20,6 @@
             class="filter-item"
             size="mini"
             type="success"
-            round
             icon="el-icon-search"
             @click="crud.toQuery"
             >搜索</el-button
@@ -29,7 +28,6 @@
             class="filter-item"
             size="mini"
             type="warning"
-            round
             icon="el-icon-refresh-left"
             @click="crud.resetQuery"
             >重置</el-button
@@ -41,7 +39,6 @@
             type="primary"
             icon="el-icon-plus"
             @click="crud.toAdd"
-            round
             v-authority="['position:add']"
             >新增</el-button
           >
@@ -50,7 +47,6 @@
             type="danger"
             icon="el-icon-delete"
             size="mini"
-            round
             :loading="crud.delAllLoading"
             :disabled="crud.selections.length === 0"
             v-authority="['position:delete']"

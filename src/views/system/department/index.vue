@@ -4,18 +4,6 @@
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>部门列表</span>
-          <el-button
-            style="float: right; padding: 3px 0"
-            type="text"
-            v-model="queryInfo.open"
-            @click="isOpen"
-            :icon="
-              queryInfo.isQueryOpen == true
-                ? 'el-icon-arrow-down'
-                : 'el-icon-arrow-up'
-            "
-            >{{ queryInfo.queryMsg }}</el-button
-          >
         </div>
         <div class="text item">
           <el-form label-width="100px" label-position="right">
@@ -38,7 +26,6 @@
                   type="success"
                   @click="crud.toQuery"
                   icon="el-icon-search"
-                  round
                   >搜索</el-button
                 >
                 <el-button
@@ -47,7 +34,6 @@
                   type="warning"
                   icon="el-icon-refresh-left"
                   @click="crud.resetQuery"
-                  round
                   >重置</el-button
                 >
                 <el-button
@@ -55,7 +41,6 @@
                   size="mini"
                   type="primary"
                   icon="el-icon-plus"
-                  round
                   @click="crud.toAdd"
                   v-if="crud.optShow.add"
                   v-authority="['dept:add']"
@@ -70,7 +55,6 @@
                   :disabled="crud.selections.length === 0"
                   @click="toDelete(crud.selections)"
                   v-authority="['dept:delete']"
-                  round
                   >删除</el-button
                 >
               </el-col>
@@ -235,11 +219,6 @@ export default {
   mixins: [presenter(), form(defaultForm)],
   data() {
     return {
-      queryInfo: {
-        isQueryOpen: false,
-        queryMsg: "收起",
-        open: "close",
-      },
       type: 1,
       rules: {
         departmentName: [
@@ -263,17 +242,6 @@ export default {
         }
       } else {
         this.menus.push({ id: 0, label: "上级部门", children: null });
-      }
-    },
-    isOpen() {
-      if (this.queryInfo.open == "open") {
-        this.queryInfo.isQueryOpen = false;
-        this.queryInfo.queryMsg = "收起";
-        this.queryInfo.open = "close";
-      } else if (this.queryInfo.open === "close") {
-        this.queryInfo.isQueryOpen = true;
-        this.queryInfo.queryMsg = "展开";
-        this.queryInfo.open = "open";
       }
     },
     getMenus(tree, treeNode, resolve) {

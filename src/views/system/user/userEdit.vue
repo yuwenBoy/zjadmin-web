@@ -93,7 +93,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="所属部门" prop="dept.id">
-            <zjdepartment
+            <Department
               :isLazy="isLazy"
               :width="width"
               v-model="form.dept.id"
@@ -145,7 +145,7 @@
 <script>
 import { form } from "@crud/crud";
 import { isvalidPhone } from "@/utils/validate";
-import zjdepartment from "@/components/myComponent/zj-department";
+import Department from "@/components/Department/index.vue";
 import { getPositionList } from "@/api/system/position";
 const defaultForm = {
   id: null,
@@ -162,7 +162,7 @@ const defaultForm = {
   birthday: "",
 };
 export default {
-  components: { zjdepartment },
+  components: { Department },
   mixins: [form(defaultForm)],
   data() {
     // 自定义验证

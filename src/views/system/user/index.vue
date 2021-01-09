@@ -2,11 +2,17 @@
   <div class="app-container">
     <div class="head-container">
       <el-card class="box-card">
-        <div slot="header" class="clearfix">
+        <div
+          slot="header"
+          class="clearfix"
+        >
           <span>用户列表</span>
         </div>
         <div class="text item">
-          <el-form label-width="100px" label-position="right">
+          <el-form
+            label-width="100px"
+            label-position="right"
+          >
             <el-row :gutter="24">
               <el-col :span="7">
                 <el-form-item label="登录账号：">
@@ -21,7 +27,7 @@
               </el-col>
               <el-col :span="7">
                 <el-form-item label="部门：">
-                  <zjdepartment
+                  <Department
                     @input="updateLyDeptId"
                     :isLazy="isLazy"
                     v-model="crud.query.departmentId"
@@ -31,32 +37,11 @@
                 </el-form-item>
               </el-col>
               <el-col :span="6">
-                <el-button
-                  class="filter-item"
-                  size="mini"
-                  type="success"
-                  @click="crud.toQuery"
-                  icon="el-icon-search"
-                  style="margin-left: 30px"
-                  >搜索</el-button
-                >
-                <el-button
-                  class="filter-item"
-                  size="mini"
-                  type="warning"
-                  icon="el-icon-refresh-left"
-                  @click="crud.resetQuery"
-                  >重置</el-button
-                >
-                 <el-button
-            style="float: right; padding: 3px 0;position:absolute;top:6px;right:204px;"
-            type="text"
-            v-model="queryInfo.open"
-            @click="isOpen"
-            :icon="queryInfo.open?'el-icon-arrow-up':'el-icon-arrow-down'">{{ queryInfo.queryMsg }}</el-button>
+                <OPTOperation />
+                <tools-open @open="open($event)"></tools-open>
               </el-col>
               <el-col :span="4">
-                  <el-button
+                <el-button
                   class="filter-item"
                   size="mini"
                   type="primary"
@@ -64,8 +49,7 @@
                   @click="crud.toAdd"
                   v-if="crud.optShow.add"
                   v-authority="['user:add']"
-                  >新增</el-button
-                >
+                >新增</el-button>
                 <el-button
                   class="filter-item"
                   type="danger"
@@ -75,11 +59,13 @@
                   :disabled="crud.selections.length === 0"
                   @click="toDelete(crud.selections)"
                   v-authority="['user:delete']"
-                  >删除</el-button
-                >
+                >删除</el-button>
               </el-col>
             </el-row>
-              <el-row :gutter="24" v-if="queryInfo.open">
+            <el-row
+              :gutter="24"
+              v-if="isMoreSearch"
+            >
               <el-col :span="7">
                 <el-form-item label="姓名：">
                   <el-input
@@ -128,15 +114,27 @@
             :selectable="checkboxT"
             width="55"
           />
-          <el-table-column prop="userName" label="登录账号" />
-          <el-table-column prop="cname" label="姓名" />
-          <el-table-column prop="sex" label="性别">
+          <el-table-column
+            prop="userName"
+            label="登录账号"
+          />
+          <el-table-column
+            prop="cname"
+            label="姓名"
+          />
+          <el-table-column
+            prop="sex"
+            label="性别"
+          >
             <template slot-scope="scope">
               <span v-if="scope.row.sex == 1">男</span>
               <span v-if="scope.row.sex == 2">女</span>
             </template>
           </el-table-column>
-          <el-table-column prop="birthday" label="年龄">
+          <el-table-column
+            prop="birthday"
+            label="年龄"
+          >
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.birthday) | FormatAge }}</span>
             </template>
@@ -145,28 +143,53 @@
             prop="dept.departmentName"
             width="150"
             show-overflow-tooltip
-            label="部门/职位">
-              <template slot-scope="scope">
-                         {{scope.row.dept.departmentName}}<span>/</span> {{scope.row.position.name}}
+            label="部门/职位"
+          >
+            <template slot-scope="scope">
+              {{scope.row.dept.departmentName}}<span>/</span> {{scope.row.position.name}}
             </template>
-            </el-table-column>
-          <el-table-column prop="phone" label="手机号" width="100" />
-          <el-table-column prop="email" label="邮箱" width="120" show-overflow-tooltip/>
-          <el-table-column prop="isdisabled" label="用户状态" align="center">
+          </el-table-column>
+          <el-table-column
+            prop="phone"
+            label="手机号"
+            width="100"
+          />
+          <el-table-column
+            prop="email"
+            label="邮箱"
+            width="120"
+            show-overflow-tooltip
+          />
+          <el-table-column
+            prop="isdisabled"
+            label="用户状态"
+            align="center"
+          >
             <template slot-scope="scope">
               <span v-if="scope.row.isdisabled == 1"> 正常启用 </span>
-              <span v-if="scope.row.isdisabled == 2" style="color: red">
+              <span
+                v-if="scope.row.isdisabled == 2"
+                style="color: red"
+              >
                 禁用
               </span>
             </template>
           </el-table-column>
-          <el-table-column prop="createtime" width="140" label="创建日期">
+          <el-table-column
+            prop="createtime"
+            width="140"
+            label="创建日期"
+          >
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createtime) }}</span>
             </template>
           </el-table-column>
           <!--   编辑与删除   -->
-          <el-table-column label="操作" align="center" fixed="right">
+          <el-table-column
+            label="操作"
+            align="center"
+            fixed="right"
+          >
             <template slot-scope="scope">
               <el-dropdown @command="handleCommand">
                 <span class="el-dropdown-link">
@@ -178,21 +201,18 @@
                     :command="beforeHandleCommand('edit', scope.row)"
                     icon="el-icon-edit"
                     v-authority="['user:edit']"
-                    >编辑</el-dropdown-item
-                  >
+                  >编辑</el-dropdown-item>
                   <el-dropdown-item
                     :command="beforeHandleCommand('delete', scope.row)"
                     icon="el-icon-delete"
                     v-authority="['user:delete']"
                     :disabled="scope.row.id === user.id"
-                    >删除</el-dropdown-item
-                  >
+                  >删除</el-dropdown-item>
                   <el-dropdown-item
                     :command="beforeHandleCommand('setRole', scope.row)"
                     icon="el-icon-setting"
                     v-authority="['user:setRole']"
-                    >设置角色</el-dropdown-item
-                  >
+                  >设置角色</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -216,24 +236,24 @@
           v-for="role in roleList"
           :label="role.value"
           :key="role.value"
-          >{{ role.name }}</el-checkbox
-        >
+        >{{ role.name }}</el-checkbox>
       </el-checkbox-group>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button
           type="success"
           size="mini"
           @click="saveRoles"
           icon="el-icon-circle-plus"
-          >保存</el-button
-        >
+        >保存</el-button>
         <el-button
           type="default"
           size="mini"
           @click="cancelRoles"
           icon="el-icon-remove-outline"
-          >关闭</el-button
-        >
+        >关闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -242,16 +262,23 @@
 import crudUser from "@/api/system/user";
 import { setRoles } from "@/api/system/user";
 import { getRoleAllList, getRoleIdsByUserId } from "@/api/system/role";
-import zjdepartment from "@/components/myComponent/zj-department";
+import Department from "@/components/Department/index.vue";
 import CRUD, { presenter } from "@crud/crud";
+import OPTOperation from "@crud/OPT.operation";
 import pagination from "@crud/Pagination";
 import jForm from "./userEdit";
 import { mapGetters } from "vuex";
 import { Notification } from "element-ui";
 import Avatar from "@/assets/images/avatar.png";
-import DateRangePicker from "@/components/DateRangePicker/index.vue"
+import ToolsOpen from "@/components/ToolsOpen/index.vue";
 export default {
-  components: { zjdepartment, pagination, jForm,DateRangePicker },
+  components: {
+    OPTOperation,
+    ToolsOpen,
+    Department,
+    pagination,
+    jForm,
+  },
   cruds() {
     return CRUD({
       title: "用户",
@@ -265,10 +292,7 @@ export default {
       placeholder: "请选择部门",
       isLazy: false,
       isResetVal: false,
-      queryInfo: {
-        queryMsg: "展开",
-        open: false,
-      },
+      isMoreSearch: false,
       status: 0,
       roles: [],
       roleList: [],
@@ -290,14 +314,8 @@ export default {
       this.crud.query.departmentId = data;
       this.crud.toQuery();
     },
-    isOpen() {
-      if (this.queryInfo.open) {
-        this.queryInfo.queryMsg = "展开";
-        this.queryInfo.open =false;
-      } else {
-        this.queryInfo.queryMsg = "收起";
-        this.queryInfo.open =true;
-      }
+    open(obj) {
+      this.isMoreSearch = obj;
     },
     toDelete(datas) {
       this.$confirm(`确认删除选中的${datas.length}条数据?`, "提示", {
@@ -420,9 +438,9 @@ export default {
           })
           .catch(() => {});
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style>
 .el-card__header {

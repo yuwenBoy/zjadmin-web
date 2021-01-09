@@ -15,7 +15,7 @@
         <el-input v-model="form.code" style="width: 370px;" />
       </el-form-item>
       <el-form-item label="所属部门" prop="dept.id">
-        <zjdepartment
+        <Department
           :isLazy="isLazy"
           v-model="form.dept.id"
           @input="updateLyDeptId"
@@ -38,7 +38,7 @@
 
 <script>
 import { form } from "@crud/crud";
-import zjdepartment from "@/components/myComponent/zj-department"
+import Department from "@/components/Department/index.vue"
 const defaultForm = {
   id: null,
   name: "",
@@ -49,7 +49,7 @@ const defaultForm = {
 };
 export default {
   mixins: [form(defaultForm)],
-  components:{zjdepartment},
+  components:{Department},
   data() {
     return {
       rules: {

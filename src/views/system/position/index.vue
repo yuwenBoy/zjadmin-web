@@ -5,13 +5,6 @@
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>职位列表</span>
-          <el-button
-            style="float: right; padding: 3px 0"
-            type="text"
-            v-model="queryInfo.open"
-            @click="isOpen"
-            :icon="queryInfo.isQueryOpen==true?'el-icon-arrow-down':'el-icon-arrow-up'"
-          >{{queryInfo.queryMsg}}</el-button>
         </div>
         <jHeader />
         <crudOperation />
@@ -85,25 +78,9 @@ export default {
   mixins: [presenter()],
   data() {
     return {
-      queryInfo: {
-        isQueryOpen: false,
-        queryMsg: "收起",
-        open: "close",
-      },
     };
   },
   methods: {
-    isOpen() {
-      if (this.queryInfo.open == "open") {
-        this.queryInfo.isQueryOpen = false;
-        this.queryInfo.queryMsg = "收起";
-        this.queryInfo.open = "close";
-      } else if (this.queryInfo.open === "close") {
-        this.queryInfo.isQueryOpen = true;
-        this.queryInfo.queryMsg = "展开";
-        this.queryInfo.open = "open";
-      }
-    },
      handleCommand(command) {
       switch (command.command) {
         case "edit":

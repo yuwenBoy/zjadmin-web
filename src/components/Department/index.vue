@@ -39,7 +39,7 @@
 <script>
 import { getDepartmentAll, getDepartmentByid } from "@/api/system/department";
 export default {
-  name: "zj-department",
+  name: "Department",
   props: {
     isLazy: {
       type: Boolean,

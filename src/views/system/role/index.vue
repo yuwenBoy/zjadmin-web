@@ -4,25 +4,19 @@
       <el-row :gutter="24">
         <el-col :span="18">
           <el-card class="box-card">
-            <div slot="header" class="clearfix">
+            <div
+              slot="header"
+              class="clearfix"
+            >
               <span>角色列表</span>
-              <el-button
-                style="float: right; padding: 3px 0"
-                type="text"
-                v-model="queryInfo.open"
-                @click="isOpen"
-                :icon="
-                  queryInfo.isQueryOpen == true
-                    ? 'el-icon-arrow-down'
-                    : 'el-icon-arrow-up'
-                "
-                >{{ queryInfo.queryMsg }}</el-button
-              >
             </div>
             <div class="text item">
-              <el-form label-width="100px" label-position="right">
+              <el-form
+                label-width="100px"
+                label-position="right"
+              >
                 <el-row :gutter="24">
-                  <el-col :span="10">
+                  <el-col :span="9">
                     <el-form-item label="角色名称：">
                       <el-input
                         clearable
@@ -33,57 +27,7 @@
                       />
                     </el-form-item>
                   </el-col>
-                  <el-col :span="3">
-                    <el-button
-                      class="filter-item"
-                      size="mini"
-                      type="success"
-                      @click="crud.toQuery"
-                      icon="el-icon-search"
-                      round
-                      >搜索</el-button
-                    >&nbsp; &nbsp; &nbsp;
-                  </el-col>
-                  <el-col :span="3">
-                     <el-button
-                      class="filter-item"
-                      size="mini"
-                      type="warning"
-                      icon="el-icon-refresh-left"
-                      @click="crud.resetQuery"
-                      round
-                      >重置</el-button> 
-                  </el-col>
-                    <el-col :span="3">
-                    <el-button
-                      class="filter-item"
-                      size="mini"
-                      type="primary"
-                      icon="el-icon-plus"
-                      round
-                      @click="crud.toAdd"
-                      v-if="crud.optShow.add"
-                      v-authority="['role:add']"
-                      >新增</el-button
-                    >
-                  </el-col>
-                    <el-col :span="3">
-                    <el-button
-                      class="filter-item"
-                      type="danger"
-                      icon="el-icon-delete"
-                      size="mini"
-                      :loading="crud.delAllLoading"
-                      :disabled="crud.selections.length === 0"
-                      @click="toDelete(crud.selections)"
-                      v-authority="['role:delete']"
-                      round
-                      >删除</el-button
-                    >
-                  </el-col>
-                </el-row>
-                <el-row :gutter="24" v-show="queryInfo.isQueryOpen">
-                  <el-col :span="10">
+                  <el-col :span="9">
                     <el-form-item label="角色编码：">
                       <el-input
                         clearable
@@ -94,7 +38,34 @@
                       />
                     </el-form-item>
                   </el-col>
+                  <el-col :span="6">
+                    <OPTOperation />
+                  </el-col>
                 </el-row>
+                <el-row :gutter="24">
+                  <el-col :span="24">
+                    <el-button
+                      class="filter-item"
+                      size="mini"
+                      type="primary"
+                      icon="el-icon-plus"
+                      @click="crud.toAdd"
+                      v-if="crud.optShow.add"
+                      v-authority="['role:add']"
+                    >新增</el-button>
+                    <el-button
+                      class="filter-item"
+                      type="danger"
+                      icon="el-icon-delete"
+                      size="mini"
+                      :loading="crud.delAllLoading"
+                      :disabled="crud.selections.length === 0"
+                      @click="toDelete(crud.selections)"
+                      v-authority="['role:delete']"
+                    >删除</el-button>
+                  </el-col>
+                </el-row>
+
               </el-form>
             </div>
             <el-table
@@ -106,17 +77,37 @@
               @selection-change="crud.selectionChangeHandler"
               @current-change="handleCurrentChange"
             >
-              <el-table-column type="selection" width="55" />
-              <el-table-column prop="name" label="角色名称" />
-              <el-table-column prop="code" label="角色编码" />
-              <el-table-column prop="createtime" label="创建日期">
+              <el-table-column
+                type="selection"
+                width="55"
+              />
+              <el-table-column
+                prop="name"
+                label="角色名称"
+              />
+              <el-table-column
+                prop="code"
+                label="角色编码"
+              />
+              <el-table-column
+                prop="createtime"
+                label="创建日期"
+              >
                 <template slot-scope="scope">
                   <span>{{ parseTime(scope.row.createtime) }}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="remark" label="备注" show-overflow-tooltip />
+              <el-table-column
+                prop="remark"
+                label="备注"
+                show-overflow-tooltip
+              />
               <!--   编辑与删除   -->
-              <el-table-column label="操作" align="center" fixed="right">
+              <el-table-column
+                label="操作"
+                align="center"
+                fixed="right"
+              >
                 <template slot-scope="scope">
                   <el-dropdown @command="handleCommand">
                     <span class="el-dropdown-link">
@@ -128,20 +119,17 @@
                         :command="beforeHandleCommand('edit', scope.row)"
                         icon="el-icon-edit"
                         v-authority="['role:edit']"
-                        >编辑</el-dropdown-item
-                      >
+                      >编辑</el-dropdown-item>
                       <el-dropdown-item
                         :command="beforeHandleCommand('delete', scope.row)"
                         icon="el-icon-delete"
                         v-authority="['role:delete']"
-                        >删除</el-dropdown-item
-                      >
+                      >删除</el-dropdown-item>
                       <el-dropdown-item
                         :command="beforeHandleCommand('data', scope.row)"
                         icon="el-icon-s-data"
                         v-authority="['role:dataSave']"
-                        >数据权限</el-dropdown-item
-                      >
+                      >数据权限</el-dropdown-item>
                     </el-dropdown-menu>
                   </el-dropdown>
                 </template>
@@ -154,7 +142,10 @@
         </el-col>
         <el-col :span="6">
           <el-card>
-            <div slot="header" class="clearfix">
+            <div
+              slot="header"
+              class="clearfix"
+            >
               <span>分配功能权限</span>
             </div>
             <el-row :gutter="24">
@@ -167,20 +158,14 @@
                   icon="el-icon-circle-plus"
                   :loading="optInfo.loading"
                   v-authority="['role:save']"
-                  round
-                  >保存</el-button
-                >&nbsp;&nbsp;&nbsp;
-                <el-button
-                  type="default"
-                  size="mini"
-                  icon="el-icon-circle-plus"
-                  round
-                  @click="btnClick"
-                  >{{ optInfo.msg }}</el-button
-                >
+                >保存</el-button>&nbsp;&nbsp;&nbsp;
+                <tools-open :Ttext="tText" :Ftext="fText" @open="open($event)"></tools-open>
               </el-col>
             </el-row>
-            <el-row :gutter="24" style="margin-top: 20px">
+            <el-row
+              :gutter="24"
+              style="margin-top: 20px"
+            >
               <el-col :span="24">
                 <el-input
                   placeholder="输入关键字进行过滤"
@@ -211,7 +196,10 @@
         :before-close="handleClose"
         width="300px"
       >
-        <el-form ref="form" label-width="80px">
+        <el-form
+          ref="form"
+          label-width="80px"
+        >
           <el-row :gutter="24">
             <el-col :span="24">
               <el-form-item label="角色名称:">
@@ -236,7 +224,10 @@
           <el-row :gutter="24">
             <el-col :span="24">
               <el-form-item label="数据范围:">
-                <el-select v-model="roleData.value" placeholder="请选择">
+                <el-select
+                  v-model="roleData.value"
+                  placeholder="请选择"
+                >
                   <el-option
                     v-for="item in dataAuthorityList"
                     :key="item.value"
@@ -249,7 +240,10 @@
             </el-col>
           </el-row>
           <el-row :gutter="24">
-            <el-col :span="24" v-show="roleData.value == 2">
+            <el-col
+              :span="24"
+              v-show="roleData.value == 2"
+            >
               <el-form-item label="数据权限">
                 <el-tree
                   :data="deptInfo.depts"
@@ -265,17 +259,21 @@
             </el-col>
           </el-row>
         </el-form>
-        <div class="demo-drawer__footer" style="text-align: center">
-          <el-button type="success" size="mini" icon="el-icon-circle-plus"
-            >确定</el-button
-          >
+        <div
+          class="demo-drawer__footer"
+          style="text-align: center"
+        >
+          <el-button
+            type="success"
+            size="mini"
+            icon="el-icon-circle-plus"
+          >确定</el-button>
           <el-button
             type="default"
             size="mini"
             icon="el-icon-remove-outline"
             @click="handleClose"
-            >取消</el-button
-          >
+          >取消</el-button>
         </div>
       </el-drawer>
     </div>
@@ -288,9 +286,11 @@ import pagination from "@crud/Pagination";
 import jForm from "./roleEdit";
 import api from "@/api/system/module";
 import { Notification } from "element-ui";
-import {getDepartmentByid} from "@/api/system/department";
+import { getDepartmentByid } from "@/api/system/department";
+import OPTOperation from "@crud/OPT.operation";
+import ToolsOpen from "@/components/ToolsOpen/index";
 export default {
-  components: { pagination, jForm },
+  components: { OPTOperation, pagination, jForm, ToolsOpen },
   cruds() {
     return CRUD({
       title: "角色",
@@ -301,13 +301,9 @@ export default {
   mixins: [presenter()],
   data() {
     return {
-      queryInfo: {
-        isQueryOpen: false,
-        queryMsg: "收起",
-        open: "close",
-      },
+      tText:"展开所有",
+      fText:"收起所有",
       optInfo: {
-        msg: "收起所有",
         filterText: null,
         menuList: [],
         btnStatus: false,
@@ -324,7 +320,7 @@ export default {
         defaultProps: {
           children: "children",
           label: "label",
-          isLeaf:"leaf"
+          isLeaf: "leaf",
         },
       },
       currentRoleId: null,
@@ -358,16 +354,8 @@ export default {
     this.loadModuleAll();
   },
   methods: {
-    isOpen() {
-      if (this.queryInfo.open == "open") {
-        this.queryInfo.isQueryOpen = false;
-        this.queryInfo.queryMsg = "收起";
-        this.queryInfo.open = "close";
-      } else if (this.queryInfo.open === "close") {
-        this.queryInfo.isQueryOpen = true;
-        this.queryInfo.queryMsg = "展开";
-        this.queryInfo.open = "open";
-      }
+    open(obj) {
+      this.nodeExpand(obj);
     },
     loadModuleAll() {
       api
@@ -381,21 +369,20 @@ export default {
     },
     lazyLoad(node, resolve) {
       setTimeout(() => {
-          getDepartmentByid({
-            id: node === undefined ? 0 : node.value,
-          })
-          .then((res) => {
-            if (res.success) {
-              const nodes = res.result.map((item) => ({
-                id: item.value,
-                label: item.label,
-                leaf: true,//node.level >= 10,
-              }));
-              resolve(nodes);
-            } else {
-              alert(res.message);
-            }
-          });
+        getDepartmentByid({
+          id: node === undefined ? 0 : node.value,
+        }).then((res) => {
+          if (res.success) {
+            const nodes = res.result.map((item) => ({
+              id: item.value,
+              label: item.label,
+              leaf: true, //node.level >= 10,
+            }));
+            resolve(nodes);
+          } else {
+            alert(res.message);
+          }
+        });
       }, 1000);
     },
     toDelete(datas) {
@@ -450,15 +437,7 @@ export default {
         })
         .catch(() => {});
     },
-    btnClick() {
-      if (this.optInfo.msg === "收起所有") {
-        this.optInfo.msg = "展开所有";
-        this.nodeExpand(true);
-      } else {
-        this.optInfo.msg = "收起所有";
-        this.nodeExpand(false);
-      }
-    },
+
     handleCurrentChange(val) {
       if (val) {
         const that = this;
