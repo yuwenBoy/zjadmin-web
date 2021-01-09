@@ -1,0 +1,81 @@
+<template>
+  <el-dialog
+    append-to-body
+    :close-on-click-modal="false"
+    :before-close="crud.cancelCU"
+    :visible="crud.status.cu > 0"
+    :title="crud.status.title"
+    width="600px"
+  >
+    <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
+      <el-row :gutter="24">
+        <el-col :span="12">
+          <el-form-item label="角色名称" prop="name">
+            <el-input v-model="form.name" clearable placeholder="请输入角色名称" />
+          </el-form-item>
+        </el-col>
+          <el-col :span="12">
+          <el-form-item label="角色编码" prop="code">
+            <el-input v-model="form.code" clearable placeholder="请输入角色编码" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="24">
+          <el-col :span="24">
+              <el-form-item label="备注">
+                    <el-input type="textarea" v-model="form.remark"></el-input>
+              </el-form-item>
+          </el-col>
+      </el-row>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+       <el-button
+      :loading="crud.status.cu === 2"
+      type="success"
+      size="mini"
+      icon="el-icon-circle-plus"
+      @click="crud.submitCU"
+      >确定</el-button
+    >
+    <el-button
+      type="default"
+      @click="crud.cancelCU"
+      size="mini"
+      icon="el-icon-remove-outline"
+      >关闭</el-button
+    >
+    </div>
+  </el-dialog>
+</template>
+
+
+<script>
+import { form } from "@crud/crud";
+const defaultForm = {
+  id: null,
+  name: "",
+  code: "", 
+  remark:''
+};
+export default {
+  mixins: [form(defaultForm)],
+  data() {
+    return {
+      rules: {
+        name: [
+          { required: true, message: "请输入角色名称", trigger: "blur" },
+        ],
+        code: [{ required: true, message: "请输入角色编码", trigger: "blur" }],
+      },
+    };
+  },
+  methods: {
+  },
+};
+</script>
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+::v-deep .el-input-number .el-input__inner {
+  text-align: left;
+}
+</style>
