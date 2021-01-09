@@ -59,10 +59,12 @@ export default {
   },
   methods: {
     click() {
+
       this.show = !this.show
       if (this.show) {
         this.$refs.headerSearchSelect && this.$refs.headerSearchSelect.focus()
       }
+      this.$emit('search',this.show)
     },
     close() {
       this.$refs.headerSearchSelect && this.$refs.headerSearchSelect.blur()

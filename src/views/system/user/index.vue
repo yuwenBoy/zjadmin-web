@@ -4,18 +4,6 @@
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>用户列表</span>
-          <el-button
-            style="float: right; padding: 3px 0"
-            type="text"
-            v-model="queryInfo.open"
-            @click="isOpen"
-            :icon="
-              queryInfo.isQueryOpen == true
-                ? 'el-icon-arrow-down'
-                : 'el-icon-arrow-up'
-            "
-            >{{ queryInfo.queryMsg }}</el-button
-          >
         </div>
         <div class="text item">
           <el-form label-width="100px" label-position="right">
@@ -42,7 +30,7 @@
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="10">
+              <el-col :span="6">
                 <el-button
                   class="filter-item"
                   size="mini"
@@ -50,32 +38,34 @@
                   @click="crud.toQuery"
                   icon="el-icon-search"
                   style="margin-left: 30px"
-                  round
                   >搜索</el-button
                 >
-                &nbsp;&nbsp;
                 <el-button
                   class="filter-item"
                   size="mini"
                   type="warning"
                   icon="el-icon-refresh-left"
                   @click="crud.resetQuery"
-                  round
                   >重置</el-button
                 >
-                &nbsp;&nbsp;
-                <el-button
+                 <el-button
+            style="float: right; padding: 3px 0;position:absolute;top:6px;right:204px;"
+            type="text"
+            v-model="queryInfo.open"
+            @click="isOpen"
+            :icon="queryInfo.open?'el-icon-arrow-up':'el-icon-arrow-down'">{{ queryInfo.queryMsg }}</el-button>
+              </el-col>
+              <el-col :span="4">
+                  <el-button
                   class="filter-item"
                   size="mini"
                   type="primary"
                   icon="el-icon-plus"
-                  round
                   @click="crud.toAdd"
                   v-if="crud.optShow.add"
                   v-authority="['user:add']"
                   >新增</el-button
                 >
-                &nbsp;&nbsp;
                 <el-button
                   class="filter-item"
                   type="danger"
@@ -85,14 +75,11 @@
                   :disabled="crud.selections.length === 0"
                   @click="toDelete(crud.selections)"
                   v-authority="['user:delete']"
-                  round
                   >删除</el-button
                 >
               </el-col>
             </el-row>
-          
-            
-              <el-row :gutter="24" v-show="queryInfo.isQueryOpen">
+              <el-row :gutter="24" v-if="queryInfo.open">
               <el-col :span="7">
                 <el-form-item label="姓名：">
                   <el-input
@@ -143,8 +130,6 @@
           />
           <el-table-column prop="userName" label="登录账号" />
           <el-table-column prop="cname" label="姓名" />
-
-
           <el-table-column prop="sex" label="性别">
             <template slot-scope="scope">
               <span v-if="scope.row.sex == 1">男</span>
@@ -281,9 +266,8 @@ export default {
       isLazy: false,
       isResetVal: false,
       queryInfo: {
-        isQueryOpen: false,
-        queryMsg: "收起",
-        open: "close",
+        queryMsg: "展开",
+        open: false,
       },
       status: 0,
       roles: [],
@@ -307,14 +291,12 @@ export default {
       this.crud.toQuery();
     },
     isOpen() {
-      if (this.queryInfo.open == "open") {
-        this.queryInfo.isQueryOpen = false;
-        this.queryInfo.queryMsg = "收起";
-        this.queryInfo.open = "close";
-      } else if (this.queryInfo.open === "close") {
-        this.queryInfo.isQueryOpen = true;
+      if (this.queryInfo.open) {
         this.queryInfo.queryMsg = "展开";
-        this.queryInfo.open = "open";
+        this.queryInfo.open =false;
+      } else {
+        this.queryInfo.queryMsg = "收起";
+        this.queryInfo.open =true;
       }
     },
     toDelete(datas) {

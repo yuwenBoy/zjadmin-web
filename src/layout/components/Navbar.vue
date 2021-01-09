@@ -11,7 +11,7 @@
 
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
-         <router-link to="/dataDnalyse" target="_blank" style="position:absolute;right:392px;">
+         <router-link to="/dataDnalyse" target="_blank" class="data">
          数据监控
         </router-link>
         <search id="header-search" class="right-menu-item" />
@@ -156,6 +156,13 @@ export default {
 
     &:focus {
       outline: none;
+    }
+    .data{
+      position:absolute;right:392px;
+    }
+    .data:hover{
+      border:1px solid red;
+      transition: all .3s;
     }
 
     .right-menu-item {
