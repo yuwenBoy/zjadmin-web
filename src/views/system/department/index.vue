@@ -27,15 +27,13 @@
                 @click="toDelete(crud.selections)"
               >删除</el-button>
             </el-col>
-            <el-col :span="16">
+            <el-col :span="16" :push="4" style="text-align:right;">
               <el-form label-width="0px" inline>
                 <el-form-item>
                   <el-input v-model="crud.query.DepartmentName" clearable size="small" placeholder="请输入部门名称" class="filter-item round-left" />
                 </el-form-item>
+               <OPTOperation />
               </el-form>
-            </el-col>
-            <el-col :span="4">
-              <OPTOperation />
             </el-col>
           </el-row>
         </div>
