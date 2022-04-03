@@ -1,83 +1,72 @@
 <template>
-  <div>
-    <el-form label-width="100px" label-position="right">
-      <el-row :gutter="24">
-        <el-col :span="8">
-          <el-form-item label="职位名称:">
+  <div class="text item">
+    <el-row :gutter="24">
+      <el-col :span="4">
+        <el-button
+          v-if="crud.optShow.add"
+          v-authority="['position:add']"
+          class="filter-item"
+          size="mini"
+          round
+          type="primary"
+          icon="el-icon-plus"
+          @click="crud.toAdd"
+        >新增</el-button>
+        <el-button
+          v-authority="['position:delete']"
+          class="filter-item"
+          type="danger"
+          icon="el-icon-delete"
+          size="mini"
+          round
+          :loading="crud.delAllLoading"
+          :disabled="crud.selections.length === 0"
+          @click="toDelete(crud.selections)"
+        >删除</el-button>
+      </el-col>
+      <el-col :span="16">
+        <el-form label-width="0px" inline>
+          <el-form-item>
             <el-input
+              v-model="crud.query.name"
               clearable
               size="small"
-              v-model="crud.query.name"
               placeholder="请输入职位名称搜索"
               style="width: 200px"
-              class="filter-item"
+              class="filter-item round-left"
               @keyup.enter.native="crud.toQuery"
             />
           </el-form-item>
-        </el-col>
-        <el-row :span="16">
-          <el-button
-            class="filter-item"
-            size="mini"
-            type="success"
-            icon="el-icon-search"
-            @click="crud.toQuery"
-            >搜索</el-button
-          >
-          <el-button
-            class="filter-item"
-            size="mini"
-            type="warning"
-            icon="el-icon-refresh-left"
-            @click="crud.resetQuery"
-            >重置</el-button
-          >
-          <el-button
-            v-if="crud.optShow.add"
-            class="filter-item"
-            size="mini"
-            type="primary"
-            icon="el-icon-plus"
-            @click="crud.toAdd"
-            v-authority="['position:add']"
-            >新增</el-button
-          >
-          <el-button
-            class="filter-item"
-            type="danger"
-            icon="el-icon-delete"
-            size="mini"
-            :loading="crud.delAllLoading"
-            :disabled="crud.selections.length === 0"
-            v-authority="['position:delete']"
-            @click="toDelete(crud.selections)"
-            >删除</el-button
-          >
-        </el-row>
-      </el-row>
-    </el-form>
+        </el-form>
+      </el-col>
+      <el-col :span="4">
+        <OPTOperation />
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
-import { crud } from "@crud/crud";
+import { crud } from '@crud/crud'
+import OPTOperation from '@crud/OPT.operation'
 export default {
   mixins: [crud()],
+  components: { OPTOperation },
   methods: {
     toDelete(datas) {
-      this.$confirm(`确认删除选中的${datas.length}条数据?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm(`确认删除选中的${datas.length}条数据?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
-          this.crud.delAllLoading = true;
-          this.crud.doDelete(datas);
+          this.crud.delAllLoading = true
+          this.crud.doDelete(datas)
         })
-        .catch(() => {});
-    },
-  },
-};
+        .catch(() => {})
+    }
+  }
+}
 </script>
 
 <style>

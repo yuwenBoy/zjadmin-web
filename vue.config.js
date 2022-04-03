@@ -1,17 +1,23 @@
 'use strict'
 const path = require('path')
-
+const defaultSettings = require('./src/settings.js')
 function resolve(dir) {
     return path.join(__dirname, dir)
 }
+
+console.log(`项目当前环境:${process.env.NODE_ENV}`)
+const system_name = defaultSettings.title
 module.exports = {
+    publicPath:'./',
+    outputDir:'dist',
+    assetsDir:'static',
     devServer: {
         host: '127.0.0.1',
         port: 3500,
         open:true,
         proxy: {
             '/jxxqz': {
-                target: 'http://127.0.0.1:9000', // 请求本地 需要jxxqz后端项目
+                target: process.env.VUE_APP_URL, // 请求本地 需要jxxqz后端项目
                 ws: true
             }
         }
@@ -19,7 +25,7 @@ module.exports = {
     configureWebpack: {
         // provide the app's title in webpack's name field, so that
         // it can be accessed in index.html to inject the correct title.
-        name: '123',
+        name: system_name,
         resolve: {
             alias: {
                 '@': resolve('src'),

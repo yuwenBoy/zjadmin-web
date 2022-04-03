@@ -2,15 +2,15 @@
   <div class="login" :style="{backgroundImage: 'url(' + require('../../assets/images/' + bgImages) + ')'}">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left" label-width="0px" class="login-form">
       <h3 class="title">
-      JXXQZ 后台管理系统
+        JXXQZ 后台管理系统
       </h3>
       <el-form-item prop="username">
-        <el-input v-model="loginForm.username" type="text" autocomplete="off" ref="username"  placeholder="账号">
+        <el-input ref="username" v-model="loginForm.username" type="text" autocomplete="off" placeholder="账号">
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="loginForm.password" type="password" ref="password" auto-complete="off" placeholder="密码" @keyup.enter.native="handleLogin">
+        <el-input ref="password" v-model="loginForm.password" type="password" auto-complete="off" placeholder="密码" @keyup.enter.native="handleLogin">
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
@@ -26,7 +26,7 @@
         记住我
       </el-checkbox>
       <el-form-item style="width:100%;">
-        <el-button :loading="loading" size="medium"  type="default" style="width:100%;background:#13C2C2;color:white;" @click.native.prevent="handleLogin">
+        <el-button :loading="loading" size="medium" type="default" style="width:100%;background:#13C2C2;color:white;" @click.native.prevent="handleLogin">
           <span v-if="!loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
@@ -38,8 +38,8 @@
 </template>
 
 <script>
-import {encrypt} from "@/utils/rsaEncrypt"
-import {initCode} from "@/api/index"
+import { encrypt } from '@/utils/rsaEncrypt'
+import { initCode } from '@/api/index'
 import Config from '@/settings'
 import Cookies from 'js-cookie'
 export default {
@@ -47,13 +47,13 @@ export default {
   data() {
     return {
       codeUrl: '',
-      captchaId:'',
+      captchaId: '',
       cookiePass: '',
-      bgImages:'',
-      bgImgList:['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg','7.jpg','8.jpg','9.jpg','10.jpg','11.jpg','12.jpg'],
+      bgImages: '',
+      bgImgList: ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg', '11.jpg', '12.jpg'],
       loginForm: {
-        username: '', //admin
-        password: '', // 123456
+        username: 'zhaojian', // admin
+        password: '123456', // 123456
         rememberMe: false,
         code: '',
         uuid: ''
@@ -64,7 +64,8 @@ export default {
         code: [{ required: true, trigger: 'change', message: '验证码不能为空' }]
       },
       loading: false,
-      redirect: undefined
+      redirect: undefined,
+      request: false
     }
   },
   watch: {
@@ -75,15 +76,26 @@ export default {
       immediate: true
     }
   },
+  created() {
+    this.getBgImages()
+    // 获取验证码
+    this.getCode()
+    // 获取用户名密码等Cookie
+    this.getCookie()
+    // token 过期提示
+    this.point()
+  },
   methods: {
-    getBgImages(){
-      this.bgImages = this.bgImgList[Math.floor(Math.random()*this.bgImgList.length)];
+    getBgImages() {
+      this.bgImages = this.bgImgList[Math.floor(Math.random() * this.bgImgList.length)]
     },
     getCode() {
-      initCode().then(res=>{
-        if(res.success){
-          this.codeUrl=res.result.img
-          this.loginForm.uuid=res.result.uuid
+      this.request = false
+      initCode().then(res => {
+        if (res.success) {
+          this.codeUrl = res.result.img
+          this.loginForm.uuid = res.result.uuid
+          this.request = true
         }
       })
     },
@@ -125,8 +137,8 @@ export default {
             Cookies.remove('rememberMe')
           }
           this.$store.dispatch('Login', user).then(() => {
-             this.loading = false
-             this.$router.push({ path: this.redirect || '/' })
+            this.loading = false
+            this.$router.push({ path: this.redirect || '/' })
           }).catch(() => {
             this.loading = false
             this.getCode()
@@ -149,15 +161,6 @@ export default {
         Cookies.remove('point')
       }
     }
-  },
-  created(){
-    this.getBgImages();
-     // 获取验证码
-    this.getCode()
-    // 获取用户名密码等Cookie
-    this.getCookie()
-    // token 过期提示
-    this.point()
   }
 }
 </script>

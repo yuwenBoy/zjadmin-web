@@ -48,7 +48,7 @@
     width: 5px;
     height: 4px;
     margin: -2px 0;
-    content: "";
+    content: '';
     background: currentColor;
   }
   .czy-home__widget-header,

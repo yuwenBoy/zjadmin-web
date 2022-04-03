@@ -11,11 +11,10 @@
 
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
-         <router-link to="/dataDnalyse" target="_blank" class="data">
-         数据监控
+        <router-link to="/dataDnalyse" target="_blank" class="data">
+          数据监控
         </router-link>
         <search id="header-search" class="right-menu-item" />
-
 
         <el-tooltip content="全屏缩放" effect="dark" placement="bottom">
           <screenfull id="screenfull" class="right-menu-item hover-effect" />
@@ -34,7 +33,7 @@
           <img
             :src="user.avatar == '' || null ? Avatar : fileName"
             class="user-avatar"
-          />
+          >
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -54,16 +53,16 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
-import Breadcrumb from "@/components/Breadcrumb"
-import store from "@/store"
-import Hamburger from "@/components/Hamburger"
-import Screenfull from "@/components/Screenfull"
-import Search from "@/components/HeaderSearch"
-import Avatar from "@/assets/images/avatar.png"
+import { mapGetters } from 'vuex'
+import Breadcrumb from '@/components/Breadcrumb'
+import store from '@/store'
+import Hamburger from '@/components/Hamburger'
+import Screenfull from '@/components/Screenfull'
+import Search from '@/components/HeaderSearch'
+import Avatar from '@/assets/images/avatar.png'
 
 export default {
-  name: "Navbar",
+  name: 'Navbar',
   components: {
     Breadcrumb,
     Hamburger,
@@ -74,24 +73,24 @@ export default {
     return {
       Avatar: Avatar,
       dialogVisible: false,
-      fileName: null,
+      fileName: null
     }
   },
   created() {
-    if(this.user.avatar){
-      this.fileName =require("../../assets/avatar/" + this.user.avatar)
+    if (this.user.avatar) {
+      this.fileName = require('../../assets/avatar/' + this.user.avatar)
     }
-    store.dispatch("GetInfo").then(() => {})
+    store.dispatch('GetInfo').then(() => {})
   },
   computed: {
-    ...mapGetters(["sidebar", "device", "user", "baseApi"]),
+    ...mapGetters(['sidebar', 'device', 'user', 'baseApi']),
     show: {
       get() {
         return this.$store.state.settings.showSettings
       },
       set(val) {
-        this.$store.dispatch("settings/changeSetting", {
-          key: "showSettings",
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'showSettings',
           value: val
         })
       }
@@ -99,20 +98,20 @@ export default {
   },
   methods: {
     toggleSideBar() {
-      this.$store.dispatch("app/toggleSideBar")
+      this.$store.dispatch('app/toggleSideBar')
     },
     open() {
-      this.$confirm("确定注销并退出系统吗？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('确定注销并退出系统吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
         this.logout()
       })
     },
     logout() {
-      this.$store.dispatch("LogOut").then(() => {
-        location.reload();
+      this.$store.dispatch('LogOut').then(() => {
+        location.reload()
       })
     }
   }
@@ -124,9 +123,8 @@ export default {
   height: 50px;
   overflow: hidden;
   position: relative;
-  background: #fff;
+  background: #00d3d3;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
-
   .hamburger-container {
     line-height: 46px;
     height: 100%;

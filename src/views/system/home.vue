@@ -1,48 +1,60 @@
-
 <template>
-    <div style="position:relative">
-    <div style="position:absolute;border-radius:50%;width:300px;height:300px;top:0;left:0;bottom:0;right:0;margin:0 auto;" :style="{background:background}"></div>
+  <div class="home">
+    <div class="box flex">
+      <div class="box-shadow left">
+        <div class="title flex space-between">
+          <span class="fs12">最新通知</span>
+        </div>
+      </div>
+      <div class="box-shadow right">
+        <div class="title flex space-between">
+          <span class="fs12">系统当前时间</span>
+          <i class="el-icon-alarm-clock" />
+        </div>
+        <div class="content">
+          <Clock />
+        </div>
+      </div>
     </div>
+    <div class="box flex">
+      <div class="box-shadow left">
+        bottom
+      </div>
+      <div class="box-shadow right">
+        left
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import { randomColor } from '@/utils/random'
+import Clock from '@/components/Clock/index.vue'
 export default {
-    name: 'Home',
-    data() {
-        return {
-            background: "#ccc"
-        }
-    },
-    created() {
-        var that = this
-        setInterval(function() {
-            that.background = randomColor()
-        }, 2000)
-    }
+  components: {
+    Clock
+  }
 }
 </script>
 
-<style scope>
-.box {
-    display: flex;
-    width: 150px;
-    height: 150px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    margin: auto;
-    align-items: center;
-    justify-content: space-evenly;
-}
-
-.row {
-    width: 20px;
-    height: 20px;
-    background: #fff;
-    border-radius: 50%;
-    border: 1px solid #ccc;
+<style lang="scss" scoped>
+.home {
+  margin: 10px;
+  .box {
+    height: 300px;
+    border-radius: 5px;
+    .left {
+      width: 70%;
+      margin: 5px;
+      background-color: #ffffff;
+    }
+    .right {
+      width: 30%;
+      margin: 5px;
+      background-color: #ffffff;
+      .content {
+         text-align: center;
+      }
+    }
+  }
 }
 </style>

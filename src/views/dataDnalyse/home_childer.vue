@@ -50,14 +50,14 @@
         :interval="5000"
         style="height:73%;overflow-y:hidden;"
       >
-        <el-carousel-item  style="height:100%;">
-           <img src="../../assets/images/159.jpg" style="width:100%;"/>
+        <el-carousel-item style="height:100%;">
+          <img src="../../assets/images/159.jpg" style="width:100%;">
         </el-carousel-item>
-         <el-carousel-item  style="height:100%;">
-           <img src="../../assets/images/168-1.jpg" style="width:100%;"/>
+        <el-carousel-item style="height:100%;">
+          <img src="../../assets/images/168-1.jpg" style="width:100%;">
         </el-carousel-item>
-         <el-carousel-item style="height:100%;">
-           <img src="../../assets/images/169.jpg" style="width:100%;"/>
+        <el-carousel-item style="height:100%;">
+          <img src="../../assets/images/169.jpg" style="width:100%;">
         </el-carousel-item>
       </el-carousel>
     </div>
@@ -68,47 +68,47 @@
             <div class="layout-table-grid__cell-content">
               <div class="czy-home__widget">
                 <div class="czy-home__widget-header">
-                  <i class="czy-home__widget-header-bullet"></i>
+                  <i class="czy-home__widget-header-bullet" />
                   <div class="czy-home__widget-title">工序计划工单</div>
-                  <div class="u-line-spacer no-left"></div>
-                  <div class="czy-home__widget-append"></div>
+                  <div class="u-line-spacer no-left" />
+                  <div class="czy-home__widget-append" />
                 </div>
                 <div class="czy-home__widget-content">
                   <bar-chart
-                    :xData="classTask[0]"
-                    :yData="classTask[1]"
-                    :seriesData="classTask[2]"
+                    :x-data="classTask[0]"
+                    :y-data="classTask[1]"
+                    :series-data="classTask[2]"
                     :height="height"
                     :index="activeIndex"
                   />
                 </div>
                 <div class="czy-home__widget-footer">
-                  <div class="u-line-spacer"></div>
+                  <div class="u-line-spacer" />
                 </div>
               </div>
             </div>
           </td>
-          <td></td>
-          <td></td>
+          <td />
+          <td />
           <td>
             <div class="layout-table-grid__cell-content">
               <div class="czy-home__widget">
                 <div class="czy-home__widget-header">
-                  <i class="czy-home__widget-header-bullet"></i>
+                  <i class="czy-home__widget-header-bullet" />
                   <div class="czy-home__widget-title">物料库存统计</div>
-                  <div class="u-line-spacer no-left"></div>
-                  <div class="czy-home__widget-append"></div>
+                  <div class="u-line-spacer no-left" />
+                  <div class="czy-home__widget-append" />
                 </div>
                 <div class="czy-home__widget-content">
                   <column-chart
                     :index="activeIndex"
-                    :xData="xData1"
+                    :x-data="xData1"
                     :height="height"
-                    :seriesData="seriesData2"
+                    :series-data="seriesData2"
                   />
                 </div>
                 <div class="czy-home__widget-footer">
-                  <div class="u-line-spacer"></div>
+                  <div class="u-line-spacer" />
                 </div>
               </div>
             </div>
@@ -119,47 +119,47 @@
             <div class="layout-table-grid__cell-content">
               <div class="czy-home__widget">
                 <div class="czy-home__widget-header">
-                  <i class="czy-home__widget-header-bullet"></i>
+                  <i class="czy-home__widget-header-bullet" />
                   <div class="czy-home__widget-title">班组工单</div>
-                  <div class="u-line-spacer no-left"></div>
-                  <div class="czy-home__widget-append"></div>
+                  <div class="u-line-spacer no-left" />
+                  <div class="czy-home__widget-append" />
                 </div>
                 <div class="czy-home__widget-content">
                   <bar-chart
-                    :xData="classTask2[0]"
-                    :yData="classTask2[1]"
-                    :seriesData="classTask2[2]"
+                    :x-data="classTask2[0]"
+                    :y-data="classTask2[1]"
+                    :series-data="classTask2[2]"
                     :index="activeIndex"
                     :height="height"
                   />
                 </div>
                 <div class="czy-home__widget-footer">
-                  <div class="u-line-spacer"></div>
+                  <div class="u-line-spacer" />
                 </div>
               </div>
             </div>
           </td>
-          <td></td>
-          <td></td>
+          <td />
+          <td />
           <td>
             <div class="layout-table-grid__cell-content">
               <div class="czy-home__widget">
                 <div class="czy-home__widget-header">
-                  <i class="czy-home__widget-header-bullet"></i>
+                  <i class="czy-home__widget-header-bullet" />
                   <div class="czy-home__widget-title">生产处任务物料齐套统计</div>
-                  <div class="u-line-spacer no-left"></div>
-                  <div class="czy-home__widget-append"></div>
+                  <div class="u-line-spacer no-left" />
+                  <div class="czy-home__widget-append" />
                 </div>
                 <div class="czy-home__widget-content">
                   <column-chart
                     :index="activeIndex"
-                    :xData="xData2"
+                    :x-data="xData2"
                     :height="height"
-                    :seriesData="seriesData2"
+                    :series-data="seriesData2"
                   />
                 </div>
                 <div class="czy-home__widget-footer">
-                  <div class="u-line-spacer"></div>
+                  <div class="u-line-spacer" />
                 </div>
               </div>
             </div>
@@ -170,34 +170,34 @@
             <div class="layout-table-grid__cell-content">
               <div class="czy-home__widget">
                 <div class="czy-home__widget-header">
-                  <i class="czy-home__widget-header-bullet"></i>
+                  <i class="czy-home__widget-header-bullet" />
                   <div class="czy-home__widget-title">准时交付率</div>
-                  <div class="u-line-spacer no-left"></div>
-                  <div class="czy-home__widget-append"></div>
+                  <div class="u-line-spacer no-left" />
+                  <div class="czy-home__widget-append" />
                 </div>
                 <div class="czy-home__widget-content">
-                  <line-chart :index="activeIndex" :height="height" :seriesData="seriesData7" />
+                  <line-chart :index="activeIndex" :height="height" :series-data="seriesData7" />
                 </div>
                 <div class="czy-home__widget-footer">
-                  <div class="u-line-spacer"></div>
+                  <div class="u-line-spacer" />
                 </div>
               </div>
             </div>
           </td>
-          <td></td>
-          <td></td>
+          <td />
+          <td />
           <td>
             <div class="layout-table-grid__cell-content">
               <div class="czy-home__widget">
                 <div class="czy-home__widget-header">
-                  <i class="czy-home__widget-header-bullet"></i>
+                  <i class="czy-home__widget-header-bullet" />
                   <div class="czy-home__widget-title">质量数据统计</div>
-                  <div class="u-line-spacer no-left"></div>
-                  <div class="czy-home__widget-append"></div>
+                  <div class="u-line-spacer no-left" />
+                  <div class="czy-home__widget-append" />
                 </div>
                 <div class="czy-home__widget-content">4</div>
                 <div class="czy-home__widget-footer">
-                  <div class="u-line-spacer"></div>
+                  <div class="u-line-spacer" />
                 </div>
               </div>
             </div>
@@ -208,21 +208,21 @@
             <div class="layout-table-grid__cell-content">
               <div class="czy-home__widget">
                 <div class="czy-home__widget-header">
-                  <i class="czy-home__widget-header-bullet"></i>
+                  <i class="czy-home__widget-header-bullet" />
                   <div class="czy-home__widget-title">产量统计</div>
-                  <div class="u-line-spacer no-left"></div>
-                  <div class="czy-home__widget-append"></div>
+                  <div class="u-line-spacer no-left" />
+                  <div class="czy-home__widget-append" />
                 </div>
                 <div class="czy-home__widget-content">
                   <bar-chart
-                    :xData="classTask2[0]"
-                    :yData="classTask2[1]"
-                    :seriesData="classTask2[2]"
+                    :x-data="classTask2[0]"
+                    :y-data="classTask2[1]"
+                    :series-data="classTask2[2]"
                     :index="activeIndex"
                   />
                 </div>
                 <div class="czy-home__widget-footer">
-                  <div class="u-line-spacer"></div>
+                  <div class="u-line-spacer" />
                 </div>
               </div>
             </div>
@@ -231,14 +231,14 @@
             <div class="layout-table-grid__cell-content">
               <div class="czy-home__widget">
                 <div class="czy-home__widget-header">
-                  <i class="czy-home__widget-header-bullet"></i>
+                  <i class="czy-home__widget-header-bullet" />
                   <div class="czy-home__widget-title">工时统计</div>
-                  <div class="u-line-spacer no-left"></div>
-                  <div class="czy-home__widget-append"></div>
+                  <div class="u-line-spacer no-left" />
+                  <div class="czy-home__widget-append" />
                 </div>
                 <div class="czy-home__widget-content">2</div>
                 <div class="czy-home__widget-footer">
-                  <div class="u-line-spacer"></div>
+                  <div class="u-line-spacer" />
                 </div>
               </div>
             </div>
@@ -247,14 +247,14 @@
             <div class="layout-table-grid__cell-content">
               <div class="czy-home__widget">
                 <div class="czy-home__widget-header">
-                  <i class="czy-home__widget-header-bullet"></i>
+                  <i class="czy-home__widget-header-bullet" />
                   <div class="czy-home__widget-title">设备使用率</div>
-                  <div class="u-line-spacer no-left"></div>
-                  <div class="czy-home__widget-append"></div>
+                  <div class="u-line-spacer no-left" />
+                  <div class="czy-home__widget-append" />
                 </div>
                 <div class="czy-home__widget-content">3</div>
                 <div class="czy-home__widget-footer">
-                  <div class="u-line-spacer"></div>
+                  <div class="u-line-spacer" />
                 </div>
               </div>
             </div>
@@ -263,14 +263,14 @@
             <div class="layout-table-grid__cell-content">
               <div class="czy-home__widget">
                 <div class="czy-home__widget-header">
-                  <i class="czy-home__widget-header-bullet"></i>
+                  <i class="czy-home__widget-header-bullet" />
                   <div class="czy-home__widget-title">报警日历</div>
-                  <div class="u-line-spacer no-left"></div>
-                  <div class="czy-home__widget-append"></div>
+                  <div class="u-line-spacer no-left" />
+                  <div class="czy-home__widget-append" />
                 </div>
                 <div class="czy-home__widget-content">4</div>
                 <div class="czy-home__widget-footer">
-                  <div class="u-line-spacer"></div>
+                  <div class="u-line-spacer" />
                 </div>
               </div>
             </div>
@@ -281,35 +281,35 @@
   </div>
 </template>
 <script>
-import echarts from "echarts";
-import EConst from "@/api/datafx/dataConst.js";
-import GaugeChart from "@/components/Echarts/GaugeChart.vue";
-import BarChart from "@/components/Echarts/BarChart.vue";
-import LineChart from "@/components/Echarts/LineChart.vue";
-import ColumnChart from "@/components/Echarts/ColumnChart.vue";
+import echarts from 'echarts'
+import EConst from '@/api/datafx/dataConst.js'
+import GaugeChart from '@/components/Echarts/GaugeChart.vue'
+import BarChart from '@/components/Echarts/BarChart.vue'
+import LineChart from '@/components/Echarts/LineChart.vue'
+import ColumnChart from '@/components/Echarts/ColumnChart.vue'
 export default {
   components: { GaugeChart, BarChart, LineChart, ColumnChart },
   data() {
     return {
-      activeIndex: "home",
-      height: "200px",
+      activeIndex: 'home',
+      height: '200px',
       xData1: EConst.EchartsBussBy.ljName(),
       xData2: EConst.EchartsBussBy.wuliaoName(),
       seriesData2: [
         {
-          name: "",
-          type: "bar",
-          barWidth: "15",
+          name: '',
+          type: 'bar',
+          barWidth: '15',
           itemStyle: {
             normal: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
                   offset: 0,
-                  color: "#66FF66"
+                  color: '#66FF66'
                 },
                 {
                   offset: 1,
-                  color: "#00CA98"
+                  color: '#00CA98'
                 }
               ]),
               barBorderRadius: 11
@@ -321,25 +321,25 @@ export default {
               lineHeight: 30,
               width: 80,
               height: 30,
-              backgroundColor: "rgba(0,160,221,0.1)",
+              backgroundColor: 'rgba(0,160,221,0.1)',
               borderRadius: 200,
-              position: ["-8", "-60"],
+              position: ['-8', '-60'],
               distance: 1,
-              formatter: ["    {d|●}", " {a|{c}}     \n", "    {b|}"].join(","),
+              formatter: ['    {d|●}', ' {a|{c}}     \n', '    {b|}'].join(','),
               rich: {
                 d: {
-                  color: "#3CDDCF"
+                  color: '#3CDDCF'
                 },
                 a: {
-                  color: "#fff",
-                  align: "center"
+                  color: '#fff',
+                  align: 'center'
                 },
                 b: {
                   width: 1,
                   height: 30,
                   borderWidth: 1,
-                  borderColor: "#234e6c",
-                  align: "left"
+                  borderColor: '#234e6c',
+                  align: 'left'
                 }
               }
             }
@@ -359,17 +359,17 @@ export default {
           axisLine: {
             show: true,
             lineStyle: {
-              color: "rgba(0, 0, 0, 0)"
+              color: 'rgba(0, 0, 0, 0)'
             }
           },
           axisLabel: {
             textStyle: {
-              color: "#FFFFFF"
+              color: '#FFFFFF'
             }
           }
         },
         {
-          type: "category",
+          type: 'category',
           inverse: true,
           axisLine: {
             show: false
@@ -379,23 +379,23 @@ export default {
           },
           axisLabel: {
             textStyle: {
-              color: "#FFFFFF"
+              color: '#FFFFFF'
             }
           },
-          data: ["设备1", "设备2", "设备3", "设备4", "设备5"]
+          data: ['设备1', '设备2', '设备3', '设备4', '设备5']
         },
         [
           {
-            name: "班组工单",
-            type: "bar",
+            name: '班组工单',
+            type: 'bar',
             // 宽度
-            barWidth: "10",
+            barWidth: '10',
             // 堆叠
-            stack: "总量",
+            stack: '总量',
             showBackground: true,
             // 全部背景
             backgroundStyle: {
-              color: "#EEF2F9"
+              color: '#EEF2F9'
             },
             data: [520, 111, 116, 118, 116],
             itemStyle: {
@@ -412,11 +412,11 @@ export default {
                   [
                     {
                       offset: 0,
-                      color: "#FFF0A0"
+                      color: '#FFF0A0'
                     },
                     {
                       offset: 1,
-                      color: "#FFD355"
+                      color: '#FFD355'
                     }
                   ],
                   false
@@ -425,16 +425,16 @@ export default {
             }
           },
           {
-            name: "总工单",
-            type: "bar",
+            name: '总工单',
+            type: 'bar',
             // 宽度
-            barWidth: "10",
+            barWidth: '10',
             // 堆叠
-            stack: "总量",
+            stack: '总量',
             showBackground: true,
             // 全部背景
             backgroundStyle: {
-              color: "#EEF2F9"
+              color: '#EEF2F9'
             },
             data: [510, 511, 556, 548, 556],
             itemStyle: {
@@ -451,11 +451,11 @@ export default {
                   [
                     {
                       offset: 0,
-                      color: "#FFABAC"
+                      color: '#FFABAC'
                     },
                     {
                       offset: 1,
-                      color: "#FF6772"
+                      color: '#FF6772'
                     }
                   ],
                   false
@@ -477,17 +477,17 @@ export default {
           axisLine: {
             show: true,
             lineStyle: {
-              color: "rgba(0, 0, 0, 0)"
+              color: 'rgba(0, 0, 0, 0)'
             }
           },
           axisLabel: {
             textStyle: {
-              color: "#FFFFFF"
+              color: '#FFFFFF'
             }
           }
         },
         {
-          type: "category",
+          type: 'category',
           inverse: true,
           axisLine: {
             show: false
@@ -497,23 +497,23 @@ export default {
           },
           axisLabel: {
             textStyle: {
-              color: "#FFFFFF"
+              color: '#FFFFFF'
             }
           },
-          data: ["立体库", "装配线", "检测线", "机加1", "机加2"]
+          data: ['立体库', '装配线', '检测线', '机加1', '机加2']
         },
         [
           {
-            name: "计划完成",
-            type: "bar",
+            name: '计划完成',
+            type: 'bar',
             // 宽度
-            barWidth: "10",
+            barWidth: '10',
             // 堆叠
-            stack: "总量",
+            stack: '总量',
             showBackground: true,
             // 全部背景
             backgroundStyle: {
-              color: "#EEF2F9"
+              color: '#EEF2F9'
             },
             data: [520, 111, 116, 118, 116],
             itemStyle: {
@@ -530,11 +530,11 @@ export default {
                   [
                     {
                       offset: 0,
-                      color: "#FFF0A0"
+                      color: '#FFF0A0'
                     },
                     {
                       offset: 1,
-                      color: "#FFD355"
+                      color: '#FFD355'
                     }
                   ],
                   false
@@ -543,16 +543,16 @@ export default {
             }
           },
           {
-            name: "总工单",
-            type: "bar",
+            name: '总工单',
+            type: 'bar',
             // 宽度
-            barWidth: "10",
+            barWidth: '10',
             // 堆叠
-            stack: "总量",
+            stack: '总量',
             showBackground: true,
             // 全部背景
             backgroundStyle: {
-              color: "#EEF2F9"
+              color: '#EEF2F9'
             },
             data: [510, 511, 556, 548, 556],
             itemStyle: {
@@ -560,11 +560,11 @@ export default {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                   {
                     offset: 0,
-                    color: "#66FF66"
+                    color: '#66FF66'
                   },
                   {
                     offset: 1,
-                    color: "#00CA98"
+                    color: '#00CA98'
                   }
                 ])
               }
@@ -574,10 +574,10 @@ export default {
       ],
       seriesData7: [
         {
-          name: "总工单",
-          type: "bar",
-          stack: "总量",
-          barWidth: "18%",
+          name: '总工单',
+          type: 'bar',
+          stack: '总量',
+          barWidth: '18%',
           data: [
             0.11,
             0.7,
@@ -594,10 +594,10 @@ export default {
           ]
         },
         {
-          name: "完成工单",
-          type: "bar",
-          stack: "总量",
-          barWidth: "18%",
+          name: '完成工单',
+          type: 'bar',
+          stack: '总量',
+          barWidth: '18%',
           data: [
             0.7,
             0.9,
@@ -614,12 +614,12 @@ export default {
           ]
         }
       ]
-    };
+    }
   }
-};
+}
 </script>
 <style  scoped>
-@import "./style/echrts.css";
+/* @import "./style/echrts.css"; */
 .mainContent {
   position: absolute;
   left: 0;

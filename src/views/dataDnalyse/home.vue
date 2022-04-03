@@ -1,19 +1,19 @@
 <template>
   <div
-    class="page-container"
     v-loading="loading"
+    class="page-container"
     element-loading-background="rgba(0,0,0,.25)"
   >
     <div
-      class="dataview-container"
       id="datapage"
+      class="dataview-container"
     >
       <header class="base-header short">
         <img
           src="../../assets/images/device.png"
           class="base-header__logo"
           style
-        />
+        >
         <span class="base-header__title u-ellipses">长征云</span>
       </header>
       <nav
@@ -23,11 +23,11 @@
       >
         <ul class="base-nav__container">
           <el-tooltip
+            v-for="(item,index) in menuRightList"
+            :key="index"
             effect="dark"
             :content="item.title"
             placement="left"
-            v-for="(item,index) in menuRightList"
-            :key="index"
           >
             <li class="base-nav__item">
               <a
@@ -38,8 +38,8 @@
                 <i
                   class="iconfont"
                   :class="item.icon"
-                ></i>
-                <span>{{item.title}}</span>
+                />
+                <span>{{ item.title }}</span>
               </a>
             </li>
           </el-tooltip>
@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import RSS from "./style/screenSize.js";
+import RSS from './style/screenSize.js'
 export default {
   data() {
     return {
@@ -69,52 +69,49 @@ export default {
       isActive: 0,
       menuRightList: [
         {
-          title: "平台首页",
-          icon: "el-icon-map-location",
-          url: "/dataDnalyse/homeChilder",
+          title: '平台首页',
+          icon: 'el-icon-map-location',
+          url: '/dataDnalyse/homeChilder'
         },
         {
-          title: "数据分析",
-          icon: "el-icon-s-data",
-          url: "/dataDnalyse/datafx",
+          title: '数据分析',
+          icon: 'el-icon-s-data',
+          url: '/dataDnalyse/datafx'
         },
         {
-          title: "设备总览",
-          icon: "el-icon-share",
-          url: "/dataDnalyse/device",
-        },
-      ],
-    };
+          title: '设备总览',
+          icon: 'el-icon-share',
+          url: '/dataDnalyse/device'
+        }
+      ]
+    }
   },
   created() {
-    RSS();
+    RSS()
   },
   mounted() {
-    this.initLoading();
-    //RSS(1920, 969);
-    this.doMenu(0, "/dataDnalyse/homeChilder");
+    this.initLoading()
+    // RSS(1920, 969);
+    this.doMenu(0, '/dataDnalyse/homeChilder')
   },
   methods: {
     initLoading() {
       setTimeout(() => {
-        this.loading = false;
-      }, 2000);
+        this.loading = false
+      }, 2000)
     },
     doMenu(index, url) {
-      this.isActive = index;
-      this.$router.push(url);
+      this.isActive = index
+      this.$router.push(url)
     },
     mouseOver() {
-      this.isMenuShow = true;
+      this.isMenuShow = true
     },
     mouseLeave() {
       setTimeout(() => {
-        this.isMenuShow = false;
-      }, 3000);
-    },
-  },
-};
+        this.isMenuShow = false
+      }, 3000)
+    }
+  }
+}
 </script>
-<style>
-@import "./style/datadnalyse.css";
-</style>

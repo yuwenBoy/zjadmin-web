@@ -1,67 +1,44 @@
 <template>
   <div class="app-container">
     <div class="head-container">
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
-          <span>部门列表</span>
-        </div>
+      <div class="content-box box-shadow">
         <div class="text item">
-          <el-form label-width="100px" label-position="right">
-            <el-row :gutter="24">
-              <el-col :span="8">
-                <el-form-item label="部门名称：">
-                  <el-input
-                    clearable
-                    size="small"
-                    v-model="crud.query.DepartmentName"
-                    placeholder="请输入部门名称"
-                    class="filter-item"
-                  />
+          <el-row :gutter="24">
+            <el-col :span="4">
+              <el-button
+                v-if="crud.optShow.add"
+                v-authority="['dept:add']"
+                class="filter-item"
+                size="mini"
+                round
+                type="primary"
+                icon="el-icon-plus"
+                @click="crud.toAdd"
+              >新增</el-button>
+              <el-button
+                v-authority="['dept:delete']"
+                class="filter-item"
+                type="danger"
+                icon="el-icon-delete"
+                size="mini"
+                round
+                :loading="crud.delAllLoading"
+                :disabled="crud.selections.length === 0"
+                @click="toDelete(crud.selections)"
+              >删除</el-button>
+            </el-col>
+            <el-col :span="16">
+              <el-form label-width="0px" inline>
+                <el-form-item>
+                  <el-input v-model="crud.query.DepartmentName" clearable size="small" placeholder="请输入部门名称" class="filter-item round-left" />
                 </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-button
-                  class="filter-item"
-                  size="mini"
-                  type="success"
-                  @click="crud.toQuery"
-                  icon="el-icon-search"
-                  >搜索</el-button
-                >
-                <el-button
-                  class="filter-item"
-                  size="mini"
-                  type="warning"
-                  icon="el-icon-refresh-left"
-                  @click="crud.resetQuery"
-                  >重置</el-button
-                >
-                <el-button
-                  class="filter-item"
-                  size="mini"
-                  type="primary"
-                  icon="el-icon-plus"
-                  @click="crud.toAdd"
-                  v-if="crud.optShow.add"
-                  v-authority="['dept:add']"
-                  >新增</el-button
-                >
-                <el-button
-                  class="filter-item"
-                  type="danger"
-                  icon="el-icon-delete"
-                  size="mini"
-                  :loading="crud.delAllLoading"
-                  :disabled="crud.selections.length === 0"
-                  @click="toDelete(crud.selections)"
-                  v-authority="['dept:delete']"
-                  >删除</el-button
-                >
-              </el-col>
-            </el-row>
-          </el-form>
+              </el-form>
+            </el-col>
+            <el-col :span="4">
+              <OPTOperation />
+            </el-col>
+          </el-row>
         </div>
-        <!--表格渲染-->
         <el-table
           ref="table"
           :data="crud.data"
@@ -73,7 +50,17 @@
           @select-all="crud.selectAllChange"
           @selection-change="crud.selectionChangeHandler"
         >
-          <el-table-column type="selection" width="55" />
+          <el-table-column
+            type="selection"
+            width="55"
+            align="center"
+          />
+          <el-table-column
+            type="index"
+            label="序号"
+            align="center"
+            width="50"
+          />
           <el-table-column
             :show-overflow-tooltip="true"
             label="部门名称"
@@ -83,138 +70,118 @@
             :show-overflow-tooltip="true"
             label="部门编码"
             prop="departmentCode"
+            width="235"
           />
-          <el-table-column prop="createtime" label="创建日期" width="135">
+          <el-table-column
+            prop="createtime"
+            label="创建日期"
+            width="135"
+          >
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createtime) }}</span>
             </template>
           </el-table-column>
           <!--   编辑与删除   -->
-          <el-table-column label="操作" align="center" fixed="right">
+          <el-table-column label="操作" align="center" width="135" fixed="right">
             <template slot-scope="scope">
-              <el-dropdown @command="handleCommand">
-                <span class="el-dropdown-link">
-                  更多
-                  <i class="el-icon-arrow-down el-icon--right"></i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item
-                    :command="beforeHandleCommand('edit', scope.row)"
-                    icon="el-icon-edit"
-                    v-authority="['dept:edit']"
-                    >编辑</el-dropdown-item
-                  >
-                  <el-dropdown-item
-                    :command="beforeHandleCommand('delete', scope.row)"
-                    icon="el-icon-delete"
-                    v-authority="['dept:delete']"
-                    >删除</el-dropdown-item
-                  >
-                </el-dropdown-menu>
-              </el-dropdown>
+              <el-link v-authority="['dept:edit']" type="info" :underline="false" @click="crud.toEdit(scope.row)">编辑</el-link>
+              <el-link v-authority="['dept:delete']" type="info" :underline="false" @click="remove(scope.row)">删除</el-link>
             </template>
           </el-table-column>
         </el-table>
-        <el-dialog
-          append-to-body
-          :close-on-click-modal="false"
-          :before-close="crud.cancelCU"
-          :visible="crud.status.cu > 0"
-          :title="crud.status.title"
-          width="600px"
-        >
-          <el-form
-            ref="form"
-            :model="form"
-            :rules="rules"
-            size="small"
-            label-width="80px"
-          >
-            <el-row :gutter="24">
-              <el-col :span="12">
-                <el-form-item label="是否顶级">
-                  <el-radio-group v-model="type">
-                    <el-radio-button label="1">是</el-radio-button>
-                    <el-radio-button label="0">否</el-radio-button>
-                  </el-radio-group>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="部门名称" prop="departmentName">
-                  <el-input
-                    v-model="form.departmentName"
-                    clearable
-                    placeholder="请输入部门名称"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="24">
-              <el-col :span="12">
-                <el-form-item label="部门编码" prop="departmentCode">
-                  <el-input
-                    v-model="form.departmentCode"
-                    clearable
-                    placeholder="请输入部门编码"
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12" v-show="type == 0">
-                <el-form-item label="上级部门">
-                  <treeselect
-                    v-model="form.pid"
-                    :options="menus"
-                    :load-options="loadMenus"
-                    placeholder="选择上级部门"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row> </el-row>
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button
-              :loading="crud.status.cu === 2"
-              type="success"
-              size="mini"
-              icon="el-icon-circle-plus"
-              @click="crud.submitCU"
-              >保存</el-button
-            >
-            <el-button
-              type="default"
-              @click="crud.cancelCU"
-              size="mini"
-              icon="el-icon-remove-outline"
-              >关闭</el-button
-            >
-          </div>
-        </el-dialog>
-      </el-card>
+      </div>
     </div>
+    <el-dialog
+      append-to-body
+      :close-on-click-modal="false"
+      :before-close="crud.cancelCU"
+      :visible="crud.status.cu > 0"
+      :title="crud.status.title"
+      width="600px"
+    >
+      <el-form
+        ref="form"
+        :model="form"
+        :rules="rules"
+        size="small"
+        label-width="80px"
+      >
+        <el-row :gutter="24">
+          <el-col :span="12">
+            <el-form-item label="是否顶级">
+              <el-radio-group v-model="type">
+                <el-radio-button label="1">是</el-radio-button>
+                <el-radio-button label="0">否</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item
+              label="部门名称"
+              prop="departmentName"
+            >
+              <el-input
+                v-model="form.departmentName"
+                clearable
+                placeholder="请输入部门名称"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="24">
+          <el-col :span="12">
+            <el-form-item
+              label="部门编码"
+              prop="departmentCode"
+            >
+              <el-input
+                v-model="form.departmentCode"
+                clearable
+                placeholder="请输入部门编码"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col v-show="type == 0" :span="12">
+            <el-form-item label="上级部门">
+              <treeselect
+                v-model="form.pid"
+                :options="menus"
+                :load-options="loadMenus"
+                placeholder="选择上级部门"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button :loading="crud.status.cu === 2" type="success" size="mini" icon="el-icon-circle-plus" @click="crud.submitCU">提交</el-button>
+        <el-button type="default" icon="el-icon-remove-outline" @click="crud.cancelCU">关闭</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
-import crudDepartment from "@/api/system/department";
-import CRUD, { presenter, form } from "@crud/crud";
-import Treeselect from "@riophae/vue-treeselect";
-import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import { LOAD_CHILDREN_OPTIONS } from "@riophae/vue-treeselect";
+import crudDepartment from '@/api/system/department'
+import CRUD, { presenter, form } from '@crud/crud'
+import OPTOperation from '@crud/OPT.operation'
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import { LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
 const defaultForm = {
   id: null,
-  departmentName: "",
-  departmentCode: "",
-  pid: 0,
-};
+  departmentName: '',
+  departmentCode: '',
+  pid: 0
+}
 export default {
-  components: { Treeselect },
+  components: { Treeselect, OPTOperation },
   cruds() {
     return CRUD({
-      title: "部门",
-      url: "/api/department/getByCondition?pid=0",
+      title: '部门',
+      url: '/api/department/getByCondition?pid=0',
       crudMethod: { ...crudDepartment },
-      sort: "id",
-    });
+      sort: 'id'
+    })
   },
   mixins: [presenter(), form(defaultForm)],
   data() {
@@ -222,94 +189,79 @@ export default {
       type: 1,
       rules: {
         departmentName: [
-          { required: true, message: "请输入部门名称", trigger: "blur" },
+          { required: true, message: '请输入部门名称', trigger: 'blur' }
         ],
         departmentCode: [
-          { required: true, message: "请输入部门编码", trigger: "blur" },
+          { required: true, message: '请输入部门编码', trigger: 'blur' }
         ],
-        pid: [{ required: true, message: "请选择上级部门", trigger: "change" }],
+        pid: [{ required: true, message: '请选择上级部门', trigger: 'change' }]
       },
-      menus: [],
-    };
+      menus: []
+    }
   },
   methods: {
-      // 新增与编辑前做的操作
+    // 新增与编辑前做的操作
     [CRUD.HOOK.afterToCU](crud, form) {
-      this.menus = [];
+      this.menus = []
       if (form.id != null) {
         if (form.pid === null) {
-          form.pid = 0;
+          form.pid = 0
         }
       } else {
-        this.menus.push({ id: 0, label: "上级部门", children: null });
+        this.menus.push({ id: 0, label: '上级部门', children: null })
       }
     },
     getMenus(tree, treeNode, resolve) {
-      const params = { pid: tree.id };
+      const params = { pid: tree.id }
       setTimeout(() => {
         crudDepartment.getModulePager(params).then((res) => {
-          resolve(res.result.content);
-        });
-      }, 100);
+          resolve(res.result.content)
+        })
+      }, 100)
     },
     toDelete(datas) {
-      this.$confirm(`确认删除选中的${datas.length}条数据?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm(`确认删除选中的${datas.length}条数据?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
-          this.crud.delAllLoading = true;
-          this.crud.doDelete(datas);
+          this.crud.delAllLoading = true
+          this.crud.doDelete(datas)
         })
-        .catch(() => {});
+        .catch(() => {})
     },
-    handleCommand(command) {
-      switch (command.command) {
-        case "edit":
-          this.crud.toEdit(command.obj);
-          break;
-        case "delete":
-          this.$confirm(`确认删除此条数据吗，删除后不可恢复`, "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning",
-          })
-            .then(() => {
-              this.crud.delAllLoading = true;
-              this.crud.doDelete(command.obj);
-            })
-            .catch(() => {});
-          break;
-      }
-    },
-    beforeHandleCommand(item, obj) {
-      return {
-        command: item,
-        obj: obj,
-      };
+    remove(row) {
+      this.$confirm(`确认删除此条数据吗，删除后不可恢复`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.crud.delAllLoading = true
+        this.crud.doDelete(row)
+      }).catch(() => {})
     },
     updateLyDeptId(data) {
-      this.defaultForm.pid = data;
+      this.defaultForm.pid = data
     },
     loadMenus({ action, parentNode, callback }) {
       if (action === LOAD_CHILDREN_OPTIONS) {
-        const params = { id: parentNode.id };
+        const params = { id: parentNode.id }
         crudDepartment.getDeptTree(params).then((res) => {
-          parentNode.children = res.result.map(function (obj) {
+          parentNode.children = res.result.map(function(obj) {
             if (!obj.leaf) {
-              obj.children = null;
+              obj.children = null
             }
-            return obj;
-          });
+            return obj
+          })
           setTimeout(() => {
-            callback();
-          }, 100);
-        });
+            callback()
+          }, 100)
+        })
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style>

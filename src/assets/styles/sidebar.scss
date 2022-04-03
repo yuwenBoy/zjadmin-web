@@ -1,14 +1,14 @@
 #app {
-
   .main-container {
     min-height: 100%;
-    transition: margin-left .28s;
+    transition: margin-left 0.28s;
     margin-left: $sideBarWidth;
     position: relative;
   }
 
   .sidebar-container {
     transition: width 0.28s;
+    
     width: $sideBarWidth !important;
     background-color: $menuBg;
     height: 100%;
@@ -22,11 +22,13 @@
 
     // reset element-ui css
     .horizontal-collapse-transition {
-      transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
+      transition: 0s width ease-in-out, 0s padding-left ease-in-out,
+        0s padding-right ease-in-out;
     }
 
     .scrollbar-wrapper {
       overflow-x: hidden !important;
+      background-color: rgb(58, 84, 226);
     }
 
     .el-scrollbar__bar.is-vertical {
@@ -54,7 +56,7 @@
     }
 
     .svg-icon {
-      margin-right: 16px;
+      margin-right: 8px;
     }
 
     .el-menu {
@@ -67,23 +69,67 @@
     .submenu-title-noDropdown,
     .el-submenu__title {
       &:hover {
-        background-color: $menuHover !important;
+        background-color: $subMenuHoverBg !important;
+        margin: 5px;
+        border-radius: $subMenuBorderRadius;
       }
     }
 
-    .is-active>.el-submenu__title {
-      color: $subMenuActiveText !important;
+    .is-active > .el-submenu__title {
+      color: $menuActiveText !important;
+      margin: 5px;
+      border-radius: $menuBorderRadius;
     }
 
-    & .nest-menu .el-submenu>.el-submenu__title,
+    & .nest-menu .el-submenu > .el-submenu__title,
     & .el-submenu .el-menu-item {
-      min-width: $sideBarWidth !important;
-      background-color: $subMenuBg !important;
-
+      min-width: 130px !important;
+      border-radius: $subMenuBorderRadius; 
+      // margin: 3px 10px;
+      height: $menuHeight;
+      line-height: $menuLineHeight;
       &:hover {
-        background-color: $subMenuHover !important;
+        background-color: $subMenuHoverBg !important;
+        margin: 5px;
+        border-radius: $subMenuBorderRadius;
       }
     }
+
+    .el-menu-item {
+      height: $menuHeight;
+      line-height: $menuLineHeight;
+      margin-left: 5px;
+      margin: 5px !important;
+       &:hover {
+        // you can use $subMenuHover
+        margin-left: 5px;
+        margin: 5px !important;
+      }
+    }
+  // 左侧菜单
+    .el-submenu {
+        overflow: hidden;
+  
+        &> .el-submenu__title {
+          padding: 0 !important;
+          height:35px !important;
+          line-height: 35px !important;
+          margin:5px;
+          border-radius: $menuBorderRadius !important;
+  
+          .svg-icon {
+            margin-left: 20px;
+          }
+  
+          .el-submenu__icon-arrow {
+            display: none;
+          }
+        }
+      }
+      .el-menu-item.is-active{
+        background-color: $menuActiveBg !important;
+        border-radius: $subMenuBorderRadius !important;
+      }
   }
 
   .hideSidebar {
@@ -108,26 +154,10 @@
       }
     }
 
-    .el-submenu {
-      overflow: hidden;
-
-      &>.el-submenu__title {
-        padding: 0 !important;
-
-        .svg-icon {
-          margin-left: 20px;
-        }
-
-        .el-submenu__icon-arrow {
-          display: none;
-        }
-      }
-    }
-
     .el-menu--collapse {
       .el-submenu {
-        &>.el-submenu__title {
-          &>span {
+        & > .el-submenu__title {
+          & > span {
             height: 0;
             width: 0;
             overflow: hidden;
@@ -150,7 +180,7 @@
     }
 
     .sidebar-container {
-      transition: transform .28s;
+      transition: transform 0.28s;
       width: $sideBarWidth !important;
     }
 
@@ -164,7 +194,6 @@
   }
 
   .withoutAnimation {
-
     .main-container,
     .sidebar-container {
       transition: none;
@@ -174,22 +203,22 @@
 
 // when menu collapsed
 .el-menu--vertical {
-  &>.el-menu {
+  & > .el-menu {
     .svg-icon {
-      margin-right: 16px;
+      margin-right: 8px;
     }
   }
 
-  .nest-menu .el-submenu>.el-submenu__title,
+  .nest-menu .el-submenu > .el-submenu__title,
   .el-menu-item {
     &:hover {
       // you can use $subMenuHover
-      background-color: $menuHover !important;
+      background-color: $menuHoverBg !important;
     }
   }
 
   // the scroll bar appears when the subMenu is too long
-  >.el-menu--popup {
+  > .el-menu--popup {
     max-height: 100vh;
     overflow-y: auto;
 

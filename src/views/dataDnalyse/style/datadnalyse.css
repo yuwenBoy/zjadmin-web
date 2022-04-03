@@ -108,7 +108,7 @@
     bottom: 0;
     left: -10px;
     width: 6px;
-    content: "";
+    content: '';
     background: #fff;
   }
   .u-block-title-bar .base-time-range:not(:last-child) {
@@ -133,7 +133,7 @@
     right: 1px;
     bottom: 10px;
     width: 2px;
-    content: "";
+    content: '';
     background: rgba(255, 255, 255, 0.4);
   }
   .u-block-title-bar .nav-item.router-link-active,
@@ -177,7 +177,7 @@
     width: 5px;
     height: 4px;
     margin: -2px 0;
-    content: "";
+    content: '';
     background: currentColor;
   }
   .u-line-spacer::before {
@@ -283,7 +283,7 @@
     bottom: 0;
     width: 12px;
     height: 2px;
-    content: "";
+    content: '';
     background: #0bd6d0;
   }
   .u-proj-stat.fixed {

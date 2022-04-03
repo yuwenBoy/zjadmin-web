@@ -3,10 +3,10 @@
     <div class="layout-aside__main">
       <div class="section-title u-block-title-bar">
         <div class="block-title">设备使用率</div>
-        <div class="block-item tab-link" v-show="activeIndex=='deviceList'">
+        <div v-show="activeIndex=='deviceList'" class="block-item tab-link">
           <a href="javascript:void(0);" class="nav-item router-link-active">设备使用中心</a>
         </div>
-        <div class="u-line-spacer"></div>
+        <div class="u-line-spacer" />
         <div class="base-time-range">
           <el-radio-group v-model="type" size="medium" fill="#0bd6cf" @change="typeChange">
             <el-radio-button label="0">日</el-radio-button>
@@ -17,37 +17,37 @@
           </el-radio-group>
           <el-date-picker
             v-if="type==='0'"
+            v-model="createTime"
             type="date"
             align="right"
-            v-model="createTime"
             :clearable="false"
-            @change="dateChange"
             value-format="yyyy-MM-dd"
             popper-class="el-popper"
             placeholder="选择日期"
-          ></el-date-picker>
+            @change="dateChange"
+          />
           <el-date-picker
             v-if="type==='1'"
+            v-model="createMonth"
             type="month"
             align="right"
-            v-model="createMonth"
             :clearable="false"
-            @change="dateChange"
             value-format="yyyy-MM"
             popper-class="el-popper"
             placeholder="选择日期"
-          ></el-date-picker>
+            @change="dateChange"
+          />
           <el-date-picker
             v-if="type==='2'"
+            v-model="createYear"
             type="year"
             align="right"
-            v-model="createYear"
             :clearable="false"
             value-format="yyyy"
-            @change="dateChange"
             popper-class="el-popper"
             placeholder="选择日期"
-          ></el-date-picker>
+            @change="dateChange"
+          />
           <el-date-picker
             v-if="type==='4'"
             v-model="inputWeek"
@@ -55,19 +55,19 @@
             popper-class="el-popper"
             :clearable="false"
             type="week"
-            @change="dateChange"
             format="yyyy第WW周"
             placeholder="选择周"
-          ></el-date-picker>
+            @change="dateChange"
+          />
           <DateSeason v-if="type==='3'" @showValue="showValue" />
         </div>
-        <div class="zone-name block-item iconfont" :class="activeIcon">{{activeName}}</div>
+        <div class="zone-name block-item iconfont" :class="activeIcon">{{ activeName }}</div>
         <button
           type="button"
           class="el-button toggle-side-button el-button--default"
           :class="[isRight?' el-icon-arrow-right':'el-icon-arrow-left']"
           @click="toggleRight"
-        ></button>
+        />
       </div>
       <div class="device-list el-scrollbar" style="height:100%">
         <transition name="fade-transform" mode="out-in">
@@ -82,32 +82,32 @@
       </div>
     </div>
     <!-- 设备分类菜单 -->
-    <div class="layout-aside__aside layout-aside__aside--right" v-if="isRight">
+    <div v-if="isRight" class="layout-aside__aside layout-aside__aside--right">
       <div class="section-title u-block-title-bar">
         <div class="block-title">设备区域</div>
-        <div class="u-line-spacer"></div>
+        <div class="u-line-spacer" />
       </div>
       <div class="zone-list el-scrollbar">
         <div class="el-scrollbar__wrap" style="margin-bottom: -17px; margin-right: -17px;">
           <div class="el-scrollbar__view scroll-view scroll-view--zone">
             <div
-              :class="[activeIndex==key.value?'zone-list__item active':'zone-list__item']"
               v-for="(key,value) in deviceTypes"
               :key="value"
+              :class="[activeIndex==key.value?'zone-list__item active':'zone-list__item']"
             >
-              <i class="zone-list__item-icon iconfont" :class="key.icon"></i>
+              <i class="zone-list__item-icon iconfont" :class="key.icon" />
               <div class="zone-list__item-name" @click="tabRight(key)">
-                {{key.title}}
-                <span class="zone-list__count" v-if="key.num>0">{{key.num}}</span>
+                {{ key.title }}
+                <span v-if="key.num>0" class="zone-list__count">{{ key.num }}</span>
               </div>
             </div>
           </div>
         </div>
         <div class="el-scrollbar__bar is-horizontal">
-          <div class="el-scrollbar__thumb" style="transform: translateX(0%);"></div>
+          <div class="el-scrollbar__thumb" style="transform: translateX(0%);" />
         </div>
         <div class="el-scrollbar__bar is-vertical">
-          <div class="el-scrollbar__thumb" style="transform: translateY(0%);"></div>
+          <div class="el-scrollbar__thumb" style="transform: translateY(0%);" />
         </div>
       </div>
     </div>
@@ -115,20 +115,20 @@
   </div>
 </template>
 <script>
-import EConst from "@/api/datafx/dataConst.js"
+import EConst from '@/api/datafx/dataConst.js'
 import {
   formatDate,
   formatWeek,
   formatMonth,
   formatQuarter
-} from "@/api/encode/ConstUtils";
-import DateSeason from "@/components/DateSeason/index.vue";
+} from '@/api/encode/ConstUtils'
+import DateSeason from '@/components/DateSeason/index.vue'
 export default {
-  name: "device",
+  name: 'Device',
   provide() {
     return {
       reload: this.reload
-    };
+    }
   },
   components: { DateSeason },
   data() {
@@ -136,89 +136,89 @@ export default {
       fullscreenLoading: false,
       isRouterAlice: true,
       isRight: true,
-      inputWeek:new Date(),
-      createTime: "",
-      createMonth: "",
-      createYear: "",
-      timeParameter: "",
-      activeIndex: "deviceList",
-      activeName: "全部设备",
-      activeIcon: "el-icon-s-home",
-      type: "0",
+      inputWeek: new Date(),
+      createTime: '',
+      createMonth: '',
+      createYear: '',
+      timeParameter: '',
+      activeIndex: 'deviceList',
+      activeName: '全部设备',
+      activeIcon: 'el-icon-s-home',
+      type: '0',
       deviceTypes: EConst.EchartsBussBy.deviceUseTitle()
-    };
+    }
   },
   activated() { // 配合keeplive使用
-    const defaultUrl = "/dataDnalyse/device/deviceList";
-    this.query(defaultUrl, this.type);
+    const defaultUrl = '/dataDnalyse/device/deviceList'
+    this.query(defaultUrl, this.type)
   },
   methods: {
     openFullScreen1() {
-      this.fullscreenLoading = true;
+      this.fullscreenLoading = true
       setTimeout(() => {
-        this.fullscreenLoading = false;
-      }, 2000);
+        this.fullscreenLoading = false
+      }, 2000)
     },
     reload() {
-      this.isRouterAlice = false;
+      this.isRouterAlice = false
       this.$nextTick(function() {
-        this.isRouterAlice = true;
-      });
+        this.isRouterAlice = true
+      })
     },
     requstDate(dateType) {
-      var date = "";
-      if (dateType === "4") {
-        if (this.inputWeek != "") {
-          date = this.inputWeek;
+      var date = ''
+      if (dateType === '4') {
+        if (this.inputWeek != '') {
+          date = this.inputWeek
         } else {
           date =
             new Date().getFullYear() +
-            "第" +
+            '第' +
             formatWeek(formatDate(new Date())) +
-            "周";
+            '周'
         }
-      } else if (dateType === "3") {
-        if (this.timeParameter != "") {
-          date = this.timeParameter;
+      } else if (dateType === '3') {
+        if (this.timeParameter != '') {
+          date = this.timeParameter
         } else {
           date =
-            new Date().getFullYear() + formatQuarter(new Date().getMonth() + 1);
+            new Date().getFullYear() + formatQuarter(new Date().getMonth() + 1)
         }
-      } else if (dateType === "2") {
-        if (this.createYear != "") {
-          date = this.createYear;
+      } else if (dateType === '2') {
+        if (this.createYear != '') {
+          date = this.createYear
         } else {
-          date = new Date().getFullYear() + "";
+          date = new Date().getFullYear() + ''
         }
-      } else if (dateType === "1") {
-        if (this.createMonth != "") {
-          date = this.createMonth;
+      } else if (dateType === '1') {
+        if (this.createMonth != '') {
+          date = this.createMonth
         } else {
-          date = formatMonth(new Date());
+          date = formatMonth(new Date())
         }
-      } else if (dateType === "0") {
-        if (this.createTime != "") {
-          date = this.createTime;
+      } else if (dateType === '0') {
+        if (this.createTime != '') {
+          date = this.createTime
         } else {
-          date = formatDate(new Date());
+          date = formatDate(new Date())
         }
       }
-      return date;
+      return date
     },
     query(url, dateType) {
-      this.openFullScreen1();
-      this.reload();
-      var createTime = this.requstDate(dateType);
-      if (dateType === "0") {
-        this.createTime = createTime;
-      } else if (dateType === "1") {
-        this.createMonth = createTime;
-      } else if (dateType === "2") {
-        this.createYear = createTime;
-      } else if (dateType === "3") {
-        this.timeParameter = createTime;
-      } else if (dateType === "4") {
-        this.inputWeek = createTime;
+      this.openFullScreen1()
+      this.reload()
+      var createTime = this.requstDate(dateType)
+      if (dateType === '0') {
+        this.createTime = createTime
+      } else if (dateType === '1') {
+        this.createMonth = createTime
+      } else if (dateType === '2') {
+        this.createYear = createTime
+      } else if (dateType === '3') {
+        this.timeParameter = createTime
+      } else if (dateType === '4') {
+        this.inputWeek = createTime
       }
       this.$router.push({
         path: url,
@@ -226,35 +226,35 @@ export default {
           type: dateType,
           timeParameter: createTime
         }
-      });
+      })
     },
     toggleRight() {
       if (this.isRight) {
-        this.isRight = false;
+        this.isRight = false
       } else {
-        this.isRight = true;
+        this.isRight = true
       }
     },
     tabRight(key) {
-      this.activeName = key.title;
-      this.activeIcon = key.icon;
-      this.activeIndex = key.value;
-      this.query(key.value, this.type);
+      this.activeName = key.title
+      this.activeIcon = key.icon
+      this.activeIndex = key.value
+      this.query(key.value, this.type)
     },
     dateChange() {
-      this.query(this.$route.path, this.type);
+      this.query(this.$route.path, this.type)
     },
     showValue(val) {
-      this.timeParameter = val;
-      this.query(this.$route.path, this.type);
+      this.timeParameter = val
+      this.query(this.$route.path, this.type)
     },
-    typeChange(val){
-      this.query(this.$route.path,val)
-    },
+    typeChange(val) {
+      this.query(this.$route.path, val)
+    }
   }
-};
+}
 </script>
-<style>
+<style scoped>
 .layout-aside {
   padding: 220px 0 50px;
 }
@@ -544,7 +544,7 @@ export default {
   right: 10px;
   left: 10px;
   height: 1px;
-  content: "";
+  content: '';
   background: rgba(255, 255, 255, 0.2);
 }
 .czy-zone .devtype__title {

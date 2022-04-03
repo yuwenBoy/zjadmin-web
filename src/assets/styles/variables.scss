@@ -7,29 +7,75 @@ $green: #30B08F;
 $tiffany: #4AB7BD;
 $yellow:#FEC171;
 $panGreen: #30B08F;
+$color_1:#00d3d3;
+$color_2:#ccc;
+
+
+$green_1: #28c76f;
+$green_2: #07c160;
+$green_3: #85d888;
+$green_0: rgba(13, 175, 85, 0.3);
+
+$blue: #3a50db;
+$blue_1: #3a54e2;
+$blue_0: rgba(33, 54, 28, 0.3);
+
+$orange: #ffa117;
+$orange_0: rgba(255, 161, 23, 0.3);
+$orange_1: #efb45f;
+
+$bgColor_1:#FFFFFF;
+$bgColor_2:#00d3d3;
+
+$color-primary: #2136a8;
+$color-success: #28c76f;
+$color-warning: #ffa117;
+$color-danger: #ff4949;
 
 // sidebar
+$sideBarWidth: 180px;
+$menuActiveText:#FFFFFF;
 $menuText:#bfcbd9;
-$menuActiveText:#409EFF;
-$subMenuActiveText:#f4f4f5; // https://github.com/ElemeFE/element/issues/12951
-
-$menuBg:#304156;
-$menuHover:#263445;
-
-$subMenuBg:#1f2d3d;
-$subMenuHover:#001528;
-
-$sideBarWidth: 205px;
-
+$menuBg:#4b6ce3; //#304156
+$left_navBg:#3a54e2;
+$menuHeight:30px;
+$menuLineHeight:30px;
+$menuBorderRadius:5px;
+$subMenuBorderRadius:15px;
+$menuActiveBg:#4b6ce3;
+$menuHoverBg:#4b6ce3;
+$subMenuHoverBg:#4b6ce3;
 // the :export directive is the magic sauce for webpack
 // https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass
 :export {
-  menuText: $menuText;
-  menuActiveText: $menuActiveText;
-  subMenuActiveText: $subMenuActiveText;
-  menuBg: $menuBg;
-  menuHover: $menuHover;
-  subMenuBg: $subMenuBg;
-  subMenuHover: $subMenuHover;
-  sideBarWidth: $sideBarWidth;
+  left_navBg:$left_navBg; // 左侧菜单背景
+  menuHeight: $menuHeight;// 左侧菜单高度及行高
+  menuLineHeight:$menuLineHeight;// 左侧菜单高度及行高
+  subMenuBorderRadius:$subMenuBorderRadius;// 二级菜单圆角大小
+  menuBorderRadius:$menuBorderRadius;// 一级菜单圆角大小
+  menuText: $menuText;// 菜单文字颜色
+  menuActiveText: $menuActiveText;// 菜单选中颜色
+  menuActiveBg:$menuActiveBg;// 菜单选中的颜色
+  menuBg: $menuBg; // 菜单背景色
+  menuHoverBg: $menuHoverBg;// 菜单鼠标悬浮的颜色
+  subMenuHoverBg: $subMenuHoverBg;// 二级菜单鼠标悬浮的颜色
+  sideBarWidth: $sideBarWidth; // 左侧菜单宽度
+  color_1:$color_1;
+  color_2:$color_2;
+  bgColor_1:$bgColor_1;
+  bgColor_2:$bgColor_2;
+  green_0:$green_0;
+  green_1:$green_1;
+  green_2:$green_2;
+  green_3:$green_3;
+  blue:$blue;
+  blue_0:$blue_0;
+  blue_1:$blue_1;
+  orange:$orange;
+  orange_0:$orange_0;
+  orange_1:$orange_1;
+  color-primary: $color-primary;
+  color-success: $color-success;
+  color-warning: $color-warning;
+  color-danger: $color-danger;
 }

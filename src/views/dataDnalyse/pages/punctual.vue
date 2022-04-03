@@ -5,16 +5,16 @@
       <el-col :sm="24" :md="24" :xl="24" :lg="24" :xs="24">
         <div class="czy-home__widget">
           <div class="czy-home__widget-header">
-            <i class="czy-home__widget-header-bullet"></i>
+            <i class="czy-home__widget-header-bullet" />
             <div class="czy-home__widget-title">任务工单分析</div>
-            <div class="u-line-spacer no-left"></div>
-            <div class="czy-home__widget-append"></div>
+            <div class="u-line-spacer no-left" />
+            <div class="czy-home__widget-append" />
           </div>
           <div class="czy-home__widget-content">
-            <line-chart :index="activeIndex"  :seriesData="seriesData7" />
+            <line-chart :index="activeIndex" :series-data="seriesData7" />
           </div>
           <div class="czy-home__widget-footer">
-            <div class="u-line-spacer"></div>
+            <div class="u-line-spacer" />
           </div>
         </div>
       </el-col>
@@ -23,16 +23,16 @@
       <el-col :sm="24" :md="24" :xl="24" :lg="24" :xs="24">
         <div class="czy-home__widget">
           <div class="czy-home__widget-header">
-            <i class="czy-home__widget-header-bullet"></i>
+            <i class="czy-home__widget-header-bullet" />
             <div class="czy-home__widget-title">型号工单分析</div>
-            <div class="u-line-spacer no-left"></div>
-            <div class="czy-home__widget-append"></div>
+            <div class="u-line-spacer no-left" />
+            <div class="czy-home__widget-append" />
           </div>
           <div class="czy-home__widget-content">
-             <line-chart :index="activeIndex"  :seriesData="seriesData7" />
+            <line-chart :index="activeIndex" :series-data="seriesData7" />
           </div>
           <div class="czy-home__widget-footer">
-            <div class="u-line-spacer"></div>
+            <div class="u-line-spacer" />
           </div>
         </div>
       </el-col>
@@ -42,19 +42,19 @@
 </template>
 
 <script>
-import LineChart from "@/components/Echarts/LineChart.vue";
+import LineChart from '@/components/Echarts/LineChart.vue'
 export default {
-  name: "punctual",
-  components: {  LineChart },
+  name: 'Punctual',
+  components: { LineChart },
   data() {
     return {
-      activeIndex: "punctual",
+      activeIndex: 'punctual',
       seriesData7: [
         {
-          name: "已超出",
-          type: "bar",
-          stack: "总量",
-          barWidth: "18%",
+          name: '已超出',
+          type: 'bar',
+          stack: '总量',
+          barWidth: '18%',
           data: [
             0.11,
             0.7,
@@ -71,10 +71,10 @@ export default {
           ]
         },
         {
-          name: "执行中",
-          type: "bar",
-          stack: "总量",
-          barWidth: "18%",
+          name: '执行中',
+          type: 'bar',
+          stack: '总量',
+          barWidth: '18%',
           data: [
             0.7,
             0.9,
@@ -87,14 +87,14 @@ export default {
             0.7,
             0.9,
             0.13,
-            0.19,
+            0.19
           ]
         },
         {
-          name: "已完成",
-          type: "bar",
-          stack: "总量",
-          barWidth: "18%",
+          name: '已完成',
+          type: 'bar',
+          stack: '总量',
+          barWidth: '18%',
           data: [
             0.7,
             0.9,
@@ -111,10 +111,7 @@ export default {
           ]
         }
       ]
-    };
+    }
   }
-};
+}
 </script>
-<style>
-@import "../style/echrts.css";
-</style>

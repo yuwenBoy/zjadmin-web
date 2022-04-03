@@ -1,17 +1,130 @@
+@import 'zjadmin';
 @import 'variables';
 @import 'mixin';
 @import 'transition';
 @import 'element-ui';
 @import 'sidebar';
 @import 'btn';
-@import 'eladmin';
 
+// 主题颜色
+:root{
+  --black: #29313a;
+  --gray: #888;
+  --light: #b2b2b2;
+  --logo: #d0121b;
+  
+  --zfy-red: #d0121b;
+  --zfy-blue: #2c4198;
+  --zfy-dark: #29313a;
+  
+  --red: #d0121b;
+  --red1: #d0121b;
+  --red2: #ea5455;
+  --red0: rgba(208, 18, 27, 0.3);
+  
+
+  
+  --purple: #2c4198;
+  --purple1: #2c4198;
+  --purple2: #5864bd;
+  --purple3: #6777ef;
+  --purple0: rgba(44, 65, 152, 0.3);
+  
+ 
+  
+  --cyan: #00d3d3;
+  --cyan1: #00d3d3;
+  --cyan2: #4bded5;
+  --cyan3: #00afd7;
+  --cyan0: rgba(0, 175, 215, 0.3);
+  }
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+}
+//滚动条的宽度
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: #e4e4e4;
+  border-radius: 6px;
+}
+//滚动条的滑块
+::-webkit-scrollbar-thumb {
+  background-color: #bbb;
+  border-radius: 6px;
+}
+
+.flex{
+  display: flex;
+}
+.space-between{
+  justify-content: space-between;
+}
+.justify-content{
+  justify-content: center;
+}
+.align-items{
+  align-items: center;
+}
+.title{
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+.text-align{
+  text-align: center;
+}
+.text-left{
+  text-align: left;
+}
+.text-right{
+  text-align: right;
+}
+.fs12{
+  font-size: 12px;
+}
+
+.fs13{
+  font-size: 13px;
+}
+.fs14{
+  font-size: 14px;
+}
+.fs15{
+  font-size: 15px;
+}
+.fs16{
+  font-size: 16px;
+}
+.fs18{
+  font-size: 18px;
+}
+.fs20{
+  font-size: 20px;
+}
+.fs22{
+  font-size: 22px;
+}
+.fs24{
+  font-size: 24px;
+}
+.fs26{
+  font-size: 26px;
+}
+.fs28{
+  font-size: 28px;
+}
+.fs30{
+  font-size: 30px;
+}
+.wt100{
+  width:100px;
+}
+.mt15{
+  margin-top:15px;
 }
 
 label {
@@ -122,7 +235,7 @@ aside {
 
 //main-container全局样式
 .app-container {
-  padding: 20px 20px 45px 20px;
+  padding: 10px 10px 45px 10px;
 }
 
 .components-container {
@@ -179,4 +292,20 @@ aside {
 
 .multiselect--active {
   z-index: 1000 !important;
+}
+
+.box-shadow {
+  box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.text-success{
+  color: $color-success;
+}
+.text-primary{
+  color: $color-primary;
+}
+.text-warning{
+  color:$color-warning;
 }

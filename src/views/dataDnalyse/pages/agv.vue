@@ -4,33 +4,33 @@
       <el-col :sm="12" :md="12" :xl="12" :lg="12" :xs="12">
         <div class="czy-home__widget">
           <div class="czy-home__widget-header">
-            <i class="czy-home__widget-header-bullet"></i>
+            <i class="czy-home__widget-header-bullet" />
             <div class="czy-home__widget-title">AGV1</div>
-            <div class="u-line-spacer no-left"></div>
-            <div class="czy-home__widget-append"></div>
+            <div class="u-line-spacer no-left" />
+            <div class="czy-home__widget-append" />
           </div>
           <div class="czy-home__widget-content">
             <!-- <div ref="echarts" :style="{width:width,height:height}"></div> -->
-            <line-chart :index="acticeIndex" :seriesData="data1" />
+            <line-chart :index="acticeIndex" :series-data="data1" />
           </div>
           <div class="czy-home__widget-footer">
-            <div class="u-line-spacer"></div>
+            <div class="u-line-spacer" />
           </div>
         </div>
       </el-col>
       <el-col :sm="12" :md="12" :xl="12" :lg="12" :xs="12">
         <div class="czy-home__widget">
           <div class="czy-home__widget-header">
-            <i class="czy-home__widget-header-bullet"></i>
+            <i class="czy-home__widget-header-bullet" />
             <div class="czy-home__widget-title">AGV2</div>
-            <div class="u-line-spacer no-left"></div>
-            <div class="czy-home__widget-append"></div>
+            <div class="u-line-spacer no-left" />
+            <div class="czy-home__widget-append" />
           </div>
           <div class="czy-home__widget-content">
-            <line-chart :index="acticeIndex" :seriesData="data2" />
+            <line-chart :index="acticeIndex" :series-data="data2" />
           </div>
           <div class="czy-home__widget-footer">
-            <div class="u-line-spacer"></div>
+            <div class="u-line-spacer" />
           </div>
         </div>
       </el-col>
@@ -39,32 +39,32 @@
       <el-col :sm="12" :md="12" :xl="12" :lg="12" :xs="12">
         <div class="czy-home__widget">
           <div class="czy-home__widget-header">
-            <i class="czy-home__widget-header-bullet"></i>
+            <i class="czy-home__widget-header-bullet" />
             <div class="czy-home__widget-title">AGV3</div>
-            <div class="u-line-spacer no-left"></div>
-            <div class="czy-home__widget-append"></div>
+            <div class="u-line-spacer no-left" />
+            <div class="czy-home__widget-append" />
           </div>
           <div class="czy-home__widget-content">
-            <line-chart :index="acticeIndex" :seriesData="data3" />
+            <line-chart :index="acticeIndex" :series-data="data3" />
           </div>
           <div class="czy-home__widget-footer">
-            <div class="u-line-spacer"></div>
+            <div class="u-line-spacer" />
           </div>
         </div>
       </el-col>
       <el-col :sm="12" :md="12" :xl="12" :lg="12" :xs="12">
         <div class="czy-home__widget">
           <div class="czy-home__widget-header">
-            <i class="czy-home__widget-header-bullet"></i>
+            <i class="czy-home__widget-header-bullet" />
             <div class="czy-home__widget-title">AGV4</div>
-            <div class="u-line-spacer no-left"></div>
-            <div class="czy-home__widget-append"></div>
+            <div class="u-line-spacer no-left" />
+            <div class="czy-home__widget-append" />
           </div>
           <div class="czy-home__widget-content">
-            <line-chart :index="acticeIndex" :seriesData="data4" />
+            <line-chart :index="acticeIndex" :series-data="data4" />
           </div>
           <div class="czy-home__widget-footer">
-            <div class="u-line-spacer"></div>
+            <div class="u-line-spacer" />
           </div>
         </div>
       </el-col>
@@ -72,44 +72,41 @@
   </div>
 </template>
 <script>
-import LineChart from "@/components/Echarts/LineChart.vue";
+import LineChart from '@/components/Echarts/LineChart.vue'
 export default {
   components: { LineChart },
   data() {
     return {
-      acticeIndex: "agv",
+      acticeIndex: 'agv',
       data1: [
         {
-          name: "使用率",
-          type: "line",
+          name: '使用率',
+          type: 'line',
           data: [0.1, 0.2, 0.6, 0.8, 0.4, 0.3, 0.1, 0.9, 0.4, 0.6, 0.4, 0.8]
         }
       ],
       data2: [
         {
-          name: "使用率",
-          type: "line",
+          name: '使用率',
+          type: 'line',
           data: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]
         }
       ],
       data3: [
         {
-          name: "使用率",
-          type: "line",
+          name: '使用率',
+          type: 'line',
           data: [0.1, 0.2, 0.6, 0.8, 0.4, 0.3, 0.1, 0.9, 0.4, 0.6, 0.4, 0.8]
         }
       ],
       data4: [
         {
-          name: "使用率",
-          type: "line",
+          name: '使用率',
+          type: 'line',
           data: [0.1, 0.2, 0.6, 0.8, 0.4, 0.3, 0.1, 0.9, 0.4, 0.6, 0.4, 0.5]
         }
       ]
-    };
+    }
   }
-};
+}
 </script>
-<style>
-@import url("../style/echrts.css");
-</style>
