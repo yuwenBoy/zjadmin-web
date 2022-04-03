@@ -82,7 +82,7 @@
             </template>
           </el-table-column>
           <!--   编辑与删除   -->
-          <el-table-column label="操作" align="center" width="135" fixed="right">
+          <el-table-column label="操作" width="100px" align="left">
             <template slot-scope="scope">
               <el-link v-authority="['dept:edit']" type="info" :underline="false" @click="crud.toEdit(scope.row)">编辑</el-link>
               <el-link v-authority="['dept:delete']" type="info" :underline="false" @click="remove(scope.row)">删除</el-link>

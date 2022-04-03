@@ -24,14 +24,14 @@
                 <el-table-column type="index" label="序号" align="center" width="50" />
                 <el-table-column prop="name" label="角色名称" />
                 <el-table-column prop="code" label="角色编码" />
-                <el-table-column prop="createtime" label="创建日期">
+                <el-table-column prop="createtime" label="创建日期" width="145">
                   <template slot-scope="scope">
                     <span>{{ parseTime(scope.row.createtime) }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" show-overflow-tooltip />
                 <!--   编辑与删除   -->
-                <el-table-column label="操作" align="center" fixed="right">
+                <el-table-column label="操作" align="left" width="170">
                   <template slot-scope="scope">
                     <el-link v-authority="['role:edit']" type="info" :underline="false" @click="crud.toEdit(scope.row)">编辑</el-link>
                     <el-link v-authority="['role:delete']" type="info" :underline="false" @click="remove(scope.row)">删除</el-link>

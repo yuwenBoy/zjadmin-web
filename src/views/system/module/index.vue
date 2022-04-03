@@ -82,7 +82,7 @@
               <span>{{ parseTime(scope.row.createtime) }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="135px" align="center" fixed="right">
+          <el-table-column label="操作" width="100px" align="left">
             <template slot-scope="scope">
               <el-link v-authority="['module:edit']" type="info" :underline="false" @click="crud.toEdit(scope.row)">编辑</el-link>
               <el-link v-authority="['module:delete']" type="info" :underline="false" @click="remove(scope.row)">删除</el-link>

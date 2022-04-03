@@ -111,11 +111,11 @@
   height: 100%;
 }
 
-.el-table {
+/* .el-table {
     font-size: 17px;
     color: #fff;
     -webkit-font-smoothing: antialiased;
-}
+} */
 .el-table,
 .el-table th,
 .el-table tr {

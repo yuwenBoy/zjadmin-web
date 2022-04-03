@@ -5,11 +5,12 @@
       <el-menu
         :default-active="activeMenu"
         :collapse="isCollapse"
-        :background-color="variables.menuBg"
+        :background-color="variables.left_navBg"
         :text-color="variables.menuText"
         :unique-opened="$store.state.settings.uniqueOpened"
         :active-text-color="variables.menuActiveText"
         :collapse-transition="false"
+        style="margin-top:10px;"
         mode="vertical"
       >
         <sidebar-item v-for="(route,index) in permission_routers" :key="index" :item="route" :base-path="route.path" />
