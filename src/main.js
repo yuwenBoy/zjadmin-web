@@ -15,7 +15,11 @@ import './router/index'
 import store from './store'
 
 import './filter/index'
+import U from '@/utils/enum'
+import T from '@/utils/tips'
 
+Vue.prototype.$enum = U
+Vue.prototype.$alert = T
 
 import jxxqzhas from './components/Permission'
 

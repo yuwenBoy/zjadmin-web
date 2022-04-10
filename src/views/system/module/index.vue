@@ -162,7 +162,7 @@
             </el-row>
             <el-row :gutter="24">
               <el-col v-show="form.menuType!=1" :span="12">
-                <el-form-item label="菜单路径" :prop="form.menuType!=3?'menuPath':''">
+                <el-form-item label="菜单路径" :prop="form.menuType==2?'menuPath':''">
                   <el-input
                     v-model="form.menuPath"
                     clearable
