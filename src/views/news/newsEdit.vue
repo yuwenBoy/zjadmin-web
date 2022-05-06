@@ -1,12 +1,30 @@
 <template>
-  <el-dialog
+  <el-drawer
+    :title="crud.status.title"
     append-to-body
     :close-on-click-modal="false"
+    :visible.sync="crud.status.cu > 0"
     :before-close="crud.cancelCU"
-    :visible="crud.status.cu > 0"
-    :title="crud.status.title"
-    width="700px"
+    size="50%"
   >
+    <div
+      class="demo-drawer__footer"
+      style="text-align: center;margin-bottom:20px;"
+    >
+      <el-button
+        :loading="crud.status.cu === 2"
+        type="success"
+        size="mini"
+        icon="el-icon-circle-plus"
+        @click="crud.submitCU"
+      >提交</el-button>
+      <el-button
+        type="default"
+        size="mini"
+        icon="el-icon-remove-outline"
+        @click="crud.cancelCU"
+      >关闭</el-button>
+    </div>
     <el-form
       ref="form"
       :model="form"
@@ -16,7 +34,10 @@
     >
       <el-row :gutter="24">
         <el-col :span="12">
-          <el-form-item label="公告标题" prop="title">
+          <el-form-item
+            label="公告标题"
+            prop="title"
+          >
             <el-input
               v-model="form.title"
               clearable
@@ -25,9 +46,22 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="公告类型" prop="type">
-            <el-select v-model="form.type" style="width: 238px" placeholder="请选择" clearable>
-              <el-option v-for="(val,key) in $enum.noticeType" :key="key" :label="val" :value="key" />
+          <el-form-item
+            label="公告类型"
+            prop="type"
+          >
+            <el-select
+              v-model="form.type"
+              style="width: 208px"
+              placeholder="请选择"
+              clearable
+            >
+              <el-option
+                v-for="(val,key) in $enum.noticeTypeList"
+                :key="key"
+                :label="val.name"
+                :value="val.id"
+              />
             </el-select>
           </el-form-item>
         </el-col>
@@ -46,31 +80,26 @@
       <el-row :gutter="24">
         <el-col :span="24">
           <el-form-item label="公告内容">
-            <el-input v-model="form.content" clearable />
+            <quill-editor
+              ref="myQuillEditor"
+              v-model="form.content"
+              :options="editorOption"
+              style="height:260px;width:96%"
+              @blur="onEditorBlur($event)"
+              @focus="onEditorFocus($event)"
+              @ready="onEditorReady($event)"
+              @change="onEditorChange($event)"
+            />
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button
-        :loading="crud.status.cu === 2"
-        type="success"
-        size="mini"
-        icon="el-icon-circle-plus"
-        @click="crud.submitCU"
-      >提交</el-button>
-      <el-button
-        type="default"
-        size="mini"
-        icon="el-icon-remove-outline"
-        @click="crud.cancelCU"
-      >关闭</el-button>
-    </div>
-  </el-dialog>
+  </el-drawer>
 </template>
 
 <script>
 import { form } from '@crud/crud'
+import { quillEditor } from 'vue-quill-editor'
 const defaultForm = {
   id: null,
   title: '',
@@ -83,13 +112,26 @@ export default {
   data() {
     return {
       rules: {
-        title: [
-          { required: true, message: '请输入公告标题', trigger: 'blur' }
-        ]
-      }
+        title: [{ required: true, message: '请输入公告标题', trigger: 'blur' }]
+      },
+      editorOption: {}
+    }
+  },
+  computed: {
+    editor() {
+      return this.$refs.myQuillEditor.quill
     }
   },
   methods: {
+    onEditorBlur(quiller) {},
+    onEditorFocus(quiller) {},
+    onEditorReady(quiiler) {},
+    onEditorChange(quiiler) {}
+  },
+  // eslint-disable-next-line vue/order-in-components
+  components: {
+    // eslint-disable-next-line vue/no-unused-components
+    quillEditor
   }
 }
 </script>

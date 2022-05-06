@@ -2,11 +2,9 @@
   <div class="app-container">
     <div class="head-container">
       <div class="content-box box-shadow">
-        <!-- 公告列表 -->
         <div class="text item">
           <el-row :gutter="24">
             <el-col :span="10">
-              <el-button v-if="crud.optShow.add" class="filter-item" size="mini" round type="primary" icon="el-icon-position" @click="crud.toAdd">新增</el-button>
               <el-button class="filter-item" size="mini" round type="danger" icon="el-icon-delete" :loading="crud.delAllLoading" :disabled="crud.selections.length === 0" @click="toDelete(crud.selections)">删除</el-button>
             </el-col>
             <el-col :span="10" :push="4" style="text-align:right;">
@@ -47,16 +45,13 @@
           </el-table-column>
           <el-table-column label="操作" align="left" width="170">
             <template slot-scope="scope">
-              <el-link type="info" :underline="false" @click="crud.toEdit(scope.row)">修改</el-link>
               <el-link type="info" :underline="false" @click="remove(scope.row)">删除</el-link>
-              <el-link type="info" :underline="false">查看</el-link>
-              <el-link type="info" :underline="false" @click="apply(1,scope.row)">提交</el-link>
+              <el-link type="info" :underline="false" @click="remove(scope.row)">查看</el-link>
             </template>
           </el-table-column>
         </el-table>
         <!--分页组件-->
         <pagination />
-        <jForm />
       </div>
     </div>
   </div>
@@ -79,7 +74,7 @@ export default {
   cruds() {
     return CRUD({
       title: '公告',
-      url: '/api/news/getByCondition?status=0',
+      url: '/api/news/getByCondition?status=3',
       crudMethod: { ...crudNews }
     })
   },
@@ -90,7 +85,6 @@ export default {
   },
   methods: {
     toDelete(datas) {
-      console.log(datas)
       this.$confirm(`确认删除选中的${datas.length}条数据?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -100,18 +94,11 @@ export default {
         this.crud.doDelete(datas)
       }).catch(() => {})
     },
-    remove(obj) {
-      this.$confirm(`确认删除吗，删除后不可恢复`, '提示', {
-        confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning' }).then(() => {
-        this.crud.delAllLoading = true
-        this.crud.doDelete(obj)
-      }).catch(() => {})
-    },
     // 审核通过|审核不通过|撤销|提交审核
     apply(status, row) {
       const title = status === 1 ? '提交成功' : status === 3 ? '审核成功' : '撤销成功'
-      row.status = status
-      submitApply(JSON.stringify(row)).then((res) => {
+      submitApply(JSON.stringify({ id: row.id, status: status })).then((res) => {
+        debugger
         if (res.success) {
           Notification.success({
             title: title,

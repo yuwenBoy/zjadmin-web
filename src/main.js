@@ -8,7 +8,7 @@ import Element from 'element-ui'
 import './assets/styles/index.scss'
 import './assets/styles/element-variables.scss'
 
-import App from './App.vue' 
+import App from './App.vue'
 import router from './router/routers'
 import './assets/icons'
 import './router/index'
@@ -23,14 +23,18 @@ Vue.prototype.$alert = T
 
 import jxxqzhas from './components/Permission'
 
-
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 
 Vue.use(jxxqzhas)
 Vue.use(Element, {
-    size: Cookies.get('size') || 'small'
+  size: Cookies.get('size') || 'small'
 })
+Vue.use(VueQuillEditor)
 Vue.config.productionTip = false
-    /* eslint-disable */
+/* eslint-disable */
 new Vue({
     router,
     store,
