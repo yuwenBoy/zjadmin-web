@@ -131,7 +131,7 @@
               </el-col>
             </el-row>
             <el-row :gutter="24">
-              <el-col :span="24">
+              <el-col v-show="form.menuType!=1" :span="24">
                 <el-form-item label="菜单图标">
                   <el-popover
                     placement="bottom-start"
@@ -177,17 +177,27 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="12">
-                <el-form-item label="排序">
-                  <el-input-number
-                    v-model.number="form.index"
-                    :min="0"
-                    :max="999"
-                    controls-position="right"
-                    style="width: 178px;"
-                  />
-                </el-form-item>
-              </el-col>
+              <el-row :gutter="24">
+                <el-col :span="12">
+                  <el-form-item label="排序">
+                    <el-input-number
+                      v-model.number="form.index"
+                      :min="0"
+                      :max="999"
+                      controls-position="right"
+                      style="width: 178px;"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col v-show="form.menuType!=1" :span="12">
+                  <el-form-item label="菜单可见">
+                    <el-radio-group v-model="form.hidden">
+                      <el-radio-button label="false">是</el-radio-button>
+                      <el-radio-button label="true">否</el-radio-button>
+                    </el-radio-group>
+                  </el-form-item>
+                </el-col>
+              </el-row>
               <el-col v-show="form.menuType!=3" :span="12">
                 <el-form-item label="上级目录">
                   <treeselect
@@ -238,7 +248,8 @@ const defaultForm = {
   index: 1,
   menuPath: '',
   parentId: 0,
-  permission: ''
+  permission: '',
+  hidden: false // 菜单可见
 }
 export default {
   components: { Treeselect, IconSelect, OPTOperation },
@@ -271,7 +282,6 @@ export default {
         if (form.pid === null) {
           form.pid = 0
         }
-        debugger
         // this.getSupDepts(form.id);
       } else {
         this.menus.push({ id: 0, label: '顶级类目', children: null })

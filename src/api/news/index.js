@@ -1,4 +1,4 @@
-import { postRequest } from '@/utils/axios'
+import { getRequest, postRequest } from '@/utils/axios'
 
 export function add(params) {
   return postRequest('/api/news/add', params)
@@ -14,6 +14,10 @@ export function del(params) {
 
 export function submitApply(params) {
   return postRequest('/api/news/submitApply', params)
+}
+
+export function getNewsById(params) {
+  return getRequest('/api/news/detail', params)
 }
 
 export default { add, edit, del }

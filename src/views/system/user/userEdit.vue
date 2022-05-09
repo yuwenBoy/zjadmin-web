@@ -48,7 +48,7 @@
           <el-form-item label="手机号" prop="phone">
             <el-input
               v-model.number="form.phone"
-              max="12"
+              max="11"
               clearable
               placeholder="请输入手机号"
             />

@@ -32,7 +32,7 @@
                 <el-form-item>
                   <el-input v-model="crud.query.DepartmentName" clearable size="small" placeholder="请输入部门名称" class="filter-item round-left" />
                 </el-form-item>
-               <OPTOperation />
+                <OPTOperation />
               </el-form>
             </el-col>
           </el-row>
@@ -201,7 +201,13 @@ export default {
     // 新增与编辑前做的操作
     [CRUD.HOOK.afterToCU](crud, form) {
       this.menus = []
+      if (form.pid > 0) {
+        this.type = '0'
+      } else {
+        this.type = '1'
+      }
       if (form.id != null) {
+        // this.loadMenus()
         if (form.pid === null) {
           form.pid = 0
         }

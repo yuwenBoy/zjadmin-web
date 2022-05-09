@@ -20,7 +20,11 @@
         <el-table ref="table" :data="crud.data" stripe @selection-change="crud.selectionChangeHandler">
           <el-table-column type="selection" align="center" width="55" />
           <el-table-column type="index" label="序号" align="center" width="50" />
-          <el-table-column prop="title" label="公告标题" align="center" />
+          <el-table-column prop="title" label="公告标题" align="center" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <el-link type="primary" @click="$router.push({path:'/news/news/detail',query:{id:scope.row.id}})">{{ scope.row.title }}</el-link>
+            </template>
+          </el-table-column>
           <el-table-column prop="type" width="120" label="公告类型" align="center">
             <template slot-scope="scope">
               <span v-for="(item,index) in $enum.noticeTypeList">
@@ -46,7 +50,7 @@
           <el-table-column label="操作" align="left" width="170">
             <template slot-scope="scope">
               <el-link type="info" :underline="false" @click="remove(scope.row)">删除</el-link>
-              <el-link type="info" :underline="false" @click="remove(scope.row)">查看</el-link>
+              <el-link type="info" :underline="false" @click="$router.push({path:'/news/news/detail',query:{id:scope.row.id}})">查看</el-link>
             </template>
           </el-table-column>
         </el-table>
