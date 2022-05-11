@@ -22,7 +22,7 @@
                     <el-option label="锁定" value="1" />
                   </el-select>
                 </el-form-item>
-                <OPTOperation />
+                <OPTOperation /> 
               </el-form>
             </el-col>
           </el-row>

@@ -57,25 +57,31 @@
         >
           <el-table-column type="selection" width="55" align="center" />
           <el-table-column type="index" label="序号" align="center" width="50" />
-          <el-table-column :show-overflow-tooltip="true" label="菜单名称" prop="name" width="185" />
-          <el-table-column :show-overflow-tooltip="true" label="菜单编码" prop="code" />
+          <el-table-column :show-overflow-tooltip="true" label="菜单名称" align="center" prop="name" width="185" />
+          <el-table-column :show-overflow-tooltip="true" label="菜单编码" align="center" prop="code" />
           <el-table-column prop="icon" label="图标" align="center" width="60px">
             <template slot-scope="scope">
               <svg-icon :icon-class="scope.row.icon ? scope.row.icon : ''" />
             </template>
           </el-table-column>
-          <el-table-column label="路径" show-overflow-tooltip prop="menuPath" />
-          <el-table-column label="菜单类型" prop="menuType">
+          <el-table-column label="路径" show-overflow-tooltip  align="center" prop="menuPath" />
+          <el-table-column label="菜单类型" prop="menuType"  align="center" width="85">
             <template slot-scope="scope">
               <span v-if="scope.row.menuType==1">按钮</span>
               <span v-else-if="scope.row.menuType==2">菜单</span>
               <span v-else>目录</span>
             </template>
           </el-table-column>
-          <el-table-column prop="index" align="center" label="排序">
+          <el-table-column label="是否可见" prop="hidden" align="center" width="105">
+            <template slot-scope="scope">
+              <span v-if="scope.row.hidden==1">不可见</span>
+              <span v-else>可见</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="index" align="center" label="排序" width="85">
             <template slot-scope="scope">{{ scope.row.index }}</template>
           </el-table-column>
-          <el-table-column prop="createtime" label="创建日期" width="135">
+          <el-table-column prop="createtime" label="创建日期" width="135" align="center">
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createtime) }}</span>
             </template>

@@ -121,9 +121,10 @@
             margin-left: 20px;
           }
   
-          .el-submenu__icon-arrow {
-            display: none;
-          }
+          // .el-submenu__icon-arrow {
+          //   display: none;
+          // }
+         
         }
       }
       .el-menu-item.is-active{
@@ -171,6 +172,15 @@
 
   .el-menu--collapse .el-menu .el-submenu {
     min-width: $sideBarWidth !important;
+  }
+
+  .el-submenu__title i {
+    color:#FFFFFF !important;
+  }
+
+
+  .app-breadcrumb.el-breadcrumb .no-redirect{
+    color:#FFFFFF !important;
   }
 
   // mobile responsive
