@@ -17,11 +17,9 @@ import store from './store'
 import './filter/index'
 import U from '@/utils/enum'
 import T from '@/utils/tips'
-import utils from '@/utils/utils'
 
 Vue.prototype.$enum = U
 Vue.prototype.$alert = T
-Vue.prototype.$utils = utils
 
 import jxxqzhas from './components/Permission'
 
