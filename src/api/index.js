@@ -5,7 +5,7 @@ import { getNoAuthRequest, postNoAuthRequest, getRequest } from '@/utils/axios'
 
 // 初始化验证码
 export const initCode = (params) => {
-    return getNoAuthRequest("/common/captcha/code", params)
+    return getNoAuthRequest("/auth/authcode", params)
 }
 
 // 加载分页列表

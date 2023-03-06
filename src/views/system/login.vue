@@ -14,14 +14,14 @@
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
-      <el-form-item prop="code">
+      <!-- <el-form-item prop="code">
         <el-input v-model="loginForm.code" auto-complete="off" placeholder="验证码" style="width: 63%" @keyup.enter.native="handleLogin">
           <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
         </el-input>
         <div class="login-code">
           <img :src="codeUrl" @click="getCode">
         </div>
-      </el-form-item>
+      </el-form-item> -->
       <el-checkbox v-model="loginForm.rememberMe" style="margin:0 0 25px 0;">
         记住我
       </el-checkbox>
@@ -55,13 +55,13 @@ export default {
         username: 'zhaojian', // admin
         password: '123456', // 123456
         rememberMe: false,
-        code: '',
+        // code: '',
         uuid: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', message: '用户名不能为空' }],
         password: [{ required: true, trigger: 'blur', message: '密码不能为空' }],
-        code: [{ required: true, trigger: 'change', message: '验证码不能为空' }]
+        // code: [{ required: true, trigger: 'change', message: '验证码不能为空' }]
       },
       loading: false,
       redirect: undefined,

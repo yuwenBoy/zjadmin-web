@@ -1,11 +1,11 @@
 import axios from 'axios'
 import { Notification, Loading } from 'element-ui'
 // import router from '../router/index'
-import Cookies from 'js-cookie'
 import { getToken } from '@/utils/auth'
 import Config from '@/settings'
 // 统一请求路径前缀
-const base = '/jxxqz'
+const baseUrl = '/basic-api'
+console.log(process.env);
 
 // 超时设定
 axios.defaults.timeout = Config.timeout
@@ -129,7 +129,7 @@ axios.interceptors.response.use(response => {
 export const getRequest = (url, params) => {
   return axios({
     method: 'get',
-    url: `${base}${url}`,
+    url: `${baseUrl}${url}`,
     params: params,
     headers: {
       'Authorization': getToken()
@@ -140,7 +140,7 @@ export const getRequest = (url, params) => {
 export const postRequest = (url, params) => {
   return axios({
     method: 'post',
-    url: `${base}${url}`,
+    url: `${baseUrl}${url}`,
     data: params,
     headers: {
       'Content-Type': 'application/json;',
@@ -152,7 +152,7 @@ export const postRequest = (url, params) => {
 export const putRequest = (url, params) => {
   return axios({
     method: 'put',
-    url: `${base}${url}`,
+    url: `${baseUrl}${url}`,
     data: params,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -164,7 +164,7 @@ export const putRequest = (url, params) => {
 export const postBodyRequest = (url, params) => {
   return axios({
     method: 'post',
-    url: `${base}${url}`,
+    url: `${baseUrl}${url}`,
     data: params,
     headers: {
       'accessToken': getToken()
@@ -179,7 +179,7 @@ export const postBodyRequest = (url, params) => {
 export const getNoAuthRequest = (url, param) => {
   return axios({
     method: 'get',
-    url: `${base}${url}`,
+    url: `${baseUrl}${url}`,
     params: param
   })
 }
@@ -187,7 +187,7 @@ export const getNoAuthRequest = (url, param) => {
 export const postNoAuthRequest = (url, params) => {
   return axios({
     method: 'post',
-    url: `${base}${url}`,
+    url: `${baseUrl}${url}`,
     data: params,
     headers: {
       'Content-Type': 'application/json;'
@@ -210,4 +210,4 @@ function endLoading() {
   loading.close()
 }
 
-export const uploadUrl = `${base}/api/user/uploadAvatar`
+export const uploadUrl = `${baseUrl}/api/user/uploadAvatar`

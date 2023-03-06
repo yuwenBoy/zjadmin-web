@@ -16,7 +16,7 @@ module.exports = {
         port: 3500,
         open:true,
         proxy: {
-            '/jxxqz': {
+            '/basic-api': {
                 target: process.env.VUE_APP_URL, // 请求本地 需要jxxqz后端项目
                 ws: true
             }
