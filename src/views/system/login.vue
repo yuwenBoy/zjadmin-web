@@ -79,7 +79,7 @@ export default {
   created() {
     this.getBgImages()
     // 获取验证码
-    this.getCode()
+    // this.getCode()
     // 获取用户名密码等Cookie
     this.getCookie()
     // token 过期提示
@@ -141,7 +141,7 @@ export default {
             this.$router.push({ path: this.redirect || '/' })
           }).catch(() => {
             this.loading = false
-            this.getCode()
+            // this.getCode()
           })
         } else {
           console.log('error submit!!')

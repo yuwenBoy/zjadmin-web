@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Notification, Loading } from 'element-ui'
 // import router from '../router/index'
+import Cookies from 'js-cookie'
 import { getToken } from '@/utils/auth'
 import Config from '@/settings'
 // 统一请求路径前缀

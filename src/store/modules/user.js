@@ -31,9 +31,10 @@ const user = {
             const rememberMe = userInfo.rememberMe
             return new Promise((resolve, reject) => {
                 login(userInfo).then(res => {
+                    debugger
                     setToken(res.result.token, rememberMe)
                     commit('SET_TOKEN', res.result.token)
-                    setUserInfo(res.result.user, commit)
+                    setUserInfo({roles:[]}, commit)
                         // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
                     commit('SET_LOAD_MENUS', true)
                     resolve()

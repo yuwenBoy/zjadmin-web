@@ -1,6 +1,7 @@
 // 统一请求路径前缀在libs、axios.js中修改
 
 import { getNoAuthRequest, postNoAuthRequest, getRequest } from '@/utils/axios'
+import request from '@/utils/request'
 
 
 // 初始化验证码
@@ -19,12 +20,23 @@ export const getDepts = (url, params) => {
 
 // 登录
 export const login = (params) => {
-    return postNoAuthRequest("/auth/login", params);
+    // return postNoAuthRequest("/auth/login", params);
+
+    return request({
+        url: 'auth/login',
+        method: 'post',
+        data: params
+      })
 }
 
 // 获取用户信息
 export const getUserInfo = (params) => {
-    return getRequest("/auth/getUserInfo", params)
+    // return getRequest("/auth/getUserInfo", params)
+    return request({
+        url: 'auth/getUserInfo',
+        method: 'get',
+        data: params
+      })
 }
 
 // 退出登录
