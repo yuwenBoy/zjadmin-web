@@ -46,5 +46,9 @@ module.exports = {
     /**
      * 备案号
      */
-    caseNumber: ''
+    caseNumber: '',
+    /**
+    * 上传地址
+    */  
+    uploadUrl:'http://localhost:81/img/avatar/'
 }

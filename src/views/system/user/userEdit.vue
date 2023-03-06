@@ -1,11 +1,11 @@
 <template>
-  <el-dialog
+  <el-drawer
+    :title="crud.status.title"
     append-to-body
     :close-on-click-modal="false"
+    :visible.sync="crud.status.cu > 0"
     :before-close="crud.cancelCU"
-    :visible="crud.status.cu > 0"
-    :title="crud.status.title"
-    width="700px"
+    size="50%"
   >
     <el-form
       ref="form"
@@ -13,6 +13,7 @@
       :rules="rules"
       size="small"
       label-width="80px"
+      style="padding:20px;"
     >
       <el-row :gutter="24">
         <el-col :span="12">
@@ -113,6 +114,11 @@
             </el-radio-group>
           </el-form-item>
         </el-col>
+         <el-col :span="12">
+          <el-form-item label="用户头像">
+            <ElUpload :url="avatar" @back="getAvatar"/>
+          </el-form-item>
+        </el-col>
       </el-row>
       <el-row :gutter="24">
         <el-col :span="24">
@@ -122,7 +128,8 @@
         </el-col>
       </el-row>
     </el-form>
-    <div slot="footer" class="dialog-footer">
+    <div class="demo-drawer__footer"
+      style="text-align: center;margin-bottom:20px;">
       <el-button
         :loading="crud.status.cu === 2"
         type="success"
@@ -136,15 +143,17 @@
         icon="el-icon-remove-outline"
         @click="crud.cancelCU"
       >关闭</el-button>
+      
     </div>
-  </el-dialog>
+  </el-drawer>
 </template>
 
 <script>
-import { form } from '@crud/crud'
+import CRUD, { presenter, form } from '@crud/crud'
 import { isvalidPhone } from '@/utils/validate'
 import Department from '@/components/Department/index.vue'
 import { getPositionList } from '@/api/system/position'
+import ElUpload from '@/components/el-upload/index.vue'
 const defaultForm = {
   id: null,
   userName: '',
@@ -157,10 +166,11 @@ const defaultForm = {
   isdisabled: 0,
   dept: { id: '' },
   position: { id: '' },
-  birthday: ''
+  birthday: '',
+  avatar:''
 }
 export default {
-  components: { Department },
+  components: { Department,ElUpload },
   mixins: [form(defaultForm)],
   data() {
     // 自定义验证
@@ -199,7 +209,8 @@ export default {
       placeholder: '请选择部门',
       isLazy: false,
       width: '238',
-      positionList: []
+      positionList: [],
+      avatar:''
     }
   },
   mounted() {
@@ -212,12 +223,22 @@ export default {
       .catch((error) => {
         reject(error)
       })
+
   },
   methods: {
     updateLyDeptId(data) {
       // 父组件获取子组件的数据
       this.dept.id = data
-    }
+    },
+    getAvatar(val){
+      this.avatar = val
+      this.form.avatar = val
+      console.log(this.avatar)
+    },
+    // 新增与编辑前做的操作
+    [CRUD.HOOK.afterToCU](crud, form) {
+     this.avatar = form.avatar
+    },
   }
 }
 </script>

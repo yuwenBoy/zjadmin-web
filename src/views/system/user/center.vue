@@ -18,7 +18,7 @@
               <div class="el-upload">
                 <img
                   title="点击上传头像"
-                  :src="user.avatar == '' || null ? Avatar : fileName"
+                  :src="!user.avatar ? Avatar : fileName"
                   class="avatar"
                   @click="toggleShow"
                 />
@@ -100,7 +100,8 @@ import store from "@/store";
 import Avatar from "@/assets/images/avatar.png";
 import { getToken } from "@/utils/auth";
 import myUpload from "vue-image-crop-upload";
-import { uploadUrl } from "@/utils/axios";
+import { updateUploadUrl } from "@/api/index";
+import Config from '@/settings'
 export default {
   name: "Center",
   components: {
@@ -114,13 +115,13 @@ export default {
         Authorization: getToken(),
       },
       form: {},
-      uploadApi: uploadUrl,
+      uploadApi: updateUploadUrl,
       fileName:null
     };
   },
 
   computed: {
-    ...mapGetters(["user", "uploadAvatarApi", "baseApi"]),
+    ...mapGetters(["user"]),
   },
   created() {
     this.form = {
@@ -132,7 +133,8 @@ export default {
       departmentName: this.user.dept.departmentName,
     };
     if(this.user.avatar){
-        this.fileName=require("../../../assets/avatar/" + this.user.avatar);
+      console.log(Config)
+        this.fileName='http://localhost:81/img/avatar/'+ this.user.avatar
     }
     store.dispatch("GetInfo").then(() => {});
   },

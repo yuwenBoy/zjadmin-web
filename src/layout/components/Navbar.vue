@@ -60,7 +60,7 @@ import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import Search from '@/components/HeaderSearch'
 import Avatar from '@/assets/images/avatar.png'
-
+import Config from '@/settings'
 export default {
   name: 'Navbar',
   components: {
@@ -78,7 +78,8 @@ export default {
   },
   created() {
     if (this.user.avatar) {
-      this.fileName = require('../../assets/avatar/' + this.user.avatar)
+      console.log(this.user.avatar)
+      this.fileName = 'http://localhost:81/img/avatar/'+ this.user.avatar
     }
     store.dispatch('GetInfo').then(() => {})
   },

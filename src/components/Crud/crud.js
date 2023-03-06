@@ -1,5 +1,5 @@
-import { initData } from '@/api/index'
-import { parseTime } from '@/utils/index'
+import { initData,download  } from '@/api/index'
+import { parseTime,downloadFile } from '@/utils/index'
 import Vue from 'vue'
 
 /**
@@ -333,13 +333,14 @@ function CRUD(options) {
          * 通用导出
          */
         doExport() {
-            // crud.downloadLoading = true
-            // download(crud.url + '/download', crud.getQueryParams()).then(result => {
-            //     downloadFile(result, crud.title + '数据', 'xlsx')
-            //     crud.downloadLoading = false
-            // }).catch(() => {
-            //     crud.downloadLoading = false
-            // })
+            debugger
+             crud.downloadLoading = true
+            download(crud.url + '/download', crud.getQueryParams()).then(result => {
+               downloadFile(result, crud.title + '数据', 'xlsx')
+            crud.downloadLoading = false
+         }).catch(() => {
+                 crud.downloadLoading = false
+         })
         },
         /**
          * 获取查询参数

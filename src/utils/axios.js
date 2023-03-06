@@ -209,5 +209,3 @@ function startLoading() {
 function endLoading() {
   loading.close()
 }
-
-export const uploadUrl = `${base}/api/user/uploadAvatar`
