@@ -11,7 +11,12 @@ export const initCode = (params) => {
 
 // 加载分页列表
 export const initData = (url, params) => {
-    return getRequest(url, params)
+    //return getRequest(url, params)
+    return request({
+        url: url,
+        method: 'post',
+        data: params
+      })
 }
 
 export const getDepts = (url, params) => {

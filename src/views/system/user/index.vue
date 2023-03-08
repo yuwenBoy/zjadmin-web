@@ -30,7 +30,7 @@
         <el-table ref="table" :data="crud.data" stripe @selection-change="crud.selectionChangeHandler">
           <el-table-column type="selection" :selectable="checkboxT" align="center" width="55" />
           <el-table-column type="index" label="序号" align="center" width="50" />
-          <el-table-column prop="userName" width="120" label="用户名" align="center" />
+          <el-table-column prop="username" width="120" label="用户名" align="center" />
           <el-table-column prop="isdisabled" label="状态" align="center">
             <template slot-scope="scope">
               <span v-if="scope.row.isdisabled == 0" class="text-success">正常</span>
@@ -61,11 +61,11 @@
               <span>{{ parseTime(scope.row.birthday) | fmt_age }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="dept.departmentName" width="150" align="center" show-overflow-tooltip label="部门/职位">
+          <!-- <el-table-column prop="dept.departmentName" width="150" align="center" show-overflow-tooltip label="部门/职位">
             <template slot-scope="scope">
               {{ scope.row.dept.departmentName }}<span>/</span>{{ scope.row.position.name }}
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column prop="" label="手机" width="120" align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.phone | fmt_phone }}</span>
@@ -113,11 +113,9 @@ import jForm from './userEdit'
 import { mapGetters } from 'vuex'
 import { Notification } from 'element-ui'
 import Avatar from '@/assets/images/avatar.png'
-import ToolsOpen from '@/components/ToolsOpen/index.vue'
 export default {
   components: {
     OPTOperation,
-    ToolsOpen,
     Department,
     pagination,
     jForm
@@ -125,7 +123,7 @@ export default {
   cruds() {
     return CRUD({
       title: '用户',
-      url: '/api/user/getByCondition',
+      url: '/user/getByCondition',
       crudMethod: { ...crudUser }
     })
   },

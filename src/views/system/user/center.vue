@@ -134,14 +134,14 @@ export default {
     if(this.user.avatar){
         this.fileName=require("../../../assets/avatar/" + this.user.avatar);
     }
-    store.dispatch("GetInfo").then(() => {});
+    // store.dispatch("GetInfo").then(() => {});
   },
   methods: {
     toggleShow() {
       this.show = !this.show;
     },
     cropUploadSuccess(jsonData, field) {
-      store.dispatch("GetInfo").then(() => {});
+      // store.dispatch("GetInfo").then(() => {});
     },
     //上传失败回调
     cropUploadFail(status, field) {

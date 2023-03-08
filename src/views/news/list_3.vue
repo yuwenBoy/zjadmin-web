@@ -102,7 +102,6 @@ export default {
     apply(status, row) {
       const title = status === 1 ? '提交成功' : status === 3 ? '审核成功' : '撤销成功'
       submitApply(JSON.stringify({ id: row.id, status: status })).then((res) => {
-        debugger
         if (res.success) {
           Notification.success({
             title: title,

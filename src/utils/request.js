@@ -31,7 +31,6 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const code = response.data.code
-    debugger
     if (code != 0) {
       Notification.error({
         title: response.data.message

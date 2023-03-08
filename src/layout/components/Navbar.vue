@@ -11,10 +11,10 @@
 
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
-        <router-link to="/dataDnalyse" target="_blank" class="data">
+        <!-- <router-link to="/dataDnalyse" target="_blank" class="data">
           数据监控
-        </router-link>
-        <search id="header-search" class="right-menu-item" />
+        </router-link> -->
+        <!-- <search id="header-search" class="right-menu-item" /> -->
 
         <el-tooltip content="全屏缩放" effect="dark" placement="bottom">
           <screenfull id="screenfull" class="right-menu-item hover-effect" />
@@ -31,7 +31,7 @@
       >
         <div class="avatar-wrapper">
           <img
-            :src="user.avatar == '' || null ? Avatar : fileName"
+            :src="!user.avatar? Avatar : fileName"
             class="user-avatar"
           >
           <i class="el-icon-caret-bottom" />
