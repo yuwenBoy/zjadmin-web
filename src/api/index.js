@@ -24,9 +24,7 @@ export const getDepts = (url, params) => {
 }
 
 // 登录
-export const login = (params) => {
-    // return postNoAuthRequest("/auth/login", params);
-
+export const login = (params) => { 
     return request({
         url: 'auth/login',
         method: 'post',

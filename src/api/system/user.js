@@ -1,19 +1,36 @@
-import { postRequest } from '@/utils/axios'
+import request from "@/utils/request";
 
 export function add(params) {
-    return postRequest("/api/user/add", params)
+  return request({
+    url: "/user/add",
+    method: "post",
+    data: params
+  });
 }
 
 export function edit(params) {
-    return postRequest("/api/user/edit", params)
+  return request({
+    url: "/user/edit",
+    method: "post",
+    data: params
+  });
 }
 
 export function del(params) {
-    return postRequest("/api/user/delete", params)
+  return request({
+    url: "/user/delete",
+    method: "post",
+    data: params
+  });
 }
 
 export function setRoles(params) {
-    return postRequest("/api/user/setRoles", params)
+  // return postRequest("/user/setRoles", params)
+  return request({
+    url: "/user/setRoles",
+    method: "post",
+    data: params
+  });
 }
 
-export default { add, edit, del }
+export default { add, edit, del };

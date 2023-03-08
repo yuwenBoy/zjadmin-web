@@ -1,4 +1,13 @@
 import { getRequest, postRequest } from '@/utils/axios'
+import request from '@/utils/request';
+
+export function getDepts(params) {
+    return request({
+        url: '/dept/getDeptAll',
+        method: "get",
+        params
+    })
+}
 
 export function getDepartmentAll(params) {
     return getRequest("/api/department/getDepartmentAll", params)
@@ -28,4 +37,4 @@ export const getDeptTree = (params) => {
     return getRequest('/api/department/getDeptTree', params)
 }
 
-export default { getModulePager, add, edit, del, getDeptTree, getDepartmentAll }
+export default { getModulePager, add, edit, del, getDeptTree, getDepartmentAll,getDepts }

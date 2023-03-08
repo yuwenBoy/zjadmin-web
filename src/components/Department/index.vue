@@ -90,7 +90,7 @@ export default {
   },
   mounted() {
     if (this.isLazy === false) {
-      this.loadDeptData()
+      //this.loadDeptData()
     }
     // 点击文本就让它自动点击前面的input就可以触发选择。但是因组件阻止了冒泡，暂时想不到好方法来触发。
     setInterval(function() {

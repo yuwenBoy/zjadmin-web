@@ -203,15 +203,15 @@ export default {
     }
   },
   mounted() {
-    getPositionList()
-      .then((res) => {
-        if (res.success) {
-          this.positionList = res.result
-        }
-      })
-      .catch((error) => {
-        reject(error)
-      })
+    // getPositionList()
+    //   .then((res) => {
+    //     if (res.success) {
+    //       this.positionList = res.result
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     reject(error)
+    //   })
   },
   methods: {
     updateLyDeptId(data) {
