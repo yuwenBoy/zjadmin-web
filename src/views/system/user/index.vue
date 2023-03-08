@@ -25,38 +25,12 @@
           <div class="content-box box-shadow">
             <div class="text item">
               <el-row :gutter="24">
-                <el-col :xs="9" :sm="8" :md="6" :lg="4" :xl="2">
-                  <el-button
-                    v-if="crud.optShow.add"
-                    v-authority="['user:add']"
-                    class="filter-item"
-                    size="mini"
-                    round
-                    type="primary"
-                    icon="el-icon-plus"
-                    @click="crud.toAdd"
-                    >新增</el-button
-                  >
-                  <el-button
-                    v-authority="['user:delete']"
-                    class="filter-item"
-                    size="mini"
-                    round
-                    type="danger"
-                    icon="el-icon-delete"
-                    :loading="crud.delAllLoading"
-                    :disabled="crud.selections.length === 0"
-                    @click="toDelete(crud.selections)"
-                    >删除</el-button>
-                </el-col>
                 <el-col
                   :xs="15"
                   :sm="14"
                   :md="18"
-                  :lg="16"
+                  :lg="18"
                   :xl="1"
-                  :push="4"
-                  style="text-align: right"
                 >
                   <el-form label-width="0px" inline>
                     <el-form-item>
@@ -91,6 +65,30 @@
                     </el-form-item>
                     <OPTOperation />
                   </el-form>
+                </el-col>
+                 <el-col :xs="9" :sm="8" :md="6" :lg="6" :xl="2"  style="text-align: right">
+                  <el-button
+                    v-if="crud.optShow.add"
+                    v-authority="['user:add']"
+                    class="filter-item"
+                    size="mini"
+                    round
+                    type="primary"
+                    icon="el-icon-plus"
+                    @click="crud.toAdd"
+                    >新增</el-button
+                  >
+                  <el-button
+                    v-authority="['user:delete']"
+                    class="filter-item"
+                    size="mini"
+                    round
+                    type="danger"
+                    icon="el-icon-delete"
+                    :loading="crud.delAllLoading"
+                    :disabled="crud.selections.length === 0"
+                    @click="toDelete(crud.selections)"
+                    >删除</el-button>
                 </el-col>
               </el-row>
             </div>
