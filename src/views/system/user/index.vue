@@ -115,21 +115,15 @@
               <el-table-column
                 prop="username"
                 width="120"
-                label="用户名"
+                label="头像"
                 align="center"
               />
-              <el-table-column prop="isdisabled" label="状态" align="center">
-                <template slot-scope="scope">
-                  <span v-if="scope.row.isdisabled == 0" class="text-success"
-                    >正常</span
-                  >
-                  <span
-                    v-else-if="scope.row.isdisabled == 1"
-                    class="text-warning"
-                    >锁定</span
-                  >
-                </template>
-              </el-table-column>
+              <el-table-column
+                prop="username"
+                width="120"
+                label="账号"
+                align="center"
+              />
               <el-table-column prop="cname" label="姓名" align="center" />
               <el-table-column
                 prop="sex"
@@ -137,6 +131,8 @@
                 width="50"
                 align="center"
               >
+            
+              
                 <template slot-scope="scope">
                   <span v-if="scope.row.sex == 1" class="text-primary">男</span>
                   <span v-else-if="scope.row.sex == 2" class="text-success"
@@ -156,19 +152,34 @@
               </div>
             </template>
           </el-table-column> -->
-              <el-table-column prop="birthday" label="年龄" align="center">
+              <!-- <el-table-column prop="birthday" label="年龄" align="center">
                 <template slot-scope="scope">
                   <span>{{ parseTime(scope.row.birthday) | fmt_age }}</span>
                 </template>
-              </el-table-column>
+              </el-table-column> -->
               <!-- <el-table-column prop="dept.departmentName" width="150" align="center" show-overflow-tooltip label="部门/职位">
             <template slot-scope="scope">
               {{ scope.row.dept.departmentName }}<span>/</span>{{ scope.row.position.name }}
             </template>
           </el-table-column> -->
-              <el-table-column prop="" label="手机" width="120" align="center">
+              <el-table-column prop="" label="手机号" width="120" align="center">
+       
                 <template slot-scope="scope">
                   <span>{{ scope.row.phone | fmt_phone }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="" label="机构" width="120" align="center" />
+             <el-table-column prop="" label="职位" width="120" align="center" />
+             <el-table-column prop="isdisabled" label="状态" align="center">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.isdisabled == 0" class="text-success"
+                    >正常</span
+                  >
+                  <span
+                    v-else-if="scope.row.isdisabled == 1"
+                    class="text-warning"
+                    >锁定</span
+                  >
                 </template>
               </el-table-column>
               <el-table-column
@@ -255,7 +266,7 @@
 <script>
 import crudUser from "@/api/system/user";
 import { setRoles } from "@/api/system/user";
-import { getDepts } from '@/api/system/department'
+import { getDepts } from "@/api/system/department";
 import { getRoleAllList, getRoleIdsByUserId } from "@/api/system/role";
 // import Department from "@/components/Department/index.vue";
 import CRUD, { presenter } from "@crud/crud";
@@ -291,7 +302,8 @@ export default {
       userId: 0,
       rolesIds: [],
       Avatar: Avatar,
-      deptDatas:[],  defaultProps: { children: 'children', label: 'name', isLeaf: 'leaf' },
+      deptDatas: [],
+      defaultProps: { children: "children", label: "name", isLeaf: "leaf" },
     };
   },
   created() {
@@ -414,36 +426,36 @@ export default {
           .catch(() => {});
       }
     },
-      // 获取左侧部门数据
-      getDeptDatas(node, resolve) {
-        debugger
-      const sort = 'id,desc'
-      const params = { sort: sort }
-      if (typeof node !== 'object') {
+    // 获取左侧部门数据
+    getDeptDatas(node, resolve) {
+      debugger;
+      const sort = "id,desc";
+      const params = { sort: sort };
+      if (typeof node !== "object") {
         if (node) {
-          params['name'] = node
+          params["name"] = node;
         }
       } else if (node.level !== 0) {
-        params['pid'] = node.data.id
+        params["pid"] = node.data.id;
       }
       setTimeout(() => {
-        getDepts(params).then(res => {
+        getDepts(params).then((res) => {
           if (resolve) {
-            resolve(res.result)
+            resolve(res.result);
           } else {
-            this.deptDatas = res.result
+            this.deptDatas = res.result;
           }
-        })
-      }, 100)
+        });
+      }, 100);
     },
     // 切换部门
     handleNodeClick(data) {
       if (data.pid === 0) {
-        this.query.deptId = null
+        this.query.deptId = null;
       } else {
-        this.query.deptId = data.id
+        this.query.deptId = data.id;
       }
-      this.crud.toQuery()
+      this.crud.toQuery();
     },
   },
 };
