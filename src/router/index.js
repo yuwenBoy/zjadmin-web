@@ -8,6 +8,7 @@ import { filterAsyncRouter } from '@/store/modules/permission'
 import Config from '@/settings'
 NProgress.configure({ showSpinner: false })
 const whiteList = ['/login']
+console.log(123)
 router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     document.title = to.meta.title + '-' + Config.title

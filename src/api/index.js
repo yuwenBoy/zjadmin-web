@@ -41,7 +41,7 @@ export const getUserInfo = (params) => {
 
 // 退出登录
 export const logout = (params) => {
-    return getRequest("/auth/logout", params)
+    return request({url:'auth/logout',method:'get',data:params})
 }
 
 // 上传用户头像

@@ -1,5 +1,5 @@
 import { getRequest, postRequest } from '@/utils/axios'
-
+import request from '@/utils/request'
 
 export function add(params) {
     return postRequest("/api/module/add", params)
@@ -15,7 +15,12 @@ export function del(params) {
 
 // 获取菜单
 export const getModuleAll = (params) => {
-    return getRequest("/api/module/buildAll", params)
+    return request({
+        url: '/module/getMenuAll',
+        method: 'get',
+        data: params
+      })
+    // return getRequest("/api/module/getMenuAll", params);
 }
 
 export const getModulePager = (params) => {

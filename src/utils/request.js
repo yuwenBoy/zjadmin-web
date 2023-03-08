@@ -30,11 +30,11 @@ service.interceptors.request.use(
 // response 拦截器
 service.interceptors.response.use(
   response => {
-    const code = response.status
+    const code = response.data.code
     debugger
-    if (code < 200 || code > 300) {
+    if (code != 0) {
       Notification.error({
-        title: response.message
+        title: response.data.message
       })
       return Promise.reject('error')
     } else {
@@ -44,7 +44,7 @@ service.interceptors.response.use(
   error => {
     let code = 0
     try {
-      code = error.response.data.status
+      code = error.response.data.code
     } catch (e) {
       if (error.toString().indexOf('Error: timeout') !== -1) {
         Notification.error({

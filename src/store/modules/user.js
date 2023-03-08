@@ -34,7 +34,7 @@ const user = {
                     debugger
                     setToken(res.result.token, rememberMe)
                     commit('SET_TOKEN', res.result.token)
-                    setUserInfo({roles:[]}, commit)
+                    // setUserInfo({roles:[]}, commit)
                         // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
                     commit('SET_LOAD_MENUS', true)
                     resolve()

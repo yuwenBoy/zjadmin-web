@@ -122,9 +122,9 @@ export default {
           code: this.loginForm.code,
           uuid: this.loginForm.uuid
         }
-        if (user.password !== this.cookiePass) {
-          user.password = encrypt(user.password)
-        }
+        // if (user.password !== this.cookiePass) {
+        //   user.password = encrypt(user.password)
+        // }
         if (valid) {
           this.loading = true
           if (user.rememberMe) {
@@ -139,7 +139,8 @@ export default {
           this.$store.dispatch('Login', user).then(() => {
             this.loading = false
             this.$router.push({ path: this.redirect || '/' })
-          }).catch(() => {
+          }).catch((error) => {
+            console.log(error)
             this.loading = false
             // this.getCode()
           })
