@@ -166,8 +166,8 @@
                   <span>{{ scope.row.phone | fmt_phone }}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="" label="机构" width="120" align="center" />
-             <el-table-column prop="" label="职位" width="120" align="center" />
+              <el-table-column prop="dept_id.department_name" label="机构" width="120" align="center" />
+             <el-table-column prop="position_id.name" label="职位" width="120" align="center" />
              <el-table-column prop="isdisabled" label="状态" align="center">
                 <template slot-scope="scope">
                   <span v-if="scope.row.isdisabled == 0" class="text-success"
