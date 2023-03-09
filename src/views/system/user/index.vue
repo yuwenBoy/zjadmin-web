@@ -11,7 +11,7 @@
             class="filter-item"
           />
         </div>
-        <el-tree
+        <el-tree style="height:calc(100vh - 200px)"
           :data="deptDatas"
           :load="getDeptDatas"
           :props="defaultProps"
@@ -54,13 +54,13 @@
                     </el-form-item> -->
                     <el-form-item>
                       <el-select
-                        v-model="crud.query.isdisabled"
+                        v-model="crud.query.disabled"
                         clearable
                         placeholder="用户状态"
                         class="wt100"
                       >
-                        <el-option label="启用" value="0" />
-                        <el-option label="锁定" value="1" />
+                        <el-option label="启用" value="1" />
+                        <el-option label="锁定" value="2" />
                       </el-select>
                     </el-form-item>
                     <OPTOperation />
@@ -129,8 +129,6 @@
                 width="50"
                 align="center"
               >
-            
-              
                 <template slot-scope="scope">
                   <span v-if="scope.row.sex == 1" class="text-primary">男</span>
                   <span v-else-if="scope.row.sex == 2" class="text-success"
@@ -168,13 +166,13 @@
               </el-table-column>
               <el-table-column prop="dept_id.department_name" label="机构" width="120" align="center" />
              <el-table-column prop="position_id.name" label="职位" width="120" align="center" />
-             <el-table-column prop="isdisabled" label="状态" align="center">
+             <el-table-column prop="disabled" label="状态" align="center">
                 <template slot-scope="scope">
-                  <span v-if="scope.row.isdisabled == 0" class="text-success"
+                  <span v-if="scope.row.disabled == 1" class="text-success"
                     >正常</span
                   >
                   <span
-                    v-else-if="scope.row.isdisabled == 1"
+                    v-else-if="scope.row.disabled == 2"
                     class="text-warning"
                     >锁定</span
                   >
@@ -426,7 +424,6 @@ export default {
     },
     // 获取左侧部门数据
     getDeptDatas(node, resolve) {
-      debugger;
       const sort = "id,desc";
       const params = { sort: sort };
       if (typeof node !== "object") {
@@ -449,9 +446,9 @@ export default {
     // 切换部门
     handleNodeClick(data) {
       if (data.pid === 0) {
-        this.query.deptId = null;
+        this.crud.query.deptId = null;
       } else {
-        this.query.deptId = data.id;
+        this.crud.query.deptId =data.id;
       }
       this.crud.toQuery();
     },
