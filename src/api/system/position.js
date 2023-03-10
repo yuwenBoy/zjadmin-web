@@ -1,5 +1,8 @@
 import { getRequest, postRequest } from '@/utils/axios'
 
+
+import request from '@/utils/request';
+
 export function add(params) {
     return postRequest("/api/position/add", params)
 }
@@ -17,9 +20,13 @@ export function del(params) {
  *获取职位列表 
  * @param {*} params 
  */
-export function getPositionList(params) {
-    return getRequest("/api/position/getPositionList", params)
+export function getPositionByDeptId(params) {
+    return request({
+        url: '/position/getPositionByDeptId',
+        method: "get",
+        params
+    })
 }
 
 
-export default { add, edit, del }
+export default { add, edit, del,getPositionByDeptId }

@@ -178,16 +178,11 @@
                   >
                 </template>
               </el-table-column>
-              <el-table-column
-                prop="createtime"
+              <!-- <el-table-column
+                prop="create_time"
                 width="145"
                 label="创建时间"
-                align="center"
-              >
-                <template slot-scope="scope">
-                  <span>{{ parseTime(scope.row.createtime) }}</span>
-                </template>
-              </el-table-column>
+                align="center" /> -->
               <!--   编辑与删除   -->
               <el-table-column label="操作" align="left" width="170">
                 <template slot-scope="scope">
@@ -328,7 +323,7 @@ export default {
     },
     remove(obj) {
       this.$confirm(
-        `确认删除账号【${obj.userName}】吗，删除后不可恢复`,
+        `确认删除账号【${obj.username}】吗，删除后不可恢复`,
         "提示",
         {
           confirmButtonText: "确定",
