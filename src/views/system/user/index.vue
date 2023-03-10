@@ -13,10 +13,8 @@
         </div>
         <el-tree style="height:calc(100vh - 200px)"
           :data="deptDatas"
-          :load="getDeptDatas"
+          default-expand-all
           :props="defaultProps"
-          :expand-on-click-node="false"
-          lazy
           @node-click="handleNodeClick"
         />
       </el-col>
@@ -257,9 +255,9 @@
 <script>
 import crudUser from "@/api/system/user";
 import { setRoles } from "@/api/system/user";
-import { getDepts } from "@/api/system/department";
+import { getDeptTree } from "@/api/system/department";
 import { getRoleAllList, getRoleIdsByUserId } from "@/api/system/role";
-// import Department from "@/components/Department/index.vue";
+// import Department from "@/components/DeptTree/DeptTree.vue";
 import CRUD, { presenter } from "@crud/crud";
 import OPTOperation from "@crud/OPT.operation";
 import pagination from "@crud/Pagination";
@@ -294,21 +292,50 @@ export default {
       rolesIds: [],
       Avatar: Avatar,
       deptDatas: [],
-      defaultProps: { children: "children", label: "name", isLeaf: "leaf" },
+      deptEntity:[],
+      defaultProps: { children: "children", label: "label", isLeaf: "leaf" },
     };
   },
   created() {
     this.crud.msg.add = "新增成功，默认密码：jxxqz123";
+    
   },
   computed: {
     ...mapGetters(["user"]),
   },
+  mounted(){
+    this.getDeptTree();
+  },
   methods: {
-    // 父组件获取子组件的数据
-    // updateLyDeptId(data) {
-    //   this.crud.query.departmentId = data;
-    //   this.crud.toQuery();
-    // },
+    // 查询全部机构
+    async getDeptTree() {
+      let response_data = {};
+      response_data = await getDeptTree();
+      // this.deptEntity = response_data.result;
+      this.deptDatas = this.arrayToTree(response_data.result,0);
+      console.log(this.defaultProps)
+    },
+       /**
+     * 处理机构展示方式
+     */
+     arrayToTree(arr, pid) {
+      return arr.reduce((res, current) => {
+        if (current["parent_id"] === pid) {
+          let obj = { name: "", label: "" };
+          obj.name = current["department_name"];
+          obj.label = current["department_name"];
+          obj.id = current["id"];
+          obj.pid = current["parent_id"];
+          obj.children = this.arrayToTree(arr, current["id"]);
+          if (arr.filter((t) => t.parent_id == current["id"]).length == 0) {
+            obj.children = undefined;
+          }
+          return res.concat(obj);
+        }
+        this.deptDatas = res;
+        return res;
+      }, []);
+    },
     toDelete(datas) {
       this.$confirm(`确认删除选中的${datas.length}条数据?`, "提示", {
         confirmButtonText: "确定",
@@ -417,27 +444,27 @@ export default {
           .catch(() => {});
       }
     },
-    // 获取左侧部门数据
-    getDeptDatas(node, resolve) {
-      const sort = "id,desc";
-      const params = { sort: sort };
-      if (typeof node !== "object") {
-        if (node) {
-          params["name"] = node;
-        }
-      } else if (node.level !== 0) {
-        params["pid"] = node.data.id;
-      }
-      setTimeout(() => {
-        getDepts(params).then((res) => {
-          if (resolve) {
-            resolve(res.result);
-          } else {
-            this.deptDatas = res.result;
-          }
-        });
-      }, 100);
-    },
+    // // 获取左侧部门数据
+    // getDeptDatas(node, resolve) {
+    //   const sort = "id,desc";
+    //   const params = { sort: sort };
+    //   if (typeof node !== "object") {
+    //     if (node) {
+    //       params["name"] = node;
+    //     }
+    //   } else if (node.level !== 0) {
+    //     params["pid"] = node.data.id;
+    //   }
+    //   setTimeout(() => {
+    //     getDepts(params).then((res) => {
+    //       if (resolve) {
+    //         resolve(res.result);
+    //       } else {
+    //         this.deptDatas = res.result;
+    //       }
+    //     });
+    //   }, 100);
+    // },
     // 切换部门
     handleNodeClick(data) {
       if (data.pid === 0) {

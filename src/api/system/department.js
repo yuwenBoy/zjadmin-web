@@ -2,13 +2,13 @@ import { getRequest, postRequest } from '@/utils/axios'
 import request from '@/utils/request';
 
 // 懒加载获取机构
-export function getDepts(params) {
-    return request({
-        url: '/dept/getDeptAll',
-        method: "get",
-        params
-    })
-}
+// export function getDepts(params) {
+//     return request({
+//         url: '/dept/getDeptAll',
+//         method: "get",
+//         params
+//     })
+// }
 
 // 获取全部机构
 export function getDeptTree(params){
@@ -47,4 +47,10 @@ export function del(params) {
 //     return getRequest('/api/department/getDeptTree', params)
 // }
 
-export default { getModulePager, add, edit, del, getDepartmentAll,getDepts,getDeptTree }
+export default {
+     getModulePager, 
+     add, edit, del,
+      getDepartmentAll,
+    //   getDepts,
+      getDeptTree,
+     }
