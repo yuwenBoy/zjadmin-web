@@ -9,6 +9,7 @@
   > -->
   <el-drawer
     append-to-body
+    :wrapperClosable="false"
     :close-on-click-modal="false"
     :before-close="crud.cancelCU"
     direction="rtl"
@@ -70,7 +71,7 @@
           <el-form-item label="手机号" prop="phone">
             <el-input
               v-model.number="form.phone"
-              max="11"
+              maxlength="11"
               clearable
               placeholder="请输入手机号"
             />
@@ -98,20 +99,20 @@
       </el-row>
       <el-row :gutter="24">
         <el-col :span="8">
-          <el-form-item label="选择机构" prop="dept.id">
-            <treeselect
-              v-model="form.dept.id"
-              :options="deptList"
-              :load-options="loadMenus"
-              placeholder="选择机构"
-              @select="entityTreeSelected"
+          <el-form-item label="选择机构" prop="dept_id.id" ref="slotTypeRef">
+            <tree-select
+              :data="deptEntity"
+              :value = "form.dept_id.id"
+              v-model="form.dept_id.id"
+              @select="selectTree"
+              @clear = "clearTree"
             />
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="职位" prop="position.id">
+          <el-form-item label="职位" prop="position_id.id">
             <el-select
-              v-model="form.position.id"
+              v-model="form.position_id.id"
               placeholder="请选择"
               clearable
             >
@@ -126,7 +127,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <div class="demo-drawer__footer" style="text-align: right;">
+    <div class="demo-drawer__footer" style="text-align: right">
       <el-button
         :loading="crud.status.cu === 2"
         type="success"
@@ -151,9 +152,7 @@
 import { form } from "@crud/crud";
 import { isvalidPhone } from "@/utils/validate";
 import CRUD, { presenter } from "@crud/crud";
-import Treeselect from "@riophae/vue-treeselect";
-import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import { LOAD_CHILDREN_OPTIONS } from "@riophae/vue-treeselect";
+import treeSelect from "@/components/tree-select/tree-select.vue";
 import { getDeptTree } from "@/api/system/department";
 import { getPositionByDeptId } from "@/api/system/position";
 const defaultForm = {
@@ -165,13 +164,17 @@ const defaultForm = {
   phone: "",
   address: "",
   sex: "1",
-  disabled: 0,
-  dept: { id: "" },
-  position: { id: "" },
+  // disabled: 0,
+  dept_id:{
+    id:0
+  },
+  position_id: {
+    id:''
+  },
   birthday: "",
 };
 export default {
-  components: { Treeselect },
+  components: { treeSelect },
   mixins: [form(defaultForm)],
   data() {
     // 自定义验证
@@ -195,12 +198,10 @@ export default {
           { required: true, message: "请输入登录账号", trigger: "blur" },
         ],
         cname: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-        "position.id": [
+        'position_id.id': [
           { required: true, message: "请选择职位", trigger: "change" },
         ],
-        "dept.id": [
-          { required: true, message: "请选择机构", trigger: "change" },
-        ],
+        'dept_id.id': [{ required: true, message: "请选择机构", trigger: "change" }],
       },
       positionList: [],
       deptList: [],
@@ -211,87 +212,56 @@ export default {
   methods: {
     // 新增与编辑前做的操作
     [CRUD.HOOK.afterToCU](crud, form) {
-      this.getDeptTree();
-      this.deptList = [];
+      this.getDeptAll();
+      this.deptEntity = [];
       this.positionList = [];
       if (!form.id) {
-        this.deptList.push({ id: 0, label: "上级部门", children: null });
       } else {
-        this.arrayToTree(this.deptEntity, 0);
+        this.selectTree(form.dept_id);
       }
     },
 
-    async getDeptTree() {
+    async getDeptAll() {
       let response_data = {};
       response_data = await getDeptTree();
       this.deptEntity = response_data.result;
     },
 
-    /**
-     * 处理机构展示方式
-     */
-    arrayToTree(arr, pid) {
-      return arr.reduce((res, current) => {
-        if (current["parent_id"] === pid) {
-          let obj = { name: "", label: "" };
-          obj.name = current["department_name"];
-          obj.label = current["department_name"];
-          obj.id = current["id"];
-          obj.pid = current["parent_id"];
-          obj.children = this.arrayToTree(arr, current["id"]);
-          if (arr.filter((t) => t.parent_id == current["id"]).length == 0) {
-            obj.children = undefined;
-          }
-          return res.concat(obj);
-        }
-        return res;
-      }, []);
-    },
-
-    loadMenus({ action, parentNode, callback }) {
-      if (action === LOAD_CHILDREN_OPTIONS) {
-        parentNode.children = this.arrayToTree(
-          this.deptEntity,
-          parentNode.id
-        ).map(function (obj) {
-          if (obj.children.length == 0) {
-            obj.children = null;
-            delete obj.children;
-          }
-          return obj;
-        });
-        setTimeout(() => {
-          callback();
-        }, 100);
-      }
-    },
     // 根据机构查询职位
-    async entityTreeSelected(data) {
-      if (data.pid > 0) {
+    async selectTree(data) {
+      this.crud.form.dept_id.id = data.id;
+      this.$refs.slotTypeRef.$emit("el.form.change", data.id); // 重点！自定义组件使用element的form表单校验
+      if (data.department_type == 2) {
         let res = {};
         res = await getPositionByDeptId({ deptId: data.id });
         this.positionList = res.result;
       }
     },
+    // 根据机构查询职位
+    clearTree(data) {
+      this.crud.form.dept_id.id = data;
+      this.$refs.slotTypeRef.$emit("el.form.change", data); // 重点！自定义组件使用element的form表单校验
+      this.positionList = [];
+    },
 
-      // 提交前做的操作
-      [CRUD.HOOK.afterValidateCU](crud) {
-      if (!crud.form.dept.id) {
+    // 提交前做的操作
+    [CRUD.HOOK.afterValidateCU](crud) {
+      if (!crud.form.dept_id.id) {
         this.$message({
-          message: '机构不能为空',
-          type: 'warning'
-        })
-        return false
-      } else if (!crud.form.position.id) {
+          message: "机构不能为空",
+          type: "warning",
+        });
+        return false;
+      } else if (!crud.form.position_id.id) {
         this.$message({
-          message: '职位不能为空',
-          type: 'warning'
-        })
-        return false
+          message: "职位不能为空",
+          type: "warning",
+        });
+        return false;
       }
-      crud.form.dept_id = crud.form.dept.id
-      crud.form.position_id = crud.form.position.id
-      return true
+      crud.form.dept_id = crud.form.dept_id.id
+      crud.form.position_id = crud.form.position_id.id
+      return true;
     },
   },
 };

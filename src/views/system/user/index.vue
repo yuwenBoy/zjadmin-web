@@ -3,20 +3,8 @@
     <el-row :gutter="20">
       <el-col :xs="9" :sm="6" :md="5" :lg="4" :xl="4">
         <div class="head-container">
-          <el-input
-            clearable
-            size="small"
-            placeholder="输入部门名称搜索"
-            prefix-icon="el-icon-search"
-            class="filter-item"
-          />
+          <dept-tree :data="deptEntity" @change="change" />
         </div>
-        <el-tree style="height:calc(100vh - 200px)"
-          :data="deptDatas"
-          default-expand-all
-          :props="defaultProps"
-          @node-click="handleNodeClick"
-        />
       </el-col>
       <el-col :xs="15" :sm="18" :md="19" :lg="20" :xl="20">
         <div class="head-container">
@@ -257,7 +245,7 @@ import crudUser from "@/api/system/user";
 import { setRoles } from "@/api/system/user";
 import { getDeptTree } from "@/api/system/department";
 import { getRoleAllList, getRoleIdsByUserId } from "@/api/system/role";
-// import Department from "@/components/DeptTree/DeptTree.vue";
+import DeptTree from "@/components/dept-tree/dept-tree.vue";
 import CRUD, { presenter } from "@crud/crud";
 import OPTOperation from "@crud/OPT.operation";
 import pagination from "@crud/Pagination";
@@ -268,7 +256,7 @@ import Avatar from "@/assets/images/avatar.png";
 export default {
   components: {
     OPTOperation,
-    // Department,
+    DeptTree,
     pagination,
     jForm,
   },
@@ -283,17 +271,13 @@ export default {
   data() {
     return {
       request: false,
-      isLazy: false,
-      isResetVal: false,
       status: 0,
       roles: [],
       roleList: [],
       userId: 0,
       rolesIds: [],
       Avatar: Avatar,
-      deptDatas: [],
       deptEntity:[],
-      defaultProps: { children: "children", label: "label", isLeaf: "leaf" },
     };
   },
   created() {
@@ -311,30 +295,7 @@ export default {
     async getDeptTree() {
       let response_data = {};
       response_data = await getDeptTree();
-      // this.deptEntity = response_data.result;
-      this.deptDatas = this.arrayToTree(response_data.result,0);
-      console.log(this.defaultProps)
-    },
-       /**
-     * 处理机构展示方式
-     */
-     arrayToTree(arr, pid) {
-      return arr.reduce((res, current) => {
-        if (current["parent_id"] === pid) {
-          let obj = { name: "", label: "" };
-          obj.name = current["department_name"];
-          obj.label = current["department_name"];
-          obj.id = current["id"];
-          obj.pid = current["parent_id"];
-          obj.children = this.arrayToTree(arr, current["id"]);
-          if (arr.filter((t) => t.parent_id == current["id"]).length == 0) {
-            obj.children = undefined;
-          }
-          return res.concat(obj);
-        }
-        this.deptDatas = res;
-        return res;
-      }, []);
+      this.deptEntity = response_data.result;
     },
     toDelete(datas) {
       this.$confirm(`确认删除选中的${datas.length}条数据?`, "提示", {
@@ -466,7 +427,8 @@ export default {
     //   }, 100);
     // },
     // 切换部门
-    handleNodeClick(data) {
+    change(data) {
+
       if (data.pid === 0) {
         this.crud.query.deptId = null;
       } else {

@@ -1,8 +1,15 @@
 <template>
   <div>
+    <el-input
+      clearable
+      size="small"
+      placeholder="输入机构名称搜索"
+      prefix-icon="el-icon-search"
+      class="filter-item"
+    />
     <el-tree
       style="height: calc(100vh - 200px)"
-      :data="deptDatas"
+      :data="treeList"
       default-expand-all
       :props="defaultProps"
       @node-click="handleNodeClick"
@@ -11,27 +18,24 @@
 </template>
 
 <script>
-import { getDeptTree } from "@/api/system/department";
 export default {
   name: "dept-tree",
+  props: {
+    data: {
+      type: Array,
+      default: [],
+    },
+  },
   data() {
     return {
       defaultProps: { children: "children", label: "label", isLeaf: "leaf" },
-      dataList: [],
+      treeList:[]
     };
   },
   mounted() {
-    this.getDeptTree();
-    console.log('父组件调用子组件')
+    // console.log("父组件调用子组件");
   },
   methods: {
-    // 查询全部机构
-    async getDeptTree() {
-      let response_data = {};
-      response_data = await getDeptTree();
-
-      this.arrayToTree(response_data.result, 0);
-    },
     /**
      * 处理机构展示方式
      */
@@ -49,13 +53,20 @@ export default {
           }
           return res.concat(obj);
         }
-        this.dataList = res;
         return res;
       }, []);
     },
     handleNodeClick(data) {
       this.$emit("change", data);
     },
+  },
+  watch: {
+    data(val, oldVal) {
+      console.log(val);
+      this.treeList = this.arrayToTree(val, 0);
+    },
+    deep: true, // 深度监听
+    immediate: true, // 第一次改变就执行
   },
 };
 </script>

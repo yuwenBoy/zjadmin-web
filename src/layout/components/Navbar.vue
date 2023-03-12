@@ -78,7 +78,7 @@ export default {
   },
   created() {
     if (this.user.avatar) {
-      this.fileName = require('../../assets/avatar/' + this.user.avatar)
+      // this.fileName = require('../../assets/avatar/' + this.user.avatar)
     }
     store.dispatch('GetInfo').then(() => {})
   },
