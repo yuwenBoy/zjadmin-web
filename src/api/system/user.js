@@ -27,7 +27,7 @@ export function del(params) {
 export function setRoles(params) {
   // return postRequest("/user/setRoles", params)
   return request({
-    url: "/user/setRoles",
+    url: "/role/setRoles",
     method: "post",
     data: params
   });

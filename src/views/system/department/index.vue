@@ -176,7 +176,7 @@ export default {
   cruds() {
     return CRUD({
       title: '部门',
-      url: '/api/department/getByCondition?pid=0',
+      url: '/dept/getByCondition?pid=0',
       crudMethod: { ...crudDepartment },
       sort: 'id'
     })

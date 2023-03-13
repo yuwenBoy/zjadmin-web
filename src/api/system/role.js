@@ -1,29 +1,30 @@
-import { getRequest, postRequest } from '@/utils/axios'
+import { getRequest, postRequest } from "@/utils/axios";
+
+import request from "@/utils/request";
+
 /**
- *获取职位列表 
- * @param {*} params 
+ *获取角色权限
+ * @param {*} params
  */
 export function getRoleAllList(params) {
-    return getRequest("/api/role/getRoleAll", params)
+  return request({
+    url: "/role/getRoleAll",
+    method: "get",
+    params
+  });
 }
 
-/**
- * 根据用户id获取角色id集合
- */
-export function getRoleIdsByUserId(params) {
-    return getRequest("/api/role/findByUserId", params)
-}
 
 export function add(params) {
-    return postRequest("/api/role/add", params)
+  return postRequest("/api/role/add", params);
 }
 
 export function edit(params) {
-    return postRequest("/api/role/edit", params)
+  return postRequest("/api/role/edit", params);
 }
 
 export function del(params) {
-    return postRequest("/api/role/delete", params)
+  return postRequest("/api/role/delete", params);
 }
 
-export default { add, edit, del }
+export default { add, edit, del, getRoleAllList };

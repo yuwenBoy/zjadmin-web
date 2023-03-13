@@ -244,7 +244,7 @@
 import crudUser from "@/api/system/user";
 import { setRoles } from "@/api/system/user";
 import { getDeptTree } from "@/api/system/department";
-import { getRoleAllList, getRoleIdsByUserId } from "@/api/system/role";
+import { getRoleAllList } from "@/api/system/role";
 import DeptTree from "@/components/dept-tree/dept-tree.vue";
 import CRUD, { presenter } from "@crud/crud";
 import OPTOperation from "@crud/OPT.operation";
@@ -329,8 +329,8 @@ export default {
     setRole(obj) {
       this.status = 1;
       this.userId = obj.id;
-      this.getRoleData();
-      this.getRoleIdsData(this.userId);
+      this.getRoleData(this.userId);
+      // this.getRoleIdsData(this.userId);
     },
     checkboxT(row, rowIndex) {
       return row.id !== this.user.id;
@@ -342,29 +342,16 @@ export default {
       this.resetUserRoleForm();
     },
     // 获取所有角色
-    getRoleData() {
+    getRoleData(userId) {
       var that = this;
       that.request = false;
-      getRoleAllList()
+      getRoleAllList({userId:userId})
         .then((res) => {
           if (res.success) {
             that.request = true;
-            that.roleList = res.result;
-          }
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    },
-
-    // 根据用户获取已设置的角色
-    getRoleIdsData(userId) {
-      var that = this;
-      getRoleIdsByUserId({ userId: userId })
-        .then((res) => {
-          if (res.success) {
-            for (var i = 0; i < res.result.length; i++) {
-              that.rolesIds.push(res.result[i].roleId);
+            that.roleList = res.result.roleList;
+            for (var i = 0; i < res.result.checkList.length; i++) {
+              that.rolesIds.push(res.result.checkList[i].id);
             }
             that.roles = that.rolesIds;
           }
@@ -373,6 +360,7 @@ export default {
           reject(error);
         });
     },
+ 
     // 关闭重置角色窗口
     resetUserRoleForm() {
       this.status = 0;
@@ -405,30 +393,8 @@ export default {
           .catch(() => {});
       }
     },
-    // // 获取左侧部门数据
-    // getDeptDatas(node, resolve) {
-    //   const sort = "id,desc";
-    //   const params = { sort: sort };
-    //   if (typeof node !== "object") {
-    //     if (node) {
-    //       params["name"] = node;
-    //     }
-    //   } else if (node.level !== 0) {
-    //     params["pid"] = node.data.id;
-    //   }
-    //   setTimeout(() => {
-    //     getDepts(params).then((res) => {
-    //       if (resolve) {
-    //         resolve(res.result);
-    //       } else {
-    //         this.deptDatas = res.result;
-    //       }
-    //     });
-    //   }, 100);
-    // },
     // 切换部门
     change(data) {
-
       if (data.pid === 0) {
         this.crud.query.deptId = null;
       } else {

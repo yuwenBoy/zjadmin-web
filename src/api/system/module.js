@@ -37,7 +37,11 @@ export const getMenuSuperior = (params) => {
 
 // 获取模块树接口
 export const getModuleTreeAll = (params) => {
-    return getRequest("/api/module/getModuleTreeAll", params)
+    return request({
+        url:'/module/getModuleTreeAll',
+        method:'post',
+        params
+    })
 }
 
 // 根据角色id获取模块id集合接口 

@@ -1,19 +1,24 @@
 <template>
   <div>
-    <el-input
-      clearable
-      size="small"
-      placeholder="输入机构名称搜索"
-      prefix-icon="el-icon-search"
-      class="filter-item"
-    />
-    <el-tree
-      style="height: calc(100vh - 200px)"
-      :data="treeList"
-      default-expand-all
-      :props="defaultProps"
-      @node-click="handleNodeClick"
-    />
+    <el-card>
+      <!-- <div slot="header" class="clearfix">
+        <span></span>
+      </div> -->
+      <el-input
+        clearable
+        size="small"
+        placeholder="输入机构名称搜索"
+        prefix-icon="el-icon-search"
+        class="filter-item"
+      />
+      <el-tree
+        style="height: calc(100vh - 200px)"
+        :data="treeList"
+        default-expand-all
+        :props="defaultProps"
+        @node-click="handleNodeClick"
+      />
+    </el-card>
   </div>
 </template>
 
@@ -29,7 +34,7 @@ export default {
   data() {
     return {
       defaultProps: { children: "children", label: "label", isLeaf: "leaf" },
-      treeList:[]
+      treeList: [],
     };
   },
   mounted() {
