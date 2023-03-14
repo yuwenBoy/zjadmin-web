@@ -62,12 +62,12 @@
           <el-table-column
             :show-overflow-tooltip="true"
             label="部门名称"
-            prop="departmentName"
+            prop="department_name"
           />
           <el-table-column
             :show-overflow-tooltip="true"
             label="部门编码"
-            prop="departmentCode"
+            prop="department_code"
             width="235"
           />
           <el-table-column
@@ -196,6 +196,9 @@ export default {
       },
       menus: []
     }
+  },
+  mounted(){
+     this.crud.query.pid = 0;
   },
   methods: {
     // 新增与编辑前做的操作

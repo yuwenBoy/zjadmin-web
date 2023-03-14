@@ -28,7 +28,11 @@ export function getDepartmentByid(params) {
 }
 
 export const getModulePager = (params) => {
-    return getRequest('/api/department/getByCondition', params)
+    return request({
+        url: url,
+        method: 'post',
+        data: params
+      })
 }
 
 export function add(params) {
