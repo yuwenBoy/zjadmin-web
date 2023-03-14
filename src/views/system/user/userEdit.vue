@@ -229,11 +229,11 @@ export default {
 
     // 根据机构查询职位
     async selectTree(data) {
-      this.crud.form.dept_id.id = data.id;
+      this.crud.form.dept_id.id = parseInt(data.id);
       this.$nextTick(()=>{
         this.$refs.deptRef.$emit("el.form.change", data.id); // 重点！自定义组件使用element的form表单校验
       })
-      if (data.department_type == 2) {
+      if (data.type == 2) {
         let res = {};
         res = await getPositionByDeptId({ deptId: data.id });
         this.positionList = res.result;
