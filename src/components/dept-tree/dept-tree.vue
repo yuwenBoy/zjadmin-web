@@ -1,22 +1,29 @@
 <template>
   <div>
     <el-card>
-      <!-- <div slot="header" class="clearfix">
-        <span></span>
-      </div> -->
+      <div slot="header" class="clearfix" v-if="title">
+              <span style="text-align: right;">{{ title }}</span>
+      </div>
       <el-input
         clearable
+        v-model="name"
         size="small"
-        placeholder="输入机构名称搜索"
+        placeholder="输入名称搜索"
         prefix-icon="el-icon-search"
         class="filter-item"
       />
       <el-tree
-        style="height: calc(100vh - 200px)"
+        ref="tree"
+        style="min-height: calc(100vh - 200px)"
         :data="treeList"
+        :show-checkbox="isShowCheck"
+        :check-strictly="isCheckStrictly"
         default-expand-all
+        :default-checked-keys="checkList"
         :props="defaultProps"
+        node-key="id"
         @node-click="handleNodeClick"
+        :filter-node-method="filterNode"
       />
     </el-card>
   </div>
@@ -30,26 +37,43 @@ export default {
       type: Array,
       default: [],
     },
+    showCheckBox: {
+      type: Boolean,
+      default: false,
+    },
+    checkStrictly: {
+      type: Boolean,
+      default: false,
+    },
+    checkValue: {
+      type: Array,
+      default: [],
+    },
+    title:{
+      type:String,
+      default:''
+    }
   },
   data() {
     return {
+      name: null,
       defaultProps: { children: "children", label: "label", isLeaf: "leaf" },
-      treeList: [],
+      treeList: [], // 树options
+      isShowCheck: this.showCheckBox,
+      isCheckStrictly: this.checkStrictly,
+      checkList: [], // 复选框选中的值
     };
-  },
-  mounted() {
-    // console.log("父组件调用子组件");
   },
   methods: {
     /**
-     * 处理机构展示方式
+     * 将数值转换成树形展示
      */
     arrayToTree(arr, pid) {
       return arr.reduce((res, current) => {
-        if (current["parent_id"] === pid) {
+        if (current["parent_id"] == pid) {
           let obj = { name: "", label: "" };
-          obj.name = current["department_name"];
-          obj.label = current["department_name"];
+          obj.name = current["label"];
+          obj.label = current["label"];
           obj.id = current["id"];
           obj.pid = current["parent_id"];
           obj.children = this.arrayToTree(arr, current["id"]);
@@ -64,11 +88,23 @@ export default {
     handleNodeClick(data) {
       this.$emit("change", data);
     },
+    // 搜索
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    },
   },
   watch: {
     data(val, oldVal) {
-      console.log(val);
       this.treeList = this.arrayToTree(val, 0);
+    },
+    checkValue(val, oldVal) {
+      console.log(val);     // 清空菜单的选中
+      this.$refs.tree.setCheckedKeys([])
+      this.checkList = val;
+    },
+    name(val) {
+      this.$refs.tree.filter(val);
     },
     deep: true, // 深度监听
     immediate: true, // 第一次改变就执行

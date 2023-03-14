@@ -39,14 +39,18 @@ export const getMenuSuperior = (params) => {
 export const getModuleTreeAll = (params) => {
     return request({
         url:'/module/getModuleTreeAll',
-        method:'post',
+        method:'get',
         params
     })
 }
 
 // 根据角色id获取模块id集合接口 
 export const getModuleIdsByRoleId = (params) => {
-    return getRequest('/api/module/findByRoleId', params)
+    return request({
+        url:'/module/findByRoleId',
+        method:'get',
+        params
+    })
 }
 
 // 保存权限接口

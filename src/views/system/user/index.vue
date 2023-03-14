@@ -3,7 +3,7 @@
     <el-row :gutter="20">
       <el-col :xs="9" :sm="6" :md="5" :lg="4" :xl="4">
         <div class="head-container">
-          <dept-tree :data="deptEntity" @change="change" />
+          <dept-tree :data="deptEntity" :checkValue="[]" @change="change" />
         </div>
       </el-col>
       <el-col :xs="15" :sm="18" :md="19" :lg="20" :xl="20">

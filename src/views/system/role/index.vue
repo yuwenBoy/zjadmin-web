@@ -151,7 +151,7 @@
               </el-col>
             </el-row>
             <el-row :gutter="24">
-              <el-col v-show="roleData.value == 2" :span="24">
+              <!-- <el-col v-show="roleData.value == 2" :span="24">
                 <el-form-item label="数据权限">
                   <el-tree
                     :data="deptInfo.depts"
@@ -164,7 +164,7 @@
                     :props="deptInfo.defaultProps"
                   />
                 </el-form-item>
-              </el-col>
+              </el-col> -->
             </el-row>
           </el-form>
           <div class="demo-drawer__footer" style="text-align: center">
@@ -184,12 +184,9 @@
     </el-col>
 
     <el-col :lg="5">
-      <el-card>
-        <div slot="header" class="clearfix">
-          <span>分配功能权限</span>
-        </div>
-        <el-row :gutter="24">
-          <el-col :span="24">
+      <div class="head-container">
+        <el-row :gutter="24" style="margin-top: 20px">
+          <el-col>
             <el-button
               v-authority="['role:save']"
               type="success"
@@ -199,14 +196,11 @@
               icon="el-icon-circle-plus"
               :loading="optInfo.loading"
               @click="saveRoleModule"
-              >保存</el-button
-            >&nbsp;&nbsp;&nbsp;
-            <tools-open :ttext="tText" :ftext="fText" @open="open($event)" />
+              >保存</el-button>
           </el-col>
-        </el-row>
-        <el-row :gutter="24" style="margin-top: 20px">
           <el-col :span="24">
-            <el-input
+            <dept-tree title="分配功能权限" showCheckBox checkStrictly :data="menuEntity" :checkValue="setCheckList"/>
+            <!-- <el-input
               v-model="optInfo.filterText"
               placeholder="输入关键字进行过滤"
               clearable
@@ -221,10 +215,10 @@
               node-key="id"
               :props="optInfo.defaultProps"
               :filter-node-method="filterNode"
-            />
+            /> -->
           </el-col>
         </el-row>
-      </el-card>
+      </div>
     </el-col>
   </div>
 </template>
@@ -237,9 +231,9 @@ import api from "@/api/system/module";
 import { Notification } from "element-ui";
 import { getDepartmentByid } from "@/api/system/department";
 import OPTOperation from "@crud/OPT.operation";
-import ToolsOpen from "@/components/ToolsOpen/index";
+import DeptTree from "@/components/dept-tree/dept-tree.vue";
 export default {
-  components: { OPTOperation, pagination, jForm, ToolsOpen },
+  components: { OPTOperation, pagination, jForm,DeptTree },
   cruds() {
     return CRUD({
       title: "角色",
@@ -287,12 +281,14 @@ export default {
         { value: 3, label: "本部门及以下数据权限" },
         { value: 4, label: "本部门数据权限" },
       ],
+      menuEntity:[],
+      setCheckList:[],
     };
   },
   watch: {
-    "optInfo.filterText"(val) {
-      this.$refs.tree.filter(val);
-    },
+    // "optInfo.filterText"(val) {
+    //   this.$refs.tree.filter(val);
+    // },
     "roleData.value"(val) {
       if (val == 2) {
         this.lazyLoad();
@@ -303,37 +299,32 @@ export default {
     this.loadModuleAll();
   },
   methods: {
-    open(obj) {
-      this.nodeExpand(obj);
+    // open(obj) {
+    //   this.nodeExpand(obj);
+    // },
+   async loadModuleAll() {
+      let response_data = {};
+      response_data =  await api.getModuleTreeAll();
+      this.menuEntity = response_data.result;
     },
-    loadModuleAll() {
-      api
-        .getModuleTreeAll()
-        .then((res) => {
-          if (res.success) {
-            this.optInfo.menuList = res.result;
-          }
-        })
-        .catch((err) => {});
-    },
-    lazyLoad(node, resolve) {
-      setTimeout(() => {
-        getDepartmentByid({
-          id: node === undefined ? 0 : node.value,
-        }).then((res) => {
-          if (res.success) {
-            const nodes = res.result.map((item) => ({
-              id: item.value,
-              label: item.label,
-              leaf: true, // node.level >= 10,
-            }));
-            resolve(nodes);
-          } else {
-            alert(res.message);
-          }
-        });
-      }, 1000);
-    },
+    // lazyLoad(node, resolve) {
+    //   setTimeout(() => {
+    //     getDepartmentByid({
+    //       id: node === undefined ? 0 : node.value,
+    //     }).then((res) => {
+    //       if (res.success) {
+    //         const nodes = res.result.map((item) => ({
+    //           id: item.value,
+    //           label: item.label,
+    //           leaf: true, // node.level >= 10,
+    //         }));
+    //         resolve(nodes);
+    //       } else {
+    //         alert(res.message);
+    //       }
+    //     });
+    //   }, 1000);
+    // },
     toDelete(datas) {
       this.$confirm(`确认删除选中的${datas.length}条数据?`, "提示", {
         confirmButtonText: "确定",
@@ -387,24 +378,22 @@ export default {
         .catch(() => {});
     },
 
+    // 单击角色查找已赋值的权限菜单
     handleCurrentChange(val) {
       if (val) {
         const that = this;
         this.optInfo.btnStatus = true;
         this.currentRoleId = val.id;
         // 清空菜单的选中
-        this.$refs.tree.setCheckedKeys([]);
-        api
-          .getModuleIdsByRoleId({ roleId: val.id })
-          .then((res) => {
+        this.setCheckList = [];
+        api.getModuleIdsByRoleId({ roleId: val.id }).then((res) => {
             if (res.success) {
-              that.optInfo.defaultCheck = [];
+              that.setCheckList = [];
               for (var i = 0; i < res.result.length; i++) {
-                that.optInfo.defaultCheck.push(res.result[i].moduleId);
+                that.setCheckList.push(res.result[i].id);
               }
             }
-          })
-          .catch((err) => {});
+          }).catch((err) => {});
       }
     },
 

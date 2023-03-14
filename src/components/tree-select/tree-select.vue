@@ -49,7 +49,7 @@ export default {
      */
     arrayToTree(arr, pid) {
       return arr.reduce((res, current) => {
-        if (current["parent_id"] === pid) {
+        if (current["parent_id"] == pid) {
           current["children"] = this.arrayToTree(arr, current["id"]);
           if (arr.filter((t) => t.parent_id == current["id"]).length == 0) {
             current["children"] = undefined;
@@ -67,8 +67,8 @@ export default {
       return {
         id: node.id,
         pid: node.parent_id,
-        label: node.department_name,
-        name: node.department_name,
+        label: node.label,
+        name: node.label,
         children: node.children,
       };
     },
@@ -102,7 +102,7 @@ export default {
         this.treeList = this.arrayToTree(val, 0);
       }
       else{
-        this.treeList = [{id:0,department_name:'全部',children:[]}]
+        this.treeList = [{id:0,label:'全部',children:[]}]
         this.treeList.forEach(item=>{
             item.children = this.arrayToTree(val, 0)
         })

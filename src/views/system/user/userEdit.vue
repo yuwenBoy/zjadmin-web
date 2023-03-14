@@ -99,7 +99,7 @@
       </el-row>
       <el-row :gutter="24">
         <el-col :span="8">
-          <el-form-item label="选择机构" prop="dept_id.id" ref="slotTypeRef">
+          <el-form-item label="选择机构" prop="dept_id.id" ref="deptRef">
             <tree-select
               :data="deptEntity"
               :value = "form.dept_id.id"
@@ -230,7 +230,9 @@ export default {
     // 根据机构查询职位
     async selectTree(data) {
       this.crud.form.dept_id.id = data.id;
-      this.$refs.slotTypeRef.$emit("el.form.change", data.id); // 重点！自定义组件使用element的form表单校验
+      this.$nextTick(()=>{
+        this.$refs.deptRef.$emit("el.form.change", data.id); // 重点！自定义组件使用element的form表单校验
+      })
       if (data.department_type == 2) {
         let res = {};
         res = await getPositionByDeptId({ deptId: data.id });
@@ -240,7 +242,7 @@ export default {
     // 根据机构查询职位
     clearTree(data) {
       this.crud.form.dept_id.id = data;
-      this.$refs.slotTypeRef.$emit("el.form.change", data); // 重点！自定义组件使用element的form表单校验
+      this.$refs.deptRef.$emit("el.form.change", data); // 重点！自定义组件使用element的form表单校验
       this.positionList = [];
     },
 
