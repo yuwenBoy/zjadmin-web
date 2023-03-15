@@ -61,14 +61,26 @@
           />
           <el-table-column
             :show-overflow-tooltip="true"
-            label="部门名称"
+            label="组织名称"
             prop="department_name"
           />
           <el-table-column
             :show-overflow-tooltip="true"
-            label="部门编码"
+            label="组织编码"
             prop="department_code"
             width="235"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            label="分类"
+            prop="typeName"
+            width="135"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            label="排序"
+            prop=""
+            width="135"
           />
           <el-table-column
             prop="createtime"
@@ -116,10 +128,10 @@
           <el-col :span="12">
             <el-form-item
               label="部门名称"
-              prop="departmentName"
+              prop="department_name"
             >
               <el-input
-                v-model="form.departmentName"
+                v-model="form.department_name"
                 clearable
                 placeholder="请输入部门名称"
               />
@@ -130,10 +142,10 @@
           <el-col :span="12">
             <el-form-item
               label="部门编码"
-              prop="departmentCode"
+              prop="department_code"
             >
               <el-input
-                v-model="form.departmentCode"
+                v-model="form.department_code"
                 clearable
                 placeholder="请输入部门编码"
               />
@@ -176,7 +188,7 @@ export default {
   cruds() {
     return CRUD({
       title: '部门',
-      url: '/dept/getByCondition?pid=0',
+      url: '/dept/getByCondition',
       crudMethod: { ...crudDepartment },
       sort: 'id'
     })
@@ -186,10 +198,10 @@ export default {
     return {
       type: 1,
       rules: {
-        departmentName: [
+        department_name: [
           { required: true, message: '请输入部门名称', trigger: 'blur' }
         ],
-        departmentCode: [
+        department_code: [
           { required: true, message: '请输入部门编码', trigger: 'blur' }
         ],
         pid: [{ required: true, message: '请选择上级部门', trigger: 'change' }]
@@ -221,7 +233,7 @@ export default {
     getMenus(tree, treeNode, resolve) {
       const params = { pid: tree.id }
       setTimeout(() => {
-        crudDepartment.getModulePager(params).then((res) => {
+        crudDepartment.getByCondition(params).then((res) => {
           resolve(res.result.content)
         })
       }, 100)

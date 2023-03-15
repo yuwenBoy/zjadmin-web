@@ -90,18 +90,23 @@
                 align="center"
                 width="55"
               />
-              <el-table-column
+              <!-- <el-table-column
                 type="index"
                 label="序号"
                 align="center"
                 width="50"
-              />
+              /> -->
               <el-table-column
-                prop="username"
-                width="120"
-                label="头像"
-                align="center"
-              />
+            prop="avatar"
+            label="头像" width="80"
+          >
+            <template slot-scope="scope">
+              <div style="width:32px;height:32px;border-radius:50%;background:#0cded4;line-height:32px;text-align:center;font-size:12px;color:#fff;border:1px solid #0cded4;">
+                <span v-if="scope.row.cname.length>2">{{scope.row.cname.substr(scope.row.cname.length-2,scope.row.cname.length-1)}}</span>
+                <span v-else>{{scope.row.cname}}</span>
+              </div>
+            </template>
+          </el-table-column>
               <el-table-column
                 prop="username"
                 width="120"
@@ -123,17 +128,7 @@
                   <span v-else class="text-primary">未识别</span>
                 </template>
               </el-table-column>
-              <!-- <el-table-column
-            prop="avatar"
-            label="头像"
-          >
-            <template slot-scope="scope">
-              <div style="width:45px;height:45px;border-radius:50%;background:#0cded4;line-height:45px;text-align:center;font-size:14px;color:#fff;border:1px solid #0cded4;">
-                <span v-if="scope.row.cname.length>2">{{scope.row.cname.substr(scope.row.cname.length-2,scope.row.cname.length-1)}}</span>
-                <span v-else>{{scope.row.cname}}</span>
-              </div>
-            </template>
-          </el-table-column> -->
+
               <!-- <el-table-column prop="birthday" label="年龄" align="center">
                 <template slot-scope="scope">
                   <span>{{ parseTime(scope.row.birthday) | fmt_age }}</span>

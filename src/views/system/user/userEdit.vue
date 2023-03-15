@@ -1,12 +1,4 @@
 <template>
-  <!-- <el-dialog
-    append-to-body
-    :close-on-click-modal="false"
-    :before-close="crud.cancelCU"
-    :visible="crud.status.cu > 0"
-    :title="crud.status.title"
-    width="700px"
-  > -->
   <el-drawer
     append-to-body
     :wrapperClosable="false"
@@ -15,119 +7,126 @@
     direction="rtl"
     size="40%"
     :visible="crud.status.cu > 0"
-    :title="crud.status.title"
-  >
-    <el-form
-      ref="form"
-      :model="form"
-      :rules="rules"
-      size="small"
-      label-position="top"
-      label-width="80px"
-      style="padding: 15px"
-    >
-      <el-row :gutter="24">
-        <el-col :span="12">
-          <el-form-item label="账号:" prop="username">
-            <el-input
-              v-model="form.username"
-              clearable
-              placeholder="请输入登录账号"
-            />
-          </el-form-item>
-        </el-col>
-        <!-- <el-col :span="12">
+    :title="crud.status.title">
+    <div class="xin-content">
+      <el-form
+        ref="form"
+        :model="form"
+        :rules="rules"
+        size="small"
+        label-position="top"
+        label-width="80px">
+        <el-row :gutter="24">
+          <el-col :span="12">
+            <el-form-item label="账号:" prop="username">
+              <el-input
+                v-model="form.username"
+                clearable
+                placeholder="请输入登录账号"
+              />
+            </el-form-item>
+          </el-col>
+          <!-- <el-col :span="12">
           <el-form-item label="密码">
             <el-input type="password" v-model="form.password" clearable placeholder="默认密码jxxqz123" />
           </el-form-item>
         </el-col> -->
-        <el-col :span="12">
-          <el-form-item label="姓名:" prop="cname">
-            <el-input v-model="form.cname" clearable placeholder="请输入姓名" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="24">
-        <el-col :span="12">
-          <el-form-item label="性别:" prop="sex">
-            <el-radio-group v-model="form.sex">
-              <el-radio-button label="1">男</el-radio-button>
-              <el-radio-button label="2">女</el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="昵称:" prop="nick_name">
-            <el-input
-              v-model="form.nick_name"
-              clearable
-              placeholder="请输入昵称"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="24">
-        <el-col :span="12">
-          <el-form-item label="手机号" prop="phone">
-            <el-input
-              v-model.number="form.phone"
-              maxlength="11"
-              clearable
-              placeholder="请输入手机号"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="form.email" clearable placeholder="请输入邮箱" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="24">
-        <el-col :span="12">
-          <el-form-item label="出生日期" prop="birthday">
-            <el-date-picker
-              v-model="form.birthday"
-              style="width: 238px"
-              clearable
-              :picker-options="pickerOptions0"
-              type="date"
-              placeholder="选择日期"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="24">
-        <el-col :span="8">
-          <el-form-item label="选择机构" prop="dept_id.id" ref="deptRef">
-            <tree-select
-              :data="deptEntity"
-              :value = "form.dept_id.id"
-              v-model="form.dept_id.id"
-              @select="selectTree"
-              @clear = "clearTree"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="职位" prop="position_id.id">
-            <el-select
-              v-model="form.position_id.id"
-              placeholder="请选择"
-              clearable
-            >
-              <el-option
-                v-for="item in positionList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+          <el-col :span="12">
+            <el-form-item label="姓名:" prop="cname">
+              <el-input
+                v-model="form.cname"
+                clearable
+                placeholder="请输入姓名"
               />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
-    <div class="demo-drawer__footer" style="text-align: right">
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="24">
+          <el-col :span="12">
+            <el-form-item label="性别:" prop="sex">
+              <el-radio-group v-model="form.sex">
+                <el-radio-button label="1">男</el-radio-button>
+                <el-radio-button label="2">女</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="昵称:" prop="nick_name">
+              <el-input
+                v-model="form.nick_name"
+                clearable
+                placeholder="请输入昵称"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="24">
+          <el-col :span="12">
+            <el-form-item label="手机号" prop="phone">
+              <el-input
+                v-model.number="form.phone"
+                maxlength="11"
+                clearable
+                placeholder="请输入手机号"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="邮箱" prop="email">
+              <el-input
+                v-model="form.email"
+                clearable
+                placeholder="请输入邮箱"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="24">
+          <el-col :span="12">
+            <el-form-item label="出生日期" prop="birthday">
+              <el-date-picker
+                v-model="form.birthday"
+                style="width: 238px"
+                clearable
+                :picker-options="pickerOptions0"
+                type="date"
+                placeholder="选择日期"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="24">
+          <el-col :span="8">
+            <el-form-item label="选择机构" prop="dept_id.id" ref="deptRef">
+              <tree-select
+                :data="deptEntity"
+                :value="form.dept_id.id"
+                v-model="form.dept_id.id"
+                @select="selectTree"
+                @clear="clearTree"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="职位" prop="position_id.id">
+              <el-select
+                v-model="form.position_id.id"
+                placeholder="请选择"
+                clearable
+              >
+                <el-option
+                  v-for="item in positionList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
+    <footer class="xin-footer">
       <el-button
         :loading="crud.status.cu === 2"
         type="success"
@@ -143,14 +142,12 @@
         @click="crud.cancelCU"
         >关闭</el-button
       >
-    </div>
+    </footer>
   </el-drawer>
-  <!-- </el-dialog> -->
 </template>
 
 <script>
 import { form } from "@crud/crud";
-import { isvalidPhone } from "@/utils/validate";
 import CRUD, { presenter } from "@crud/crud";
 import treeSelect from "@/components/tree-select/tree-select.vue";
 import { getDeptTree } from "@/api/system/department";
@@ -165,11 +162,11 @@ const defaultForm = {
   address: "",
   sex: "1",
   // disabled: 0,
-  dept_id:{
-    id:0
+  dept_id: {
+    id: 0,
   },
   position_id: {
-    id:''
+    id: "",
   },
   birthday: "",
 };
@@ -198,10 +195,12 @@ export default {
           { required: true, message: "请输入登录账号", trigger: "blur" },
         ],
         cname: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-        'position_id.id': [
+        "position_id.id": [
           { required: true, message: "请选择职位", trigger: "change" },
         ],
-        'dept_id.id': [{ required: true, message: "请选择机构", trigger: "change" }],
+        "dept_id.id": [
+          { required: true, message: "请选择机构", trigger: "change" },
+        ],
       },
       positionList: [],
       deptList: [],
@@ -217,6 +216,7 @@ export default {
       this.positionList = [];
       if (!form.id) {
       } else {
+        form.dept_id.type = form.dept_id.department_type;
         this.selectTree(form.dept_id);
       }
     },
@@ -230,9 +230,9 @@ export default {
     // 根据机构查询职位
     async selectTree(data) {
       this.crud.form.dept_id.id = parseInt(data.id);
-      this.$nextTick(()=>{
+      this.$nextTick(() => {
         this.$refs.deptRef.$emit("el.form.change", data.id); // 重点！自定义组件使用element的form表单校验
-      })
+      });
       if (data.type == 2) {
         let res = {};
         res = await getPositionByDeptId({ deptId: data.id });
@@ -261,16 +261,10 @@ export default {
         });
         return false;
       }
-      crud.form.dept_id = crud.form.dept_id.id
-      crud.form.position_id = crud.form.position_id.id
+      crud.form.dept_id = crud.form.dept_id.id;
+      crud.form.position_id = crud.form.position_id.id;
       return true;
     },
   },
 };
 </script>
-
-<style lang="scss" scoped>
-// ::v-deep .el-input-number .el-input__inner {
-//   text-align: left;
-// }
-</style>

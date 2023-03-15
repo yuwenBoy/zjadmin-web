@@ -77,3 +77,23 @@
 .el-range-editor.el-input__inner {
   display: inline-flex !important;
 }
+.el-drawer__header{
+border-bottom:   1px solid #dfe4ed;
+padding-bottom:15px !important;
+margin-bottom: 5px !important;
+}
+
+.xin-content{
+  padding: 15px !important;
+  overflow-y: auto;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  height: 90%;
+}
+
+.xin-footer{
+  position: relative;
+  text-align: right;
+  padding: 15px;
+  border-top: 1px solid #dfe4ed;
+}
