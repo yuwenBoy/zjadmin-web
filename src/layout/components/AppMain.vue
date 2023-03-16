@@ -38,7 +38,7 @@ export default {
   position: relative;
   overflow: hidden;
   .app-main-content {
-    height: calc(100vh - 117px);
+    height: calc(100vh - 84px);
     overflow-y: auto;
   }
 }

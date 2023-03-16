@@ -4,7 +4,7 @@
       <div class="content-box box-shadow">
         <div class="text item">
           <el-row :gutter="24">
-            <el-col :span="8" style="text-align: left">
+            <el-col :span="10" style="text-align: left">
               <el-form label-width="0px" inline>
                 <el-form-item>
                   <el-input
@@ -18,7 +18,7 @@
                 <OPTOperation />
               </el-form>
             </el-col>
-            <el-col :push="12" :span="4">
+            <el-col :push="10" :span="4">
               <el-button
                 v-if="crud.optShow.add"
                 v-authority="['dept:add']"

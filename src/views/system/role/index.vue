@@ -10,7 +10,7 @@
             <el-row :gutter="24">
               <el-col :span="24">
                 <el-row :gutter="24">
-                  <el-col :span="12">
+                  <el-col :span="14">
                     <el-form label-width="0px" inline>
                       <el-form-item>
                         <el-input
@@ -24,7 +24,7 @@
                       <OPTOperation />
                     </el-form>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :push="4" :span="6">
                     <el-button
                       v-if="crud.optShow.add"
                       v-authority="['role:add']"

@@ -129,7 +129,7 @@ export default {
       cname: this.user.cname,
       email: this.user.email,
       phone: this.user.phone,
-      departmentName: this.user.dept.departmentName,
+      departmentName: this.user.dept_id.department_name,
     };
     if(this.user.avatar){
         this.fileName=require("../../../assets/avatar/" + this.user.avatar);

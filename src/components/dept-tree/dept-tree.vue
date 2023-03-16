@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="tree-content">
     <el-card>
       <div slot="header" class="clearfix" v-if="title">
-              <span style="text-align: right;">{{ title }}</span>
+          <span style="text-align: right;">{{ title }}</span>
       </div>
       <el-input
         clearable
@@ -13,8 +13,8 @@
         class="filter-item"
       />
       <el-tree
+        class="child-tree"
         ref="tree"
-        style="min-height: calc(100vh - 200px)"
         :data="treeList"
         :show-checkbox="isShowCheck"
         :check-strictly="isCheckStrictly"
@@ -115,3 +115,15 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+.tree-content{
+  width:100%;
+  height:100%;
+
+  .child-tree{
+      height: calc(100vh - 210px);
+      overflow-y: auto;
+      overflow-x: hidden;
+  }
+}
+</style>
