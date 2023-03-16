@@ -1,10 +1,12 @@
 <template>
   <section class="app-main">
-    <transition name="fade-transform" mode="out-in">
+    <div class="app-main-content">
+      <transition name="fade-transform" mode="out-in">
       <keep-alive :include="cachedViews">
         <router-view :key="key" />
       </keep-alive>
     </transition>
+    </div>
     <div v-if="$store.state.settings.showFooter" id="el-main-footer">
       <span v-html="$store.state.settings.footerTxt" />
       <span> ⋅ </span>
@@ -35,6 +37,10 @@ export default {
   width: 100%;
   position: relative;
   overflow: hidden;
+  .app-main-content {
+    height: calc(100vh - 117px);
+    overflow-y: auto;
+  }
 }
 
 .fixed-header+.app-main {

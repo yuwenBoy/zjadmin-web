@@ -16,15 +16,27 @@ export function getRoleAllList(params) {
 
 
 export function add(params) {
-  return postRequest("/api/role/add", params);
+  return request({
+    url: "/role/add",
+    method: "post",
+    data: params
+  });
 }
 
 export function edit(params) {
-  return postRequest("/api/role/edit", params);
+  return request({
+    url: "/role/edit",
+    method: "post",
+    data: params
+  });
 }
 
 export function del(params) {
-  return postRequest("/api/role/delete", params);
+  return request({
+    url: "/role/delete",
+    method: "post",
+    data: params
+  });
 }
 
 export default { add, edit, del, getRoleAllList };

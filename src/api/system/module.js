@@ -20,7 +20,6 @@ export const getModuleAll = (params) => {
         method: 'get',
         data: params
       })
-    // return getRequest("/api/module/getMenuAll", params);
 }
 
 export const getModulePager = (params) => {
@@ -53,10 +52,14 @@ export const getModuleIdsByRoleId = (params) => {
     })
 }
 
-// 保存权限接口
-export const saveRoleModuleId = (params) => {
-    return postRequest('/api/module/saveRoleModuleId', params)
+// 保存操作权限
+export const saveOptionAuthority = (params) => {
+    return request({
+        url:'/authority/saveOptionAuthority',
+        method:'post',
+        data:params
+    })
 }
 
 
-export default { add, edit, del, getModuleAll, getModulePager, getMenusTree, getMenuSuperior, getModuleTreeAll, getModuleIdsByRoleId, saveRoleModuleId }
+export default { add, edit, del, getModuleAll, getModulePager, getMenusTree, getMenuSuperior, getModuleTreeAll, getModuleIdsByRoleId, saveOptionAuthority }

@@ -106,80 +106,6 @@
             </el-row>
           </div>
         </div>
-        <el-drawer
-          title="分配数据权限"
-          append-to-body
-          :close-on-click-modal="false"
-          :visible.sync="roleData.status > 0"
-          :before-close="handleClose"
-          width="300px"
-        >
-          <el-form ref="form" label-width="80px">
-            <el-row :gutter="24">
-              <el-col :span="24">
-                <el-form-item label="角色名称:">
-                  {{ roleData.roleName }}
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="24">
-              <el-col :span="12">
-                <el-form-item label="角色编码:">
-                  {{ roleData.roleCode }}
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="24">
-              <el-col :span="24">
-                <el-form-item label="备注:">
-                  {{ roleData.roleRemark }}</el-form-item
-                >
-              </el-col>
-            </el-row>
-            <el-row :gutter="24">
-              <el-col :span="24">
-                <el-form-item label="数据范围:">
-                  <el-select v-model="roleData.value" placeholder="请选择">
-                    <el-option
-                      v-for="item in dataAuthorityList"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="24">
-              <!-- <el-col v-show="roleData.value == 2" :span="24">
-                <el-form-item label="数据权限">
-                  <el-tree
-                    :data="deptInfo.depts"
-                    show-checkbox
-                    check-strictly
-                    :load="lazyLoad"
-                    lazy
-                    :default-checked-keys="deptInfo.defaultCheck"
-                    node-key="id"
-                    :props="deptInfo.defaultProps"
-                  />
-                </el-form-item>
-              </el-col> -->
-            </el-row>
-          </el-form>
-          <div class="demo-drawer__footer" style="text-align: center">
-            <el-button type="success" size="mini" icon="el-icon-circle-plus"
-              >确定</el-button
-            >
-            <el-button
-              type="default"
-              size="mini"
-              icon="el-icon-remove-outline"
-              @click="handleClose"
-              >取消</el-button
-            >
-          </div>
-        </el-drawer>
       </div>
     </el-col>
 
@@ -196,10 +122,18 @@
               icon="el-icon-circle-plus"
               :loading="optInfo.loading"
               @click="saveRoleModule"
-              >保存</el-button>
+              >保存</el-button
+            >
           </el-col>
           <el-col :span="24">
-            <dept-tree title="分配功能权限" showCheckBox checkStrictly :data="menuEntity" :checkValue="setCheckList"/>
+            <dept-tree
+              title="分配功能权限"
+              showCheckBox
+              checkStrictly
+              :data="menuEntity"
+               ref="deptTree"
+              :checkValue="setCheckList"
+            />
             <!-- <el-input
               v-model="optInfo.filterText"
               placeholder="输入关键字进行过滤"
@@ -229,11 +163,10 @@ import pagination from "@crud/Pagination";
 import jForm from "./roleEdit";
 import api from "@/api/system/module";
 import { Notification } from "element-ui";
-import { getDepartmentByid } from "@/api/system/department";
 import OPTOperation from "@crud/OPT.operation";
 import DeptTree from "@/components/dept-tree/dept-tree.vue";
 export default {
-  components: { OPTOperation, pagination, jForm,DeptTree },
+  components: { OPTOperation, pagination, jForm, DeptTree },
   cruds() {
     return CRUD({
       title: "角色",
@@ -281,8 +214,8 @@ export default {
         { value: 3, label: "本部门及以下数据权限" },
         { value: 4, label: "本部门数据权限" },
       ],
-      menuEntity:[],
-      setCheckList:[],
+      menuEntity: [],
+      setCheckList: [],
     };
   },
   watch: {
@@ -302,9 +235,9 @@ export default {
     // open(obj) {
     //   this.nodeExpand(obj);
     // },
-   async loadModuleAll() {
+    async loadModuleAll() {
       let response_data = {};
-      response_data =  await api.getModuleTreeAll();
+      response_data = await api.getModuleTreeAll();
       this.menuEntity = response_data.result;
     },
     // lazyLoad(node, resolve) {
@@ -337,29 +270,29 @@ export default {
         })
         .catch(() => {});
     },
-    handleCommand(command) {
-      switch (command.command) {
-        case "edit":
-          this.crud.toEdit(command.obj);
-          break;
-        case "delete":
-          this.delete(command.obj);
-          break;
-        case "data":
-          this.roleDataModal(command.obj);
-          break;
-      }
-    },
-    beforeHandleCommand(item, obj) {
-      return {
-        command: item,
-        obj: obj,
-      };
-    },
-    filterNode(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
-    },
+    // handleCommand(command) {
+    //   switch (command.command) {
+    //     case "edit":
+    //       this.crud.toEdit(command.obj);
+    //       break;
+    //     case "delete":
+    //       this.delete(command.obj);
+    //       break;
+    //     case "data":
+    //       this.roleDataModal(command.obj);
+    //       break;
+    //   }
+    // },
+    // beforeHandleCommand(item, obj) {
+    //   return {
+    //     command: item,
+    //     obj: obj,
+    //   };
+    // },
+    // filterNode(value, data) {
+    //   if (!value) return true;
+    //   return data.label.indexOf(value) !== -1;
+    // },
     nodeExpand(expend) {
       for (var i = 0; i < this.$refs.tree.store._getAllNodes().length; i++) {
         this.$refs.tree.store._getAllNodes()[i].expanded = expend;
@@ -386,17 +319,19 @@ export default {
         this.currentRoleId = val.id;
         // 清空菜单的选中
         this.setCheckList = [];
-        api.getModuleIdsByRoleId({ roleId: val.id }).then((res) => {
+        api
+          .getModuleIdsByRoleId({ roleId: val.id })
+          .then((res) => {
             if (res.success) {
               that.setCheckList = [];
               for (var i = 0; i < res.result.length; i++) {
                 that.setCheckList.push(res.result[i].id);
               }
             }
-          }).catch((err) => {});
+          })
+          .catch((err) => {});
       }
     },
-
     /**
      * author：zhao.jian
      * date:2020年9月24日11:14:26
@@ -404,17 +339,15 @@ export default {
      */
     saveRoleModule() {
       var roleModule = { roleId: this.currentRoleId, moduleId: [] };
-      var nodeList = this.$refs.tree.store.getCheckedNodes();
+      var nodeList = this.$refs.deptTree.getCheckedNode();
       for (var i = 0; i < nodeList.length; i++) {
         roleModule.moduleId.push(nodeList[i].id);
       }
       this.optInfo.loading = true;
-      api
-        .saveRoleModuleId(roleModule)
-        .then((res) => {
+      api.saveOptionAuthority(roleModule).then((res) => {
           if (res.success) {
             Notification.success({
-              title: "设置成功",
+              title: "保存成功",
               duration: 5000,
             });
             this.optInfo.loading = false;

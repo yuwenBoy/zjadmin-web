@@ -93,6 +93,10 @@ export default {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
+    // 获取选中的数据
+    getCheckedNode(){
+      return this.$refs.tree.store.getCheckedNodes();
+    }
   },
   watch: {
     data(val, oldVal) {
