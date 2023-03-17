@@ -1,12 +1,12 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="20">
+    <el-row :gutter="24">
       <el-col :xs="9" :sm="6" :md="5" :lg="4" :xl="4">
         <div style="padding-top:10px;">
           <dept-tree :data="deptEntity" :checkValue="[]" @change="change" />
         </div>
       </el-col>
-      <el-col :xs="15" :sm="18" :md="19" :lg="20" :xl="20" style="padding-left:0px;">
+      <el-col :xs="15" :sm="18" :md="20" :lg="20" :xl="20" style="padding-left:0px;">
         <div class="head-container">
           <div class="content-box box-shadow">
             <div class="text item">

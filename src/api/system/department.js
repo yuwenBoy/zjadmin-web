@@ -1,60 +1,50 @@
-import { getRequest, postRequest } from '@/utils/axios'
-import request from '@/utils/request';
-
-// 懒加载获取机构
-// export function getDepts(params) {
-//     return request({
-//         url: '/dept/getDeptAll',
-//         method: "get",
-//         params
-//     })
-// }
+import request from "@/utils/request";
 
 // 获取全部机构
-export function getDeptTree(params){
-    return request({
-        url: '/dept/getDeptTree',
-        method: "get",
-        params
-    })
+export function getDeptTree(params) {
+  return request({
+    url: "/dept/getDeptTree",
+    method: "get",
+    params
+  });
 }
 
-export function getDepartmentAll(params) {
-    return getRequest("/api/department/getDepartmentAll", params)
-}
-
-export function getDepartmentByid(params) {
-    return getRequest("/api/department/getDepartmentByid", params)
-}
-
-export const getByCondition = (params) => {
-    return request({
-        url: '/dept/getByCondition',
-        method: 'post',
-        data: params
-      })
-}
+export const getByCondition = params => {
+  return request({
+    url: "/dept/getByCondition",
+    method: "post",
+    data: params
+  });
+};
 
 export function add(params) {
-    return postRequest("/api/department/add", params)
+  return request({
+    url: "/dept/add",
+    method: "post",
+    data: params
+  });
 }
 
 export function edit(params) {
-    return postRequest("/api/department/edit", params)
+  return request({
+    url: "/dept/edit",
+    method: "post",
+    data: params
+  });
 }
 
 export function del(params) {
-    return postRequest("/api/department/delete", params)
+  return request({
+    url: "/dept/delete",
+    method: "post",
+    data: params
+  });
 }
 
-// export const getDeptTree = (params) => {
-//     return getRequest('/api/department/getDeptTree', params)
-// }
-
 export default {
-    getByCondition, 
-     add, edit, del,
-      getDepartmentAll,
-    //   getDepts,
-      getDeptTree,
-     }
+  getByCondition,
+  add,
+  edit,
+  del,
+  getDeptTree
+};

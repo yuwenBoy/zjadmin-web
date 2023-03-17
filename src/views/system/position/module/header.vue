@@ -1,7 +1,23 @@
 <template>
   <div class="text item">
     <el-row :gutter="24">
-      <el-col :span="4">
+      <el-col :span="10">
+        <el-form label-width="0px" inline>
+          <el-form-item>
+            <el-input
+              v-model="crud.query.name"
+              clearable
+              size="small"
+              placeholder="请输入职位名称搜索"
+              style="width: 200px"
+              class="filter-item round-left"
+              @keyup.enter.native="crud.toQuery"
+            />
+          </el-form-item>
+        <OPTOperation />
+        </el-form>
+      </el-col>
+      <el-col :push="10" :span="4">
         <el-button
           v-if="crud.optShow.add"
           v-authority="['position:add']"
@@ -23,22 +39,6 @@
           :disabled="crud.selections.length === 0"
           @click="toDelete(crud.selections)"
         >删除</el-button>
-      </el-col>
-      <el-col :span="16" :push="4" style="text-align:right;">
-        <el-form label-width="0px" inline>
-          <el-form-item>
-            <el-input
-              v-model="crud.query.name"
-              clearable
-              size="small"
-              placeholder="请输入职位名称搜索"
-              style="width: 200px"
-              class="filter-item round-left"
-              @keyup.enter.native="crud.toQuery"
-            />
-          </el-form-item>
-        <OPTOperation />
-        </el-form>
       </el-col>
     </el-row>
   </div>

@@ -83,14 +83,9 @@
           <el-table-column
             :show-overflow-tooltip="true"
             label="排序"
-            prop=""
+            prop="sort"
             width="135"
           />
-          <el-table-column prop="createtime" label="创建日期" width="135">
-            <template slot-scope="scope">
-              <span>{{ parseTime(scope.row.createtime) }}</span>
-            </template>
-          </el-table-column>
           <!--   编辑与删除   -->
           <el-table-column label="操作" width="100px" align="left">
             <template slot-scope="scope">
@@ -133,36 +128,18 @@
           label-width="80px"
         >
           <el-row :gutter="24">
-            <el-col v-show="type == 0" :span="12">
-              <el-form-item label="上级组织">
-                <treeselect
-                  v-model="form.pid"
-                  :options="menus"
-                  :load-options="loadMenus"
-                  placeholder="顶级"
+            <el-col :span="24">
+              <el-form-item label="上级组织" ref="deptRef">
+                <tree-select
+                  :data="deptEntity"
+                  :value="form.parent_id"
+                  v-model="form.parent_id"
+                  @select="selectTree"
+                  @clear="clearTree"
                 />
               </el-form-item>
             </el-col>
           </el-row>
-          <!-- <el-row :gutter="24">
-            <el-col :span="12">
-              <el-form-item label="是否顶级">
-                <el-radio-group v-model="type">
-                  <el-radio-button label="1">是</el-radio-button>
-                  <el-radio-button label="0">否</el-radio-button>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="部门名称" prop="department_name">
-                <el-input
-                  v-model="form.department_name"
-                  clearable
-                  placeholder="请输入部门名称"
-                />
-              </el-form-item>
-            </el-col>
-          </el-row> -->
           <el-row :gutter="24">
             <el-col :span="24">
               <el-form-item label="组织名称" prop="department_name">
@@ -187,20 +164,27 @@
           </el-row>
           <el-row :gutter="24">
             <el-col :span="24">
-              <el-form-item label="组织分类" prop="department_code">
-                <el-input
-                  v-model="form.department_code"
+              <el-form-item label="组织分类" prop="department_type">
+                <el-select
+                  v-model="form.department_type"
+                  placeholder="请选择组织分类"
                   clearable
-                  placeholder="请输入组织编码"
-                />
+                >
+                  <el-option
+                    v-for="item in department_typeList"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
               </el-form-item>
             </el-col>
           </el-row>
 
           <el-row :gutter="24">
             <el-col :span="24">
-              <el-form-item label="排序" prop="department_code">
-                <el-slider v-model="value1"></el-slider>
+              <el-form-item label="排序" prop="sort">
+                <el-slider v-model="form.sort"></el-slider>
               </el-form-item>
             </el-col>
           </el-row>
@@ -228,25 +212,26 @@
 </template>
 <script>
 import crudDepartment from "@/api/system/department";
+import { getDeptTree } from "@/api/system/department";
 import CRUD, { presenter, form } from "@crud/crud";
 import OPTOperation from "@crud/OPT.operation";
-import Treeselect from "@riophae/vue-treeselect";
-import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import { LOAD_CHILDREN_OPTIONS } from "@riophae/vue-treeselect";
+import treeSelect from "@/components/tree-select/tree-select.vue";
 const defaultForm = {
   id: null,
-  departmentName: "",
-  departmentCode: "",
-  pid: 0,
+  department_name: "",
+  department_code: "",
+  department_type:'',
+  sort:0,
+  parent_id: 0,
 };
 export default {
-  components: { Treeselect, OPTOperation },
+  components: { treeSelect, OPTOperation },
   cruds() {
     return CRUD({
       title: "组织",
       url: "/dept/getByCondition",
       crudMethod: { ...crudDepartment },
-      sort: "id",
+      sort: "sort",
     });
   },
   mixins: [presenter(), form(defaultForm)],
@@ -255,15 +240,21 @@ export default {
       type: 1,
       rules: {
         department_name: [
-          { required: true, message: "请输入部门名称", trigger: "blur" },
+          { required: true, message: "请输入部门组织名称", trigger: "blur" },
         ],
-        department_code: [
-          { required: true, message: "请输入部门编码", trigger: "blur" },
+        department_type: [
+          { required: true, message: "请输入组织类型", trigger: "blur" },
         ],
-        pid: [{ required: true, message: "请选择上级部门", trigger: "change" }],
+        sort: [{ required: true, message: "请选择排序", trigger: "blur" }],
       },
-      menus: [],
-      value1: 0,
+      deptEntity: [],
+      department_typeList:[{
+        label:'机构',
+        value:1
+      },{
+        label:'部门',
+        value:2
+      }]
     };
   },
   mounted() {
@@ -272,20 +263,8 @@ export default {
   methods: {
     // 新增与编辑前做的操作
     [CRUD.HOOK.afterToCU](crud, form) {
-      this.menus = [];
-      if (form.pid > 0) {
-        this.type = "0";
-      } else {
-        this.type = "1";
-      }
-      if (form.id != null) {
-        // this.loadMenus()
-        if (form.pid === null) {
-          form.pid = 0;
-        }
-      } else {
-        this.menus.push({ id: 0, label: "上级部门", children: null });
-      }
+      this.deptEntity = [];
+      this.getDeptAll();
     },
     getMenus(tree, treeNode, resolve) {
       const params = { pid: tree.id };
@@ -294,6 +273,21 @@ export default {
           resolve(res.result.content);
         });
       }, 100);
+    },
+    async getDeptAll() {
+      let response_data = {};
+      response_data = await getDeptTree();
+      this.deptEntity = response_data.result;
+    },
+
+    // 根据机构查询职位
+    async selectTree(data) {
+      this.crud.form.parent_id = parseInt(data.id);
+    },
+    // 根据机构查询职位
+    clearTree(data) {
+      this.crud.form.parent_id = data;
+      this.$refs.deptRef.$emit("el.form.change", data); // 重点！自定义组件使用element的form表单校验
     },
     toDelete(datas) {
       this.$confirm(`确认删除选中的${datas.length}条数据?`, "提示", {
@@ -318,25 +312,6 @@ export default {
           this.crud.doDelete(row);
         })
         .catch(() => {});
-    },
-    updateLyDeptId(data) {
-      this.defaultForm.pid = data;
-    },
-    loadMenus({ action, parentNode, callback }) {
-      if (action === LOAD_CHILDREN_OPTIONS) {
-        const params = { id: parentNode.id };
-        crudDepartment.getDeptTree(params).then((res) => {
-          parentNode.children = res.result.map(function (obj) {
-            if (!obj.leaf) {
-              obj.children = null;
-            }
-            return obj;
-          });
-          setTimeout(() => {
-            callback();
-          }, 100);
-        });
-      }
     },
   },
 };
