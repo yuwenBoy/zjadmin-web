@@ -168,7 +168,7 @@
                 <el-select
                   v-model="form.department_type"
                   placeholder="请选择组织分类"
-                  clearable
+                  clearable style="width: 100%;"
                 >
                   <el-option
                     v-for="item in department_typeList"

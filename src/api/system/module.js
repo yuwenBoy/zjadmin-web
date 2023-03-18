@@ -2,16 +2,28 @@ import { getRequest, postRequest } from '@/utils/axios'
 import request from '@/utils/request'
 
 export function add(params) {
-    return postRequest("/api/module/add", params)
-}
-
-export function edit(params) {
-    return postRequest("/api/module/edit", params)
-}
-
-export function del(params) {
-    return postRequest("/api/module/delete", params)
-}
+    return request({
+      url: "/module/add",
+      method: "post",
+      data: params
+    });
+  }
+  
+  export function edit(params) {
+    return request({
+      url: "/module/edit",
+      method: "post",
+      data: params
+    });
+  }
+  
+  export function del(params) {
+    return request({
+      url: "/module/delete",
+      method: "post",
+      data: params
+    });
+  }
 
 // 获取菜单
 export const getModuleAll = (params) => {
@@ -22,17 +34,30 @@ export const getModuleAll = (params) => {
       })
 }
 
-export const getModulePager = (params) => {
-    return getRequest('/api/module/getByCondition', params)
+// 获取全部机构
+export function getMenuAllList(params) {
+    return request({
+      url: "/module/getMenuAllList",
+      method: "get",
+      params
+    });
+  }
+
+export const getByCondition = (params) => {
+    return request({
+        url: "/module/getByCondition",
+        method: "post",
+        data: params
+      });
 }
 
-export const getMenusTree = (params) => {
-    return getRequest('/api/module/getMenusTree', params)
-}
+// export const getMenusTree = (params) => {
+//     return getRequest('/api/module/getMenusTree', params)
+// }
 
-export const getMenuSuperior = (params) => {
-    return getRequest("/api/module/getMenuSuperior", params)
-}
+// export const getMenuSuperior = (params) => {
+//     return getRequest("/api/module/getMenuSuperior", params)
+// }
 
 // 获取模块树接口
 export const getModuleTreeAll = (params) => {
@@ -62,4 +87,7 @@ export const saveOptionAuthority = (params) => {
 }
 
 
-export default { add, edit, del, getModuleAll, getModulePager, getMenusTree, getMenuSuperior, getModuleTreeAll, getModuleIdsByRoleId, saveOptionAuthority }
+export default { add, edit, del,getMenuAllList, getModuleAll, getByCondition, 
+    // getMenusTree,
+    //  getMenuSuperior,
+      getModuleTreeAll, getModuleIdsByRoleId, saveOptionAuthority }

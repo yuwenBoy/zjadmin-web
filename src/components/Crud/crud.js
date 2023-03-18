@@ -261,7 +261,6 @@ function CRUD(options) {
             }
             crud.status.add = CRUD.STATUS.PROCESSING
             crud.crudMethod.add(crud.form).then((res) => {
-                debugger
                 crud.status.add = CRUD.STATUS.NORMAL
                 crud.resetForm()
                 crud.addSuccessNotify()
