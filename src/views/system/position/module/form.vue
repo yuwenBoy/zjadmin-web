@@ -83,7 +83,7 @@ const defaultForm = {
   name: "",
   code: "",
   deptId:0,
-  sort:"",
+  sort:0,
 };
 export default {
   mixins: [form(defaultForm)],
@@ -105,9 +105,6 @@ export default {
   },
   
   methods: {
-    // updateLyDeptId(data) {
-    //   this.dept.id = data;
-    // },
     // 新增与编辑前做的操作
     [CRUD.HOOK.afterToCU](crud, form) {
       this.deptEntity = [];

@@ -49,8 +49,7 @@
           ref="table"
           :data="crud.data"
           row-key="id"
-          lazy
-          :load="getMenus"
+          default-expand-all
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
           @select="crud.selectChange"
           @select-all="crud.selectAllChange"
@@ -267,7 +266,7 @@ export default {
       this.getDeptAll();
     },
     getMenus(tree, treeNode, resolve) {
-      const params = { pid: tree.id };
+      const params = { pid: tree.id,sort:'sort' };
       setTimeout(() => {
         crudDepartment.getByCondition(params).then((res) => {
           resolve(res.result.content);

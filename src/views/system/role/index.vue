@@ -1,9 +1,7 @@
 <template>
   <div class="app-container">
-    <el-col :xs="9" :sm="6" :md="5" :lg="4" :xl="4">
-      <div class="head-container">123</div>
-    </el-col>
-    <el-col :xs="15" :sm="18" :md="19" :lg="15" :xl="20">
+    <el-row :gutter="24">
+    <el-col :xs="19" :sm="18" :md="19" :lg="19" :xl="20">
       <div class="head-container">
         <div class="content-box box-shadow">
           <div class="text item">
@@ -108,8 +106,7 @@
         </div>
       </div>
     </el-col>
-
-    <el-col :lg="5">
+    <el-col :lg="5"  :xs="5" :sm="6" :md="4" :xl="4">
       <div class="head-container">
         <el-row :gutter="24" style="margin-top: 20px">
           <el-col>
@@ -154,6 +151,7 @@
         </el-row>
       </div>
     </el-col>
+  </el-row>
   </div>
 </template>
 <script>
