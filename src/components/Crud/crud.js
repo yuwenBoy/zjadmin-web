@@ -471,8 +471,10 @@ function CRUD(options) {
                         }
                     })
                 }
+                crud.selections = selection
             } else {
                 crud.toggleRowSelection(selection, row)
+                crud.selections = []
             }
         },
         /**
@@ -482,6 +484,7 @@ function CRUD(options) {
          */
         toggleRowSelection(selection, data) {
             if (data.children) {
+                crud.getTable().toggleRowSelection(selection, false)
                 data.children.forEach(val => {
                     crud.getTable().toggleRowSelection(val, false)
                     if (val.children) {
@@ -517,18 +520,18 @@ function CRUD(options) {
                 if (!expanded) {
                     return
                 }
-                const lazyTreeNodeMap = table.store.states.lazyTreeNodeMap
-                const children = lazyTreeNodeMap[row.id]
-                row.children = children
-                children.forEach(ele => {
-                    const id = crud.getDataId(ele)
-                    if (that.dataStatus[id] === undefined) {
-                        that.dataStatus[id] = {
-                            delete: 0,
-                            edit: 0
-                        }
-                    }
-                })
+                // const lazyTreeNodeMap = table.store.states.lazyTreeNodeMap
+                // const children = lazyTreeNodeMap[row.id]
+                // row.children = children
+                // children.forEach(ele => {
+                //     const id = crud.getDataId(ele)
+                //     if (that.dataStatus[id] === undefined) {
+                //         that.dataStatus[id] = {
+                //             delete: 0,
+                //             edit: 0
+                //         }
+                //     }
+                // })
             })
         }
     }

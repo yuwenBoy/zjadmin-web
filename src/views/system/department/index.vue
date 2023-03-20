@@ -4,7 +4,7 @@
       <div class="content-box box-shadow">
         <div class="text item">
           <el-row :gutter="24">
-            <el-col :span="10" style="text-align: left">
+            <el-col :span="6.8">
               <el-form label-width="0px" inline>
                 <el-form-item>
                   <el-input
@@ -18,7 +18,17 @@
                 <OPTOperation />
               </el-form>
             </el-col>
-            <el-col :push="10" :span="4">
+            <el-col :span="1.2">
+              <el-button
+                  type="info"
+                  round
+                  icon="el-icon-sort"
+                  size="mini"
+                  @click="toggleExpandAll"
+                  >展开/折叠</el-button
+                >
+            </el-col>
+            <el-col :push="11" :span="3.5">
               <el-button
                 v-if="crud.optShow.add"
                 v-authority="['dept:add']"
@@ -42,20 +52,21 @@
                 @click="toDelete(crud.selections)"
                 >删除</el-button
               >
+            {{ crud.selections.length }}
             </el-col>
           </el-row>
         </div>
         <el-table
+          v-if="refreshTable"
           ref="table"
           :data="crud.data"
           row-key="id"
-          default-expand-all
+          :default-expand-all="isExpandAll"
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
           @select="crud.selectChange"
           @select-all="crud.selectAllChange"
-          @selection-change="crud.selectionChangeHandler"
         >
-          <el-table-column type="selection" width="55" align="center" />
+          <el-table-column type="selection" width="55" align="center" :reserve-selection="true" />
           <el-table-column
             type="index"
             label="序号"
@@ -167,7 +178,8 @@
                 <el-select
                   v-model="form.department_type"
                   placeholder="请选择组织分类"
-                  clearable style="width: 100%;"
+                  clearable
+                  style="width: 100%"
                 >
                   <el-option
                     v-for="item in department_typeList"
@@ -219,8 +231,8 @@ const defaultForm = {
   id: null,
   department_name: "",
   department_code: "",
-  department_type:'',
-  sort:0,
+  department_type: "",
+  sort: 0,
   parent_id: 0,
 };
 export default {
@@ -236,7 +248,11 @@ export default {
   mixins: [presenter(), form(defaultForm)],
   data() {
     return {
-      type: 1,
+      // type: 1,
+      // 是否展开，默认全部展开
+      isExpandAll: true,
+      // 重新渲染表格状态
+      refreshTable: true,
       rules: {
         department_name: [
           { required: true, message: "请输入部门组织名称", trigger: "blur" },
@@ -247,13 +263,16 @@ export default {
         sort: [{ required: true, message: "请选择排序", trigger: "blur" }],
       },
       deptEntity: [],
-      department_typeList:[{
-        label:'机构',
-        value:1
-      },{
-        label:'部门',
-        value:2
-      }]
+      department_typeList: [
+        {
+          label: "机构",
+          value: 1,
+        },
+        {
+          label: "部门",
+          value: 2,
+        },
+      ],
     };
   },
   mounted() {
@@ -266,7 +285,7 @@ export default {
       this.getDeptAll();
     },
     getMenus(tree, treeNode, resolve) {
-      const params = { pid: tree.id,sort:'sort' };
+      const params = { pid: tree.id, sort: "sort" };
       setTimeout(() => {
         crudDepartment.getByCondition(params).then((res) => {
           resolve(res.result.content);
@@ -311,6 +330,15 @@ export default {
           this.crud.doDelete(row);
         })
         .catch(() => {});
+    },
+
+    /** 展开/折叠操作 */
+    toggleExpandAll() {
+      this.refreshTable = false;
+      this.isExpandAll = !this.isExpandAll;
+      this.$nextTick(() => {
+        this.refreshTable = true;
+      });
     },
   },
 };

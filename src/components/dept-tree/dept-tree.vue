@@ -65,26 +65,6 @@ export default {
     };
   },
   methods: {
-    /**
-     * 将数值转换成树形展示
-     */
-    arrayToTree(arr, pid) {
-      return arr.reduce((res, current) => {
-        if (current["parent_id"] == pid) {
-          let obj = { name: "", label: "" };
-          obj.name = current["label"];
-          obj.label = current["label"];
-          obj.id = current["id"];
-          obj.pid = current["parent_id"];
-          obj.children = this.arrayToTree(arr, current["id"]);
-          if (arr.filter((t) => t.parent_id == current["id"]).length == 0) {
-            obj.children = undefined;
-          }
-          return res.concat(obj);
-        }
-        return res;
-      }, []);
-    },
     handleNodeClick(data) {
       this.$emit("change", data);
     },
@@ -100,7 +80,8 @@ export default {
   },
   watch: {
     data(val, oldVal) {
-      this.treeList = this.arrayToTree(val, 0);
+      this.treeList = val;
+      // this.treeList = this.arrayToTree(val, 0);
     },
     checkValue(val, oldVal) {
       console.log(val);     // 清空菜单的选中

@@ -4,7 +4,7 @@
       <div class="content-box box-shadow">
         <div class="text item">
           <el-row :gutter="24">
-            <el-col :span="8">
+            <el-col :span="6.8">
               <el-form label-width="0px" inline>
                 <el-form-item>
                   <el-input
@@ -18,7 +18,17 @@
                 <OPTOperation />
               </el-form>
             </el-col>
-            <el-col :span="4" :push="12">
+            <el-col :span="1.2">
+              <el-button
+                  type="info"
+                  round
+                  icon="el-icon-sort"
+                  size="mini"
+                  @click="toggleExpandAll"
+                  >展开/折叠</el-button
+                >
+            </el-col>
+            <el-col :span="3.5" :push="11">
               <el-button
                 v-if="crud.optShow.add"
                 v-authority="['module:add']"
@@ -47,12 +57,11 @@
         </div>
         <!--表格渲染-->
         <el-table
+          v-if="refreshTable"
           ref="table"
           :data="crud.data"
           row-key="id"
-          lazy
-          :load="getMenus"
-          :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+          :default-expand-all="isExpandAll"
           @select="crud.selectChange"
           @select-all="crud.selectAllChange"
           @selection-change="crud.selectionChangeHandler"
@@ -111,7 +120,12 @@
               <span v-else>可见</span>
             </template>
           </el-table-column>
-          <el-table-column prop="indexNo" align="center" label="排序" width="85" />
+          <el-table-column
+            prop="indexNo"
+            align="center"
+            label="排序"
+            width="85"
+          />
           <el-table-column
             prop="createtime"
             label="创建日期"
@@ -369,6 +383,10 @@ export default {
         ],
       },
       deptEntity: [],
+      // 是否展开，默认全部展开
+      isExpandAll: false,
+      // 重新渲染表格状态
+      refreshTable: true,
     };
   },
   mounted() {
@@ -391,16 +409,8 @@ export default {
       response_data = await crudMenu.getModuleTreeAll();
       this.deptEntity = response_data.result;
     },
-    getMenus(tree, treeNode, resolve) {
-      const params = { pid: tree.id };
-      setTimeout(() => {
-        crudMenu.getByCondition(params).then((res) => {
-          resolve(res.result.content);
-        });
-      }, 100);
-    },
-     // 切换上级菜单
-     async selectTree(data) {
+    // 切换上级菜单
+    async selectTree(data) {
       this.crud.form.parent_id = parseInt(data.id);
     },
     // 清空上级菜单
@@ -434,6 +444,14 @@ export default {
           this.crud.doDelete(row);
         })
         .catch(() => {});
+    },
+     /** 展开/折叠操作 */
+     toggleExpandAll() {
+      this.refreshTable = false;
+      this.isExpandAll = !this.isExpandAll;
+      this.$nextTick(() => {
+        this.refreshTable = true;
+      });
     },
   },
 };
