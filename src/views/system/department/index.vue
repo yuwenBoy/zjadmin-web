@@ -223,7 +223,7 @@
 </template>
 <script>
 import crudDepartment from "@/api/system/department";
-import { getDeptTree } from "@/api/system/department";
+import { getDeptAll } from "@/api/system/department";
 import CRUD, { presenter, form } from "@crud/crud";
 import OPTOperation from "@crud/OPT.operation";
 import treeSelect from "@/components/tree-select/tree-select.vue";
@@ -282,7 +282,7 @@ export default {
     // 新增与编辑前做的操作
     [CRUD.HOOK.afterToCU](crud, form) {
       this.deptEntity = [];
-      this.getDeptAll();
+      this.getDeptAllApi();
     },
     getMenus(tree, treeNode, resolve) {
       const params = { pid: tree.id, sort: "sort" };
@@ -292,9 +292,9 @@ export default {
         });
       }, 100);
     },
-    async getDeptAll() {
+    async getDeptAllApi() {
       let response_data = {};
-      response_data = await getDeptTree();
+      response_data = await getDeptAll();
       this.deptEntity = response_data.result;
     },
 

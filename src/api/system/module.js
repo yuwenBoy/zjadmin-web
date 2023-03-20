@@ -60,9 +60,9 @@ export const getByCondition = (params) => {
 // }
 
 // 获取模块树接口
-export const getModuleTreeAll = (params) => {
+export const getModuleList = (params) => {
     return request({
-        url:'/module/getModuleTreeAll',
+        url:'/module/getModuleList',
         method:'get',
         params
     })
@@ -87,7 +87,4 @@ export const saveOptionAuthority = (params) => {
 }
 
 
-export default { add, edit, del,getMenuAllList, getModuleAll, getByCondition, 
-    // getMenusTree,
-    //  getMenuSuperior,
-      getModuleTreeAll, getModuleIdsByRoleId, saveOptionAuthority }
+export default { add, edit, del,getMenuAllList, getModuleAll, getByCondition, getModuleList, getModuleIdsByRoleId, saveOptionAuthority }

@@ -1,9 +1,18 @@
 import request from "@/utils/request";
 
-// 获取全部机构
+// 获取全部机构树结构
 export function getDeptTree(params) {
   return request({
     url: "/dept/getDeptTree",
+    method: "get",
+    params
+  });
+}
+
+// 获取全部机构
+export function getDeptAll(params) {
+  return request({
+    url: "/dept/getDeptAll",
     method: "get",
     params
   });

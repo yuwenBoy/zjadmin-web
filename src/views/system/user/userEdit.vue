@@ -150,7 +150,7 @@
 import { form } from "@crud/crud";
 import CRUD, { presenter } from "@crud/crud";
 import treeSelect from "@/components/tree-select/tree-select.vue";
-import { getDeptTree } from "@/api/system/department";
+import { getDeptAll } from "@/api/system/department";
 import { getPositionByDeptId } from "@/api/system/position";
 const defaultForm = {
   id: null,
@@ -211,7 +211,7 @@ export default {
   methods: {
     // 新增与编辑前做的操作
     [CRUD.HOOK.afterToCU](crud, form) {
-      this.getDeptAll();
+      this.getDeptAllApi();
       this.deptEntity = [];
       this.positionList = [];
       if (!form.id) {
@@ -221,9 +221,9 @@ export default {
       }
     },
 
-    async getDeptAll() {
+    async getDeptAllApi() {
       let response_data = {};
-      response_data = await getDeptTree();
+      response_data = await getDeptAll();
       this.deptEntity = response_data.result;
     },
 

@@ -396,7 +396,7 @@ export default {
     // 新增与编辑前做的操作
     [CRUD.HOOK.afterToCU](crud, form) {
       this.deptEntity = [];
-      this.getDeptAll();
+      this.getDoduleAllApi();
       if (form.id != null) {
         if (form.pid === null) {
           form.pid = 0;
@@ -404,9 +404,9 @@ export default {
       } else {
       }
     },
-    async getDeptAll() {
+    async getDoduleAllApi() {
       let response_data = {};
-      response_data = await crudMenu.getModuleTreeAll();
+      response_data = await crudMenu.getModuleList();
       this.deptEntity = response_data.result;
     },
     // 切换上级菜单
