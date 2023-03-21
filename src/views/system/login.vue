@@ -39,6 +39,7 @@
 
 <script>
 import { encrypt } from '@/utils/rsaEncrypt'
+import { hashSync} from 'bcryptjs';
 import { initCode } from '@/api/index'
 import Config from '@/settings'
 import Cookies from 'js-cookie'
@@ -122,9 +123,9 @@ export default {
           code: this.loginForm.code,
           uuid: this.loginForm.uuid
         }
-        // if (user.password !== this.cookiePass) {
-        //   user.password = encrypt(user.password)
-        // }
+        if (user.password !== this.cookiePass) {
+          user.password =  hashSync(user.password,11);//encrypt(user.password)
+        }
         if (valid) {
           this.loading = true
           if (user.rememberMe) {

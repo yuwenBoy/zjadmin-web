@@ -237,6 +237,8 @@ export default {
         let res = {};
         res = await getPositionByDeptId({ deptId: data.id });
         this.positionList = res.result;
+      }else{
+        this.positionList = [];
       }
     },
     // 根据机构查询职位

@@ -36,6 +36,7 @@
     "@riophae/vue-treeselect": "0.4.0",
     "@vue/babel-plugin-transform-vue-jsx": "^1.2.1",
     "axios": "0.18.1",
+    "bcryptjs": "^2.4.3",
     "clipboard": "2.0.4",
     "codemirror": "^5.49.2",
     "connect": "3.6.6",
