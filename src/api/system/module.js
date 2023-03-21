@@ -86,5 +86,14 @@ export const saveOptionAuthority = (params) => {
     })
 }
 
+// 获取全部资源
+export function getModuleTreeAll(params) {
+    return request({
+      url: "/module/getModuleTreeAll",
+      method: "get",
+      params
+    });
+  }
 
-export default { add, edit, del,getMenuAllList, getModuleAll, getByCondition, getModuleList, getModuleIdsByRoleId, saveOptionAuthority }
+
+export default { add, edit, del,getMenuAllList,getModuleTreeAll, getModuleAll, getByCondition, getModuleList, getModuleIdsByRoleId, saveOptionAuthority }

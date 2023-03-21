@@ -19,7 +19,7 @@ function startLoading() {
 // 全局loading加载完毕
 function endLoading() {
   loading.close()
-}
+}  
 
 // 创建axios实例
 const service = axios.create({
