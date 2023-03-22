@@ -160,6 +160,7 @@ const defaultForm = {
   email: "",
   phone: "",
   address: "",
+  nick_name:'',
   sex: "1",
   // disabled: 0,
   dept_id: {

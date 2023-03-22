@@ -5,7 +5,7 @@
         <el-form label-width="0px" inline>
           <el-form-item>
             <el-input
-              v-model="crud.query.name"
+              v-model.trim="crud.query.name"
               clearable
               size="small"
               placeholder="请输入职位名称搜索"
