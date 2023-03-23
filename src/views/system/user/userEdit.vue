@@ -7,7 +7,8 @@
     direction="rtl"
     size="40%"
     :visible="crud.status.cu > 0"
-    :title="crud.status.title">
+    :title="crud.status.title"
+  >
     <div class="xin-content">
       <el-form
         ref="form"
@@ -15,7 +16,8 @@
         :rules="rules"
         size="small"
         label-position="top"
-        label-width="80px">
+        label-width="80px"
+      >
         <el-row :gutter="24">
           <el-col :span="12">
             <el-form-item label="账号:" prop="username">
@@ -97,20 +99,20 @@
         </el-row>
         <el-row :gutter="24">
           <el-col :span="8">
-            <el-form-item label="选择机构" prop="dept_id.id" ref="deptRef">
+            <el-form-item label="选择机构" prop="deptId.id" ref="deptRef">
               <tree-select
                 :data="deptEntity"
-                :value="form.dept_id.id"
-                v-model="form.dept_id.id"
+                :value="form.deptId.id"
+                v-model="form.deptId.id"
                 @select="selectTree"
                 @clear="clearTree"
               />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="职位" prop="position_id.id">
+            <el-form-item label="职位" prop="positionId.id">
               <el-select
-                v-model="form.position_id.id"
+                v-model="form.positionId.id"
                 placeholder="请选择"
                 clearable
               >
@@ -160,13 +162,13 @@ const defaultForm = {
   email: "",
   phone: "",
   address: "",
-  nick_name:'',
+  nick_name: "",
   sex: "1",
   // disabled: 0,
-  dept_id: {
+  deptId: {
     id: 0,
   },
-  position_id: {
+  positionId: {
     id: "",
   },
   birthday: "",
@@ -196,10 +198,10 @@ export default {
           { required: true, message: "请输入登录账号", trigger: "blur" },
         ],
         cname: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-        "position_id.id": [
+        "positionId.id": [
           { required: true, message: "请选择职位", trigger: "change" },
         ],
-        "dept_id.id": [
+        "deptId.id": [
           { required: true, message: "请选择机构", trigger: "change" },
         ],
       },
@@ -212,12 +214,14 @@ export default {
   methods: {
     // 新增与编辑前做的操作
     [CRUD.HOOK.afterToCU](crud, form) {
-      this.getDeptAllApi();
       this.deptEntity = [];
       this.positionList = [];
+      this.getDeptAllApi();
+
       if (!form.id) {
       } else {
         form.dept_id.type = form.dept_id.department_type;
+        form.positionId.id = form.position_id.id;
         this.selectTree(form.dept_id);
       }
     },
@@ -230,7 +234,7 @@ export default {
 
     // 根据机构查询职位
     async selectTree(data) {
-      this.crud.form.dept_id.id = parseInt(data.id);
+      this.crud.form.deptId.id = parseInt(data.id);
       this.$nextTick(() => {
         this.$refs.deptRef.$emit("el.form.change", data.id); // 重点！自定义组件使用element的form表单校验
       });
@@ -238,34 +242,34 @@ export default {
         let res = {};
         res = await getPositionByDeptId({ deptId: data.id });
         this.positionList = res.result;
-      }else{
+      } else {
         this.positionList = [];
       }
     },
     // 根据机构查询职位
     clearTree(data) {
-      this.crud.form.dept_id.id = data;
+      this.crud.form.deptId.id = data;
       this.$refs.deptRef.$emit("el.form.change", data); // 重点！自定义组件使用element的form表单校验
       this.positionList = [];
     },
 
     // 提交前做的操作
     [CRUD.HOOK.afterValidateCU](crud) {
-      if (!crud.form.dept_id.id) {
+      crud.form.dept_id = crud.form.deptId.id;
+      crud.form.position_id = crud.form.positionId.id;
+      if (!crud.form.dept_id) {
         this.$message({
           message: "机构不能为空",
           type: "warning",
         });
         return false;
-      } else if (!crud.form.position_id.id) {
+      } else if (!crud.form.position_id) {
         this.$message({
           message: "职位不能为空",
           type: "warning",
         });
         return false;
       }
-      crud.form.dept_id = crud.form.dept_id.id;
-      crud.form.position_id = crud.form.position_id.id;
       return true;
     },
   },
