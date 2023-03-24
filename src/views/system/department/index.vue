@@ -20,13 +20,13 @@
             </el-col>
             <el-col :span="1.2">
               <el-button
-                  type="info"
-                  round
-                  icon="el-icon-sort"
-                  size="mini"
-                  @click="toggleExpandAll"
-                  >展开/折叠</el-button
-                >
+                type="info"
+                round
+                icon="el-icon-sort"
+                size="mini"
+                @click="toggleExpandAll"
+                >展开/折叠</el-button
+              >
             </el-col>
             <el-col :push="11" :span="3.5">
               <el-button
@@ -52,7 +52,6 @@
                 @click="toDelete(crud.selections)"
                 >删除</el-button
               >
-            {{ crud.selections.length }}
             </el-col>
           </el-row>
         </div>
@@ -66,7 +65,12 @@
           @select="crud.selectChange"
           @select-all="crud.selectAllChange"
         >
-          <el-table-column type="selection" width="55" align="center" :reserve-selection="true" />
+          <el-table-column
+            type="selection"
+            width="55"
+            align="center"
+            :reserve-selection="true"
+          />
           <el-table-column
             type="index"
             label="序号"
@@ -82,20 +86,11 @@
             :show-overflow-tooltip="true"
             label="组织编码"
             prop="department_code"
-            width="235"
+            width="150"
           />
-          <el-table-column
-            :show-overflow-tooltip="true"
-            label="分类"
-            prop="typeName"
-            width="135"
-          />
-          <el-table-column
-            :show-overflow-tooltip="true"
-            label="排序"
-            prop="sort"
-            width="135"
-          />
+          <el-table-column label="分类" prop="typeName" width="80" />
+          <el-table-column label="排序" prop="sort" width="80" />
+          <el-table-column prop="create_time" label="创建时间" width="145" />
           <!--   编辑与删除   -->
           <el-table-column label="操作" width="100px" align="left">
             <template slot-scope="scope">

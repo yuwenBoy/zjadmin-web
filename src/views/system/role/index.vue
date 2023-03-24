@@ -1,157 +1,143 @@
 <template>
   <div class="app-container">
     <el-row :gutter="24">
-    <el-col :xs="19" :sm="18" :md="19" :lg="19" :xl="20">
-      <div class="head-container">
-        <div class="content-box box-shadow">
-          <div class="text item">
-            <el-row :gutter="24">
-              <el-col :span="24">
-                <el-row :gutter="24">
-                  <el-col :span="14">
-                    <el-form label-width="0px" inline>
-                      <el-form-item>
-                        <el-input
-                          v-model="crud.query.name"
-                          clearable
-                          size="small"
-                          placeholder="请输入角色名称，编码"
-                          class="filter-item"
-                        />
-                      </el-form-item>
-                      <OPTOperation />
-                    </el-form>
-                  </el-col>
-                  <el-col :push="4" :span="6">
-                    <el-button
-                      v-if="crud.optShow.add"
-                      v-authority="['role:add']"
-                      class="filter-item"
-                      round
-                      size="mini"
-                      type="primary"
-                      icon="el-icon-plus"
-                      @click="crud.toAdd"
-                      >新增</el-button
-                    >
-                    <el-button
-                      v-authority="['role:delete']"
-                      class="filter-item"
-                      round
-                      type="danger"
-                      icon="el-icon-delete"
-                      size="mini"
-                      :loading="crud.delAllLoading"
-                      :disabled="crud.selections.length === 0"
-                      @click="toDelete(crud.selections)"
-                      >删除</el-button
-                    >
-                  </el-col>
-                </el-row>
-                <el-table
-                  ref="table"
-                  :data="crud.data"
-                  highlight-current-row
-                  @selection-change="crud.selectionChangeHandler"
-                  @current-change="handleCurrentChange"
-                >
-                  <el-table-column type="selection" align="center" width="55" />
-                  <el-table-column
-                    type="index"
-                    label="序号"
-                    align="center"
-                    width="50"
-                  />
-                  <el-table-column prop="name" label="角色名称" />
-                  <!-- <el-table-column prop="code" label="角色编码" /> -->
-                  <!-- <el-table-column prop="createtime" label="创建日期" width="145">
-                  <template slot-scope="scope">
-                    <span>{{ parseTime(scope.row.createtime) }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="remark" label="备注" show-overflow-tooltip /> -->
-                  <!--   编辑与删除   -->
-                  <el-table-column label="操作" align="left" width="170">
-                    <template slot-scope="scope">
-                      <el-link
-                        v-authority="['role:edit']"
-                        type="info"
-                        :underline="false"
-                        @click="crud.toEdit(scope.row)"
-                        >编辑</el-link
+      <el-col :xs="19" :sm="18" :md="19" :lg="19" :xl="20">
+        <div class="head-container">
+          <div class="content-box box-shadow">
+            <div class="text item">
+              <el-row :gutter="24">
+                <el-col :span="24">
+                  <el-row :gutter="24">
+                    <el-col :span="14">
+                      <el-form label-width="0px" inline>
+                        <el-form-item>
+                          <el-input
+                            v-model="crud.query.name"
+                            clearable
+                            size="small"
+                            placeholder="请输入角色名称，编码"
+                            class="filter-item"
+                          />
+                        </el-form-item>
+                        <OPTOperation />
+                      </el-form>
+                    </el-col>
+                    <el-col :push="3" :span="7.2">
+                      <el-button
+                        v-if="crud.optShow.add"
+                        v-authority="['role:add']"
+                        class="filter-item"
+                        round
+                        size="mini"
+                        type="primary"
+                        icon="el-icon-plus"
+                        @click="crud.toAdd"
+                        >新增</el-button
                       >
-                      <el-link
+                      <el-button
                         v-authority="['role:delete']"
-                        type="info"
-                        :underline="false"
-                        @click="remove(scope.row)"
-                        >删除</el-link
+                        class="filter-item"
+                        round
+                        type="danger"
+                        icon="el-icon-delete"
+                        size="mini"
+                        :loading="crud.delAllLoading"
+                        :disabled="crud.selections.length === 0"
+                        @click="toDelete(crud.selections)"
+                        >删除</el-button
                       >
-                      <el-link
-                        v-authority="['role:dataSave']"
-                        type="info"
-                        :underline="false"
-                        @click="roleDataModal(scope.row)"
-                        >数据权限</el-link
+                      <el-button
+                        v-authority="['role:save']"
+                        type="success"
+                        class="filter-item"
+                        size="mini"
+                        round
+                        :disabled="!optInfo.btnStatus"
+                        icon="el-icon-circle-plus"
+                        :loading="optInfo.loading"
+                        @click="saveRoleModule"
+                        >授权资源</el-button
                       >
-                    </template>
-                  </el-table-column>
-                </el-table>
-                <!--分页组件-->
-                <pagination />
-                <jForm />
-              </el-col>
-            </el-row>
+                    </el-col>
+                  </el-row>
+                  <el-table
+                    ref="table"
+                    :data="crud.data"
+                    highlight-current-row
+                    @selection-change="crud.selectionChangeHandler"
+                    @current-change="handleCurrentChange"
+                  >
+                    <el-table-column
+                      type="selection"
+                      align="center"
+                      width="55"
+                    />
+                    <el-table-column
+                      type="index"
+                      label="序号"
+                      align="center"
+                      width="50"
+                    />
+                    <el-table-column prop="name" label="角色名称" />
+                    <el-table-column prop="code" label="角色编码" />
+                    <el-table-column
+                      prop="create_time"
+                      label="创建时间"
+                      width="145" />
+                    <el-table-column
+                      prop="remark"
+                      label="备注"
+                      show-overflow-tooltip
+                    />
+                    <!--   编辑与删除   -->
+                    <el-table-column label="操作" align="left" width="170">
+                      <template slot-scope="scope">
+                        <el-link
+                          v-authority="['role:edit']"
+                          type="info"
+                          :underline="false"
+                          @click="crud.toEdit(scope.row)"
+                          >编辑</el-link
+                        >
+                        <el-link
+                          v-authority="['role:delete']"
+                          type="info"
+                          :underline="false"
+                          @click="remove(scope.row)"
+                          >删除</el-link
+                        >
+                        <el-link
+                          v-authority="['role:dataSave']"
+                          type="info"
+                          :underline="false"
+                          @click="roleDataModal(scope.row)"
+                          >数据权限</el-link
+                        >
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                  <!--分页组件-->
+                  <pagination />
+                  <jForm />
+                </el-col>
+              </el-row>
+            </div>
           </div>
         </div>
-      </div>
-    </el-col>
-    <el-col :lg="5"  :xs="5" :sm="6" :md="4" :xl="4">
-      <div class="head-container">
-        <el-row :gutter="24" style="margin-top: 20px">
-          <el-col>
-            <el-button
-              v-authority="['role:save']"
-              type="success"
-              size="mini"
-              round
-              :disabled="!optInfo.btnStatus"
-              icon="el-icon-circle-plus"
-              :loading="optInfo.loading"
-              @click="saveRoleModule"
-              >保存</el-button
-            >
-          </el-col>
-          <el-col :span="24">
-            <dept-tree
-              title="分配功能权限"
-              showCheckBox
-              checkStrictly
-              :data="menuEntity"
-               ref="deptTree"
-              :checkValue="setCheckList"
-            />
-            <!-- <el-input
-              v-model="optInfo.filterText"
-              placeholder="输入关键字进行过滤"
-              clearable
-              prefix-icon="el-icon-search"
-            />
-            <el-tree
-              ref="tree"
-              :data="optInfo.menuList"
-              show-checkbox
-              check-strictly
-              :default-checked-keys="optInfo.defaultCheck"
-              node-key="id"
-              :props="optInfo.defaultProps"
-              :filter-node-method="filterNode"
-            /> -->
-          </el-col>
-        </el-row>
-      </div>
-    </el-col>
-  </el-row>
+      </el-col>
+      <el-col :lg="5" :xs="5" :sm="6" :md="4" :xl="4">
+        <div style="padding-top: 10px">
+          <dept-tree
+            title="授权资源"
+            showCheckBox
+            checkStrictly
+            :data="menuEntity"
+            ref="deptTree"
+            :checkValue="setCheckList"
+          />
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script>
@@ -342,7 +328,9 @@ export default {
         roleModule.moduleId.push(nodeList[i].id);
       }
       this.optInfo.loading = true;
-      api.saveOptionAuthority(roleModule).then((res) => {
+      api
+        .saveOptionAuthority(roleModule)
+        .then((res) => {
           if (res.success) {
             Notification.success({
               title: "保存成功",

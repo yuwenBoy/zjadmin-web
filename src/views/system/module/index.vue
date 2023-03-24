@@ -127,15 +127,10 @@
             width="85"
           />
           <el-table-column
-            prop="createtime"
-            label="创建日期"
+            prop="create_time"
+            label="创建时间"
             width="135"
-            align="center"
-          >
-            <template slot-scope="scope">
-              <span>{{ parseTime(scope.row.createtime) }}</span>
-            </template>
-          </el-table-column>
+            align="center" />
           <el-table-column label="操作" width="100px" align="left">
             <template slot-scope="scope">
               <el-link

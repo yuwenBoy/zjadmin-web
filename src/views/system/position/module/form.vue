@@ -40,7 +40,7 @@
         </el-row>
         <el-row :gutter="24">
           <el-col :span="24">
-            <el-form-item label="职位编号" prop="code">
+            <el-form-item label="职位编号">
               <el-input v-model="form.code" />
             </el-form-item>
           </el-col>
@@ -92,7 +92,6 @@ export default {
     return {
       rules: {
         name: [{ required: true, message: "请输入职位名称", trigger: "blur" }],
-        code: [{ required: true, message: "请输入职位编号", trigger: "blur" }],
         deptId: [
           { required: true, message: "请选择组织名称", trigger: "change" },
         ],

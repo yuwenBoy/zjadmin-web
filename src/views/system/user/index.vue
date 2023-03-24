@@ -2,22 +2,23 @@
   <div class="app-container">
     <el-row :gutter="24">
       <el-col :xs="9" :sm="6" :md="5" :lg="4" :xl="4">
-        <div style="padding-top:10px;">
+        <div style="padding-top: 10px">
           <dept-tree :data="deptEntity" :checkValue="[]" @change="change" />
         </div>
       </el-col>
-      <el-col :xs="15" :sm="18" :md="20" :lg="20" :xl="20" style="padding-left:0px;">
+      <el-col
+        :xs="15"
+        :sm="18"
+        :md="20"
+        :lg="20"
+        :xl="20"
+        style="padding-left: 0px"
+      >
         <div class="head-container">
           <div class="content-box box-shadow">
             <div class="text item">
               <el-row :gutter="24">
-                <el-col
-                  :xs="15"
-                  :sm="14"
-                  :md="18"
-                  :lg="18"
-                  :xl="1"
-                >
+                <el-col :xs="15" :sm="14" :md="18" :lg="18" :xl="1">
                   <el-form label-width="0px" inline>
                     <el-form-item>
                       <el-input
@@ -52,7 +53,14 @@
                     <OPTOperation />
                   </el-form>
                 </el-col>
-                 <el-col :xs="9" :sm="8" :md="6" :lg="6" :xl="2"  style="text-align: right">
+                <el-col
+                  :xs="9"
+                  :sm="8"
+                  :md="6"
+                  :lg="6"
+                  :xl="2"
+                  style="text-align: right"
+                >
                   <el-button
                     v-if="crud.optShow.add"
                     v-authority="['user:add']"
@@ -74,7 +82,8 @@
                     :loading="crud.delAllLoading"
                     :disabled="crud.selections.length === 0"
                     @click="toDelete(crud.selections)"
-                    >删除</el-button>
+                    >删除</el-button
+                  >
                 </el-col>
               </el-row>
             </div>
@@ -96,17 +105,31 @@
                 align="center"
                 width="50"
               /> -->
-              <el-table-column
-            prop="avatar"
-            label="头像" width="80"
-          >
-            <template slot-scope="scope">
-              <div style="width:32px;height:32px;border-radius:50%;background:#0cded4;line-height:32px;text-align:center;font-size:12px;color:#fff;border:1px solid #0cded4;">
-                <span v-if="scope.row.cname.length>2">{{scope.row.cname.substr(scope.row.cname.length-2,scope.row.cname.length-1)}}</span>
-                <span v-else>{{scope.row.cname}}</span>
-              </div>
-            </template>
-          </el-table-column>
+              <el-table-column prop="avatar" label="头像" width="80">
+                <template slot-scope="scope">
+                  <div
+                    style="
+                      width: 32px;
+                      height: 32px;
+                      border-radius: 50%;
+                      background: #0cded4;
+                      line-height: 32px;
+                      text-align: center;
+                      font-size: 12px;
+                      color: #fff;
+                      border: 1px solid #0cded4;
+                    "
+                  >
+                    <span v-if="scope.row.cname.length > 2">{{
+                      scope.row.cname.substr(
+                        scope.row.cname.length - 2,
+                        scope.row.cname.length - 1
+                      )
+                    }}</span>
+                    <span v-else>{{ scope.row.cname }}</span>
+                  </div>
+                </template>
+              </el-table-column>
               <el-table-column
                 prop="username"
                 width="120"
@@ -139,31 +162,44 @@
               {{ scope.row.dept.departmentName }}<span>/</span>{{ scope.row.position.name }}
             </template>
           </el-table-column> -->
-              <el-table-column prop="" label="手机号" width="120" align="center">
-       
+              <el-table-column
+                prop=""
+                label="手机号"
+                width="120"
+                align="center"
+              >
                 <template slot-scope="scope">
                   <span>{{ scope.row.phone | fmt_phone }}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="dept_id.department_name" label="机构" width="120" align="center" />
-             <el-table-column prop="position_id.name" label="职位" width="120" align="center" />
-             <el-table-column prop="disabled" label="状态" align="center">
+              <el-table-column
+                prop="dept_id.department_name"
+                label="机构"
+                width="120"
+                align="center"
+              />
+              <el-table-column
+                prop="position_id.name"
+                label="职位"
+                width="120"
+                align="center"
+              />
+              <el-table-column prop="disabled" label="状态" align="center">
                 <template slot-scope="scope">
                   <span v-if="scope.row.disabled == 1" class="text-success"
                     >正常</span
                   >
-                  <span
-                    v-else-if="scope.row.disabled == 2"
-                    class="text-warning"
+                  <span v-else-if="scope.row.disabled == 2" class="text-warning"
                     >锁定</span
                   >
                 </template>
               </el-table-column>
-              <!-- <el-table-column
+              <el-table-column
                 prop="create_time"
                 width="145"
                 label="创建时间"
-                align="center" /> -->
+                align="center"
+              />
               <!--   编辑与删除   -->
               <el-table-column label="操作" align="left" width="170">
                 <template slot-scope="scope">
@@ -272,17 +308,16 @@ export default {
       userId: 0,
       rolesIds: [],
       Avatar: Avatar,
-      deptEntity:[],
+      deptEntity: [],
     };
   },
   created() {
     this.crud.msg.add = "新增成功，默认密码：jxxqz123";
-    
   },
   computed: {
     ...mapGetters(["user"]),
   },
-  mounted(){
+  mounted() {
     this.getDeptTree();
   },
   methods: {
@@ -340,7 +375,7 @@ export default {
     getRoleData(userId) {
       var that = this;
       that.request = false;
-      getRoleAllList({userId:userId})
+      getRoleAllList({ userId: userId })
         .then((res) => {
           if (res.success) {
             that.request = true;
@@ -355,7 +390,7 @@ export default {
           reject(error);
         });
     },
- 
+
     // 关闭重置角色窗口
     resetUserRoleForm() {
       this.status = 0;
@@ -393,7 +428,7 @@ export default {
       if (data.pid === 0) {
         this.crud.query.deptId = null;
       } else {
-        this.crud.query.deptId =data.id;
+        this.crud.query.deptId = data.id;
       }
       this.crud.toQuery();
     },

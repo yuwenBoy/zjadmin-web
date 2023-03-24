@@ -34,8 +34,14 @@
                 width="50"
               />
               <el-table-column prop="name" label="职位名称" />
-              <el-table-column prop="code" label="职位编码" width="135" />
-              <el-table-column prop="sort" label="排序" width="135"/>
+              <el-table-column prop="code" label="职位编码" width="150" />
+              <el-table-column prop="sort" label="排序" width="80" />
+              <el-table-column
+                prop="create_time"
+                label="创建时间"
+                width="135"
+                align="center"
+              />
               <!--   编辑与删除   -->
               <el-table-column label="操作" width="100px" align="left">
                 <template slot-scope="scope">

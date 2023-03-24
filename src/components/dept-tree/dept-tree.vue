@@ -1,8 +1,16 @@
 <template>
   <div class="tree-content">
     <el-card>
-      <div slot="header" class="clearfix" v-if="title">
-          <span style="text-align: right;">{{ title }}</span>
+      <div slot="header" class="clearfix">
+        <span  v-if="title">{{ title }}</span>
+        <el-button :style="{'margin-left':title ? '65px':'80px'}"
+        type="primary" plain
+        round
+        icon="el-icon-sort"
+        size="mini"
+        @click="nodeExpand(isExpandAll)"
+        >展开/折叠</el-button
+      >
       </div>
       <el-input
         clearable
@@ -11,6 +19,7 @@
         placeholder="输入名称搜索"
         prefix-icon="el-icon-search"
         class="filter-item"
+        style="padding-bottom: 10px"
       />
       <el-tree
         class="child-tree"
@@ -49,10 +58,10 @@ export default {
       type: Array,
       default: [],
     },
-    title:{
-      type:String,
-      default:''
-    }
+    title: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
@@ -62,6 +71,7 @@ export default {
       isShowCheck: this.showCheckBox,
       isCheckStrictly: this.checkStrictly,
       checkList: [], // 复选框选中的值
+      isExpandAll:true,
     };
   },
   methods: {
@@ -74,9 +84,15 @@ export default {
       return data.label.indexOf(value) !== -1;
     },
     // 获取选中的数据
-    getCheckedNode(){
+    getCheckedNode() {
       return this.$refs.tree.store.getCheckedNodes();
-    }
+    },
+    nodeExpand(expend) {
+      this.isExpandAll = !expend;
+      for (var i = 0; i < this.$refs.tree.store._getAllNodes().length; i++) {
+        this.$refs.tree.store._getAllNodes()[i].expanded =  this.isExpandAll;
+      }
+    },
   },
   watch: {
     data(val, oldVal) {
@@ -84,8 +100,8 @@ export default {
       // this.treeList = this.arrayToTree(val, 0);
     },
     checkValue(val, oldVal) {
-      console.log(val);     // 清空菜单的选中
-      this.$refs.tree.setCheckedKeys([])
+      console.log(val); // 清空菜单的选中
+      this.$refs.tree.setCheckedKeys([]);
       this.checkList = val;
     },
     name(val) {
@@ -97,14 +113,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.tree-content{
-  width:100%;
-  height:100%;
+.tree-content {
+  width: 100%;
+  height: 100%;
 
-  .child-tree{
-      height: calc(100vh - 210px);
-      overflow-y: auto;
-      overflow-x: hidden;
+  .child-tree {
+    height: calc(100vh - 265px);
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 }
 </style>

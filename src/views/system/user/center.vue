@@ -44,7 +44,7 @@
               </li>
               <li>
                 <svg-icon icon-class="dept" />所属部门
-                <div class="user-right">{{ form.departmentName }}</div>
+                <div class="user-right">{{ form.departmentName }} / {{ form.positionName }}</div>
               </li>
               <li>
                 <svg-icon icon-class="phone" />手机号码
@@ -54,14 +54,14 @@
                 <svg-icon icon-class="email" />用户邮箱
                 <div class="user-right">{{ form.email }}</div>
               </li>
-              <li>
+              <!-- <li>
                 <svg-icon icon-class="anq" />安全设置
                 <div class="user-right">
                   <a @click="$refs.pass.dialog = true">修改密码</a>
                   &nbsp; &nbsp;
                   <a @click="$refs.email.dialog = true">修改邮箱</a>
                 </div>
-              </li>
+              </li> -->
             </ul>
           </div>
         </el-card>
@@ -130,6 +130,7 @@ export default {
       email: this.user.email,
       phone: this.user.phone,
       departmentName: this.user.dept_id.department_name,
+      positionName:this.user.position_id.name,
     };
     if(this.user.avatar){
         this.fileName=require("../../../assets/avatar/" + this.user.avatar);
