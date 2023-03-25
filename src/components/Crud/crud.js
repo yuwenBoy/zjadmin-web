@@ -315,14 +315,21 @@ function CRUD(options) {
                 dataStatus.delete = CRUD.STATUS.PROCESSING
             }
 
-            return crud.crudMethod.del(ids).then(() => {
+            return crud.crudMethod.del(ids).then((res) => {
+               if(res.success){
                 if (delAll) {
                     crud.delAllLoading = false
                 } else dataStatus.delete = CRUD.STATUS.PREPARED
                 crud.dleChangePage(1)
-                crud.delSuccessNotify()
-                callVmHook(crud, CRUD.HOOK.afterDelete, data)
-                crud.refresh()
+               
+               }else{
+                this.$message({
+                    message: res.message,
+                    type: "error",
+                  });
+               }
+               callVmHook(crud, CRUD.HOOK.afterDelete, data)
+               crud.refresh()
             }).catch(() => {
                 if (delAll) {
                     crud.delAllLoading = false

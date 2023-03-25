@@ -322,7 +322,7 @@
               size="mini"
               icon="el-icon-circle-plus"
               @click="crud.submitCU"
-              >提交</el-button
+              >保存</el-button
             >
             <el-button
               type="default"

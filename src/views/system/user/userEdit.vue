@@ -22,6 +22,7 @@
           <el-col :span="12">
             <el-form-item label="账号:" prop="username">
               <el-input
+                :disabled="form.id>0"
                 v-model="form.username"
                 clearable
                 placeholder="请输入登录账号"
@@ -135,7 +136,7 @@
         size="mini"
         icon="el-icon-circle-plus"
         @click="crud.submitCU"
-        >提交</el-button
+        >保存</el-button
       >
       <el-button
         type="default"
@@ -164,7 +165,7 @@ const defaultForm = {
   address: "",
   nick_name: "",
   sex: "1",
-  // disabled: 0,
+  disabled: 1,
   deptId: {
     id: 0,
   },
@@ -255,6 +256,7 @@ export default {
 
     // 提交前做的操作
     [CRUD.HOOK.afterValidateCU](crud) {
+        debugger
       crud.form.dept_id = crud.form.deptId.id;
       crud.form.position_id = crud.form.positionId.id;
       if (!crud.form.dept_id) {

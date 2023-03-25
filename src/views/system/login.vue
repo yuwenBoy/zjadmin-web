@@ -10,7 +10,7 @@
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input ref="password" v-model="loginForm.password" type="password" auto-complete="off" placeholder="密码" @keyup.enter.native="handleLogin">
+        <el-input ref="password" v-model="loginForm.password" type="password" auto-complete="off" show-password placeholder="密码" @keyup.enter.native="handleLogin">
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
@@ -38,7 +38,6 @@
 </template>
 
 <script>
-import { encrypt } from '@/utils/rsaEncrypt'
 import { hashSync} from 'bcryptjs';
 import { initCode } from '@/api/index'
 import Config from '@/settings'
@@ -123,9 +122,9 @@ export default {
           code: this.loginForm.code,
           uuid: this.loginForm.uuid
         }
-        if (user.password !== this.cookiePass) {
-          user.password =  hashSync(user.password,11);//encrypt(user.password)
-        }
+        // if (user.password !== this.cookiePass) {
+        //   user.password =  hashSync(user.password,11);//encrypt(user.password)
+        // }
         if (valid) {
           this.loading = true
           if (user.rememberMe) {

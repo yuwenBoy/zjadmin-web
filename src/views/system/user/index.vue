@@ -186,12 +186,21 @@
               />
               <el-table-column prop="disabled" label="状态" align="center">
                 <template slot-scope="scope">
-                  <span v-if="scope.row.disabled == 1" class="text-success"
-                    >正常</span
+                  <el-tooltip
+                    :content="scope.row.disabled == 1 ? '正常' : '锁定'"
+                    placement="top"
                   >
-                  <span v-else-if="scope.row.disabled == 2" class="text-warning"
-                    >锁定</span
-                  >
+                    <el-switch
+                      v-model="scope.row.disabled"
+                      active-color="#ff4949"
+                      inactive-color="#13ce66"
+                      :active-value="2"
+                      :inactive-value="1"
+                      :disabled="scope.row.id == 19"
+                      @change="setUserDisabled(scope.row)"
+                    >
+                    </el-switch>
+                  </el-tooltip>
                 </template>
               </el-table-column>
               <el-table-column
@@ -273,7 +282,7 @@
 </template>
 <script>
 import crudUser from "@/api/system/user";
-import { setRoles } from "@/api/system/user";
+import { setRoles, UpdateUserDisabled } from "@/api/system/user";
 import { getDeptTree } from "@/api/system/department";
 import { getRoleAllList } from "@/api/system/role";
 import DeptTree from "@/components/dept-tree/dept-tree.vue";
@@ -282,7 +291,6 @@ import OPTOperation from "@crud/OPT.operation";
 import pagination from "@crud/Pagination";
 import jForm from "./userEdit";
 import { mapGetters } from "vuex";
-import { Notification } from "element-ui";
 import Avatar from "@/assets/images/avatar.png";
 export default {
   components: {
@@ -390,6 +398,43 @@ export default {
           reject(error);
         });
     },
+    /**
+     * 设置用户状态
+     */
+    setUserDisabled(data) {
+      const [id, disabled] = [data.id, data.disabled];
+
+      this.$confirm(
+        `您确定${disabled == 2 ? "锁定" : "启用"}账号【${
+          data.username
+        }】吗，操作后不可恢复`,
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }
+      )
+        .then(() => {
+          this.crud.loading = true;
+          UpdateUserDisabled({
+            id: id,
+            disabled: disabled,
+          }).then((res) => {
+            if (res.success) {
+              this.crud.loading = false;
+              this.$message({
+                message: "修改成功",
+                type: "success",
+              });
+              this.crud.refresh();
+            }
+          });
+        })
+        .catch(() => {
+          this.crud.refresh();
+        });
+    },
 
     // 关闭重置角色窗口
     resetUserRoleForm() {
@@ -407,10 +452,11 @@ export default {
         setRoles(JSON.stringify({ userId: this.userId, roles: this.roles }))
           .then((res) => {
             if (res.success) {
-              Notification.success({
-                title: "设置成功",
-                duration: 2000,
+              this.$message({
+                message: "修改成功",
+                type: "success",
               });
+
               this.resetUserRoleForm();
             } else {
               Notification.error({

@@ -40,7 +40,7 @@
           <span style="display: block" @click="show = true">
             <el-dropdown-item> 布局设置 </el-dropdown-item>
           </span>
-          <router-link to="/user/center">
+          <router-link to="/user/profile">
             <el-dropdown-item> 个人中心 </el-dropdown-item>
           </router-link>
           <span style="display: block" @click="open">

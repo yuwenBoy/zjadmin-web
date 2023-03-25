@@ -1,15 +1,8 @@
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-      <el-col
-        :xs="24"
-        :sm="24"
-        :md="8"
-        :lg="6"
-        :xl="5"
-        style="margin-bottom: 10px"
-      >
-        <el-card class="box-card">
+      <el-col :xs="24" :span="6" style="margin-bottom: 10px">
+        <el-card class="box-card" style="padding: 10px">
           <div slot="header" class="clearfix">
             <span>个人信息</span>
           </div>
@@ -35,43 +28,52 @@
               <li>
                 <div style="height: 100%">
                   <svg-icon icon-class="login" />登录账号
-                  <div class="user-right">{{ form.username }}</div>
+                  <div class="user-right">{{ user.username }}</div>
                 </div>
               </li>
               <li>
                 <svg-icon icon-class="user1" />姓名
-                <div class="user-right">{{ form.cname }}</div>
+                <div class="user-right">{{ user.cname }}</div>
               </li>
               <li>
                 <svg-icon icon-class="dept" />所属部门
-                <div class="user-right">{{ form.departmentName }} / {{ form.positionName }}</div>
+                <div class="user-right">
+                  {{ user.dept_id.department_name }} |
+                  {{ user.position_id.name }}
+                </div>
               </li>
               <li>
                 <svg-icon icon-class="phone" />手机号码
-                <div class="user-right">{{ form.phone }}</div>
+                <div class="user-right">{{ user.phone }}</div>
               </li>
               <li>
                 <svg-icon icon-class="email" />用户邮箱
-                <div class="user-right">{{ form.email }}</div>
+                <div class="user-right">{{ user.email }}</div>
               </li>
-              <!-- <li>
-                <svg-icon icon-class="anq" />安全设置
-                <div class="user-right">
-                  <a @click="$refs.pass.dialog = true">修改密码</a>
-                  &nbsp; &nbsp;
-                  <a @click="$refs.email.dialog = true">修改邮箱</a>
-                </div>
-              </li> -->
             </ul>
           </div>
+        </el-card>
+      </el-col>
+      <el-col :span="18" :xs="24">
+        <el-card>
+          <el-tabs v-model="activeTab">
+            <el-tab-pane label="基本资料" name="userinfo">
+              <userInfo :user="user" />
+            </el-tab-pane>
+            <el-tab-pane label="修改密码" name="resetPwd">
+              <resetPwd />
+            </el-tab-pane>
+            <el-tab-pane label="快捷方式" name="">
+            </el-tab-pane>
+          </el-tabs>
         </el-card>
       </el-col>
     </el-row>
   </div>
 </template>
-
-
-<style rel="stylesheet/scss" lang="scss">
+  
+  
+  <style rel="stylesheet/scss" lang="scss" scoped>
 .avatar {
   width: 120px;
   height: 120px;
@@ -93,18 +95,21 @@
   }
 }
 </style>
-
-<script>
+  
+  <script>
 import { mapGetters } from "vuex";
-import store from "@/store";
 import Avatar from "@/assets/images/avatar.png";
 import { getToken } from "@/utils/auth";
 import myUpload from "vue-image-crop-upload";
 import { uploadUrl } from "@/utils/axios";
+import userInfo from "./userInfo";
+import resetPwd from "./resetPwd";
 export default {
   name: "Center",
   components: {
     myUpload,
+    resetPwd,
+    userInfo
   },
   data() {
     return {
@@ -114,8 +119,10 @@ export default {
         Authorization: getToken(),
       },
       form: {},
+      activeTab: "userinfo",
       uploadApi: uploadUrl,
-      fileName:null
+      fileName: null,
+      userInfo:{},
     };
   },
 
@@ -123,19 +130,9 @@ export default {
     ...mapGetters(["user", "uploadAvatarApi", "baseApi"]),
   },
   created() {
-    this.form = {
-      id: this.user.id,
-      username: this.user.username,
-      cname: this.user.cname,
-      email: this.user.email,
-      phone: this.user.phone,
-      departmentName: this.user.dept_id.department_name,
-      positionName:this.user.position_id.name,
-    };
-    if(this.user.avatar){
-        this.fileName=require("../../../assets/avatar/" + this.user.avatar);
+    if (this.user.avatar) {
+      this.fileName = null; //require("../../../assets/avatar/" + this.user.avatar);
     }
-    // store.dispatch("GetInfo").then(() => {});
   },
   methods: {
     toggleShow() {

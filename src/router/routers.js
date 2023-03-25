@@ -42,8 +42,8 @@ export const constantRouterMap = [{
   hidden: true,
   redirect: 'noredirect',
   children: [{
-    path: 'center',
-    component: (resolve) => require(['@/views/system/user/center'], resolve),
+    path: 'profile',
+    component: (resolve) => require(['@/views/system/user/profile/index'], resolve),
     name: '个人中心',
     meta: { title: '个人中心' }
   }]

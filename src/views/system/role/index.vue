@@ -83,7 +83,8 @@
                     <el-table-column
                       prop="create_time"
                       label="创建时间"
-                      width="145" />
+                      width="145"
+                    />
                     <el-table-column
                       prop="remark"
                       label="备注"
@@ -146,7 +147,6 @@ import CRUD, { presenter } from "@crud/crud";
 import pagination from "@crud/Pagination";
 import jForm from "./roleEdit";
 import api from "@/api/system/module";
-import { Notification } from "element-ui";
 import OPTOperation from "@crud/OPT.operation";
 import DeptTree from "@/components/dept-tree/dept-tree.vue";
 export default {
@@ -203,9 +203,6 @@ export default {
     };
   },
   watch: {
-    // "optInfo.filterText"(val) {
-    //   this.$refs.tree.filter(val);
-    // },
     "roleData.value"(val) {
       if (val == 2) {
         this.lazyLoad();
@@ -216,32 +213,11 @@ export default {
     this.loadModuleAll();
   },
   methods: {
-    // open(obj) {
-    //   this.nodeExpand(obj);
-    // },
     async loadModuleAll() {
       let response_data = {};
       response_data = await api.getModuleTreeAll();
       this.menuEntity = response_data.result;
     },
-    // lazyLoad(node, resolve) {
-    //   setTimeout(() => {
-    //     getDepartmentByid({
-    //       id: node === undefined ? 0 : node.value,
-    //     }).then((res) => {
-    //       if (res.success) {
-    //         const nodes = res.result.map((item) => ({
-    //           id: item.value,
-    //           label: item.label,
-    //           leaf: true, // node.level >= 10,
-    //         }));
-    //         resolve(nodes);
-    //       } else {
-    //         alert(res.message);
-    //       }
-    //     });
-    //   }, 1000);
-    // },
     toDelete(datas) {
       this.$confirm(`确认删除选中的${datas.length}条数据?`, "提示", {
         confirmButtonText: "确定",
@@ -254,29 +230,6 @@ export default {
         })
         .catch(() => {});
     },
-    // handleCommand(command) {
-    //   switch (command.command) {
-    //     case "edit":
-    //       this.crud.toEdit(command.obj);
-    //       break;
-    //     case "delete":
-    //       this.delete(command.obj);
-    //       break;
-    //     case "data":
-    //       this.roleDataModal(command.obj);
-    //       break;
-    //   }
-    // },
-    // beforeHandleCommand(item, obj) {
-    //   return {
-    //     command: item,
-    //     obj: obj,
-    //   };
-    // },
-    // filterNode(value, data) {
-    //   if (!value) return true;
-    //   return data.label.indexOf(value) !== -1;
-    // },
     nodeExpand(expend) {
       for (var i = 0; i < this.$refs.tree.store._getAllNodes().length; i++) {
         this.$refs.tree.store._getAllNodes()[i].expanded = expend;
@@ -332,9 +285,9 @@ export default {
         .saveOptionAuthority(roleModule)
         .then((res) => {
           if (res.success) {
-            Notification.success({
-              title: "保存成功",
-              duration: 5000,
+            this.$message({
+              message: "资源授权成功",
+              type: "success",
             });
             this.optInfo.loading = false;
           }
