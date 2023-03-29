@@ -2,7 +2,7 @@ import router from './routers'
 import store from '@/store'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/auth'
+import { getToken } from '@/utils/storage'
 import { getModuleAll } from '@/api/system/module'
 import { filterAsyncRouter } from '@/store/modules/permission'
 import Config from '@/settings'

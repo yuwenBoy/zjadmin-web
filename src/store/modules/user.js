@@ -1,5 +1,5 @@
 import { login, getUserInfo, logout } from '@/api/index'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken } from '@/utils/storage'
 
 const user = {
     state: {
@@ -31,9 +31,10 @@ const user = {
             const rememberMe = userInfo.rememberMe
             return new Promise((resolve, reject) => {
                 login(userInfo).then(res => {
-                    setToken(res.result.token, rememberMe)
-                    commit('SET_TOKEN', res.result.token)
-                    setUserInfo(res.result, commit)
+                    let data = res.result;
+                    setToken(data.accessToken,data.refreshToken)
+                    commit('SET_TOKEN',data.accessToken)
+                    setUserInfo(data, commit)
                         // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
                     commit('SET_LOAD_MENUS', true)
                     resolve()
