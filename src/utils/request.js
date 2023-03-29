@@ -108,18 +108,15 @@ service.interceptors.response.use(
             if (res.code === 0) {
               const data = res.result;
               setToken(data.accessToken, data.refreshToken);
-              // 队列中的请求刷新成功后，再请求一次
-              for (let i = 0, len = retryReqs.length; i < len; i++) {
-                retryReqs[i](data.accessToken);
-              }
-              // 队列请求完成，清空
-              retryReqs = [];
-              // 返回触发 401 接口正常结果
-              error.response.config.headers = {
-                ...error.response.config.headers,
-                Authorization: data.accessToken
-              };
-              return await request(error.response.config);
+              // 重新请求接口 前过期的接口
+              error.config.headers.Authorization = data.accessToken;
+              error.config.headers.withCredentials = true;
+              retryReqs.length > 0 && retryReqs.map((cb) => {
+                  cb();
+              });
+              retryReqs = [];  //注意要清空
+              error.response.config.baseURL = '';
+              return axios.request(error.response.config);
             }
           } catch (error) {
             console.log(error);
@@ -128,17 +125,15 @@ service.interceptors.response.use(
           }
         } else {
           // 刷新 token 期间，将其他请求存入队列，刷新成功之后重新请求一次
-          return new Promise((resolve, reject) => {
-            retryReqs.push(token => {
-              error.response.config.headers = {
-                ...error.response.config.headers,
-                Authorization: token
-              };
-              error.response.config.baseURL = '';
-              console.log(error.response.config);
-              resolve(request(error.response.config));
-            });
-          });
+          // 正在刷新token ,把后来的接口缓冲起来
+          return new Promise((resolve) => {
+            retryReqs.push(() => {
+                  error.config.headers.Authorization = getToken();
+                  error.config.headers.withCredentials = true;
+                  error.config.baseURL = '';
+                  resolve(axios.request(error.config));
+              });
+          })
         }
       } else if (code === 403) {
         router.push({ path: "/401" });
