@@ -1,9 +1,5 @@
 import jwtDecode from "jwt-decode"
-const AppStorageKey =  {
-    TOKEN :'JXXQZ-ADMIN-TOEKN',
-    REFRESH_TOKEN:'refresh-token',
-    REFRESH_TOKEN_EXP:'rt-exp'
-}
+import AppStorageKey from '@/settings'
 /**
  * 存储 token 顺带存储 refreshToken
  * token 过期后，会自动根据 refreshToken 刷新 token
@@ -20,6 +16,7 @@ export function setToken (token, refreshToken) {
   }
   
   export function getToken () {
+    console.log(AppStorageKey)
     return sessionStorage.getItem(AppStorageKey.TOKEN)
   }
   

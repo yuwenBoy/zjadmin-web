@@ -1,4 +1,4 @@
-import { initData } from '@/api/index'
+import { getTableData } from '@/api/base'
 import { parseTime } from '@/utils/index'
 import Vue from 'vue'
 
@@ -133,7 +133,7 @@ function CRUD(options) {
             return new Promise((resolve, reject) => {
                 crud.loading = true
                     // 请求数据
-                initData(crud.url, crud.getQueryParams()).then(data => {
+                    getTableData(crud.url, crud.getQueryParams()).then(data => {
                     if (data.code == 0) {
                         const table = crud.getTable()
                         if (table && table.lazy) { // 懒加载子节点数据，清掉已加载的数据

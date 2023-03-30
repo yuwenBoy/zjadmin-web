@@ -26,7 +26,9 @@ module.exports = {
     /**
      * @description token key
      */
-    TokenKey: 'JXXQZ-ADMIN-TOEKN',
+    TOKEN :'JXXQZ-ADMIN-TOEKN',
+    REFRESH_TOKEN:'JXXQZ-ADMIN-Refresh-Token',
+    REFRESH_TOKEN_EXP:'JXXQZ-ADMIN-RT-EXP',
     /**
      * @description 请求超时时间，毫秒（默认2分钟）
      */

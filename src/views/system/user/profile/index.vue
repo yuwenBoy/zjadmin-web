@@ -99,7 +99,7 @@
   <script>
 import { mapGetters } from "vuex";
 import Avatar from "@/assets/images/avatar.png";
-import { getToken } from "@/utils/auth";
+// import { getToken } from "@/utils/auth";
 import myUpload from "vue-image-crop-upload";
 import { uploadUrl } from "@/utils/axios";
 import userInfo from "./userInfo";
@@ -116,7 +116,7 @@ export default {
       show: false,
       Avatar: Avatar,
       headers: {
-        Authorization: getToken(),
+        // Authorization: getToken(),
       },
       form: {},
       activeTab: "userinfo",

@@ -7,7 +7,6 @@
   </div>
 </template>
 <script>
-import users from '@/api/demo'
 export default {
   name: '',
   data() {
@@ -21,11 +20,6 @@ export default {
       this.active = val
     }
   },
-  mouned() {
-    users.list().then((res) => {
-      alert(res)
-    })
-  }
 }
 </script>
 <style>

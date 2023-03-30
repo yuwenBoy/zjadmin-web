@@ -1,4 +1,3 @@
-import { getRequest, postRequest } from '@/utils/axios'
 import request from '@/utils/request'
 
 export function add(params) {

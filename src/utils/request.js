@@ -29,7 +29,7 @@ function endLoading() {
 
 // 创建axios实例
 const instance = axios.create({
-  baseURL: "basic-api", // process.env.NODE_ENV === 'production' ? process.env.VUE_APP_BASE_API : '/', // api 的 base_url
+  baseURL: process.env.VUE_APP_BASEURL,
   timeout: Config.timeout // 请求超时时间
 });
 
@@ -55,14 +55,15 @@ instance.interceptors.response.use(
   response => {
     const code = response.data.code;
     endLoading();
-    if (code != 0) {
-      Notification.error({
-        title: response.data.message
-      });
-      return Promise.reject("error");
-    } else {
-      return response.data;
-    }
+    return response.data;
+
+    // if (code != 0) {
+    //   Notification.error({
+    //     title: response.data.message
+    //   });
+    //   return Promise.reject("error");
+    // } else {
+    // }
   },
   async error => {
     const response = error.response;

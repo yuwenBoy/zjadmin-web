@@ -1,5 +1,10 @@
 import request from "@/utils/request";
 
+/**
+ * 新增用户
+ * @param {*} params
+ * @returns
+ */
 export function add(params) {
   return request({
     url: "/user/add",
@@ -8,6 +13,11 @@ export function add(params) {
   });
 }
 
+/**
+ * 编辑用户
+ * @param {*} params
+ * @returns
+ */
 export function edit(params) {
   return request({
     url: "/user/edit",
@@ -16,6 +26,11 @@ export function edit(params) {
   });
 }
 
+/**
+ * 删除用户
+ * @param {*} params
+ * @returns
+ */
 export function del(params) {
   return request({
     url: "/user/delete",
@@ -24,6 +39,9 @@ export function del(params) {
   });
 }
 
+/**
+ * 设置角色
+ */
 export function setRoles(params) {
   // return postRequest("/user/setRoles", params)
   return request({
@@ -52,11 +70,43 @@ export function UpdateUserDisabled(params) {
  * @returns
  */
 export function updateUserPwd(params) {
-    return request({
-      url: "/user/updateUserPwd",
-      method: "post",
-      data: params
-    });
-  }
+  return request({
+    url: "/user/updateUserPwd",
+    method: "post",
+    data: params
+  });
+}
 
-export default { add, edit, del, UpdateUserDisabled,updateUserPwd };
+// 登录
+export const login = params => {
+  return request({
+    url: "auth/login",
+    method: "post",
+    data: params
+  });
+};
+
+// 获取用户信息
+export const getUserInfo = params => {
+  return request({
+    url: "auth/getUserInfo",
+    method: "get",
+    data: params
+  });
+};
+
+// 退出登录
+export const logout = params => {
+  return request({ url: "auth/logout", method: "get", data: params });
+};
+
+export default {
+  login,
+  getUserInfo,
+  logout,
+  add,
+  edit,
+  del,
+  UpdateUserDisabled,
+  updateUserPwd
+};
