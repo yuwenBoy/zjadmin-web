@@ -48,6 +48,7 @@ const user = {
         GetInfo({ commit }) {
             return new Promise((resolve, reject) => {
                 getUserInfo().then(res => {
+                    debugger
                     setUserInfo(res.result, commit)
                     resolve(res.result)
                 }).catch(error => {

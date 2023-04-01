@@ -108,6 +108,7 @@
               <el-table-column prop="avatar" label="头像" width="80">
                 <template slot-scope="scope">
                   <div
+                    v-if="!scope.row.avatar"
                     style="
                       width: 32px;
                       height: 32px;
@@ -128,6 +129,14 @@
                     }}</span>
                     <span v-else>{{ scope.row.cname }}</span>
                   </div>
+                  <el-image
+                    v-else
+                      style="width: 32px;
+                      height: 32px;
+                      border-radius: 50%;
+                      line-height: 32px;
+                      text-align:center;" :src="'//localhost:9000/static/' +scope.row.avatar.split('\\')[4]"
+                      :preview-src-list="['//localhost:9000/static/' +scope.row.avatar.split('\\')[4]]"></el-image>
                 </template>
               </el-table-column>
               <el-table-column

@@ -31,7 +31,7 @@
       >
         <div class="avatar-wrapper">
           <img
-            :src="!user.avatar? Avatar : fileName"
+            :src="user.avatar ?'//localhost:9000/static/' + user.avatar.split('\\')[4] : Avatar"
             class="user-avatar"
           >
           <i class="el-icon-caret-bottom" />
@@ -76,11 +76,9 @@ export default {
       fileName: null
     }
   },
-  created() {
-    if (this.user.avatar) {
-      // this.fileName = require('../../assets/avatar/' + this.user.avatar)
-    }
-    store.dispatch('GetInfo').then(() => {})
+  mounted() {
+    this.fileName = '//localhost:9000/static/'+this.user.avatar.split('\\')[4];
+    console.log(this.fileName)
   },
   computed: {
     ...mapGetters(['sidebar', 'device', 'user', 'baseApi']),
@@ -114,6 +112,15 @@ export default {
         location.reload()
       })
     }
+  },
+  watch:{
+    user(oldVal,newVal){
+        console.log(oldVal.fileName);
+        this.fileName = '//localhost:9000/static/'+newVal.avatar.split('\\')[4];
+        console.log(this.fileName);
+    },
+    deep: true, // 深度监听
+    immediate: true, // 第一次改变就执行
   }
 }
 </script>

@@ -14,14 +14,14 @@
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
-      <el-form-item prop="code">
+      <!-- <el-form-item prop="code">
         <el-input v-model="loginForm.code" auto-complete="off" placeholder="验证码" style="width: 63%" @keyup.enter.native="handleLogin">
           <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
         </el-input>
         <div class="login-code">
           <img :src="codeUrl" @click="getCode">
         </div>
-      </el-form-item>
+      </el-form-item> -->
       <el-checkbox v-model="loginForm.rememberMe" style="margin:0 0 25px 0;">
         记住我
       </el-checkbox>
@@ -79,7 +79,7 @@ export default {
   created() {
     this.getBgImages()
     // 获取验证码
-    this.getCode()
+    // this.getCode()
     // 获取用户名密码等Cookie
     this.getCookie()
     // token 过期提示
@@ -139,7 +139,7 @@ export default {
           }).catch((error) => {
             console.log(error)
             this.loading = false
-            this.getCode()
+            // this.getCode()
           })
         } else {
           console.log('error submit!!')

@@ -55,15 +55,15 @@ instance.interceptors.response.use(
   response => {
     const code = response.data.code;
     endLoading();
-    return response.data;
 
-    // if (code != 0) {
-    //   Notification.error({
-    //     title: response.data.message
-    //   });
-    //   return Promise.reject("error");
-    // } else {
-    // }
+    if (code != 0) {
+      Notification.error({
+        title: response.data.message
+      });
+      return Promise.reject("error");
+    } else {
+       return response.data;
+    }
   },
   async error => {
     const response = error.response;

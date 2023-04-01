@@ -1,5 +1,5 @@
 // 统一请求路径前缀
-let baseUrl = 'jxxqz'
+let baseUrl = 'basic-api'
 const api = {
     state: {
         // 部署包上传
@@ -11,7 +11,7 @@ const api = {
         // 图片上传
         imagesUploadApi: baseUrl + '/api/pictures',
         // 上传头像
-        uploadAvatarApi: baseUrl + '/api/user/uploadAvatar',
+        // uploadAvatarApi: baseUrl + '/oss/updateAvatar',
         // 上传文件到七牛云
         qiNiuUploadApi: baseUrl + '/api/qiNiuContent',
         // Sql 监控

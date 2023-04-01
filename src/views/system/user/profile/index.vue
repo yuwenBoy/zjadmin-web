@@ -11,14 +11,14 @@
               <div class="el-upload">
                 <img
                   title="点击上传头像"
-                  :src="user.avatar == '' || null ? Avatar : fileName"
+                  :src="fileName"
                   class="avatar"
                   @click="toggleShow"
                 />
                 <myUpload
-                  v-model="show"
+                  v-model="isDisPlay"
                   :headers="headers"
-                  :url="uploadApi"
+                  url="/basic-api/oss/updateAvatar"
                   @crop-upload-fail="cropUploadFail"
                   @crop-upload-success="cropUploadSuccess"
                 />
@@ -63,8 +63,7 @@
             <el-tab-pane label="修改密码" name="resetPwd">
               <resetPwd />
             </el-tab-pane>
-            <el-tab-pane label="快捷方式" name="">
-            </el-tab-pane>
+            <el-tab-pane label="快捷方式" name=""> </el-tab-pane>
           </el-tabs>
         </el-card>
       </el-col>
@@ -99,47 +98,50 @@
   <script>
 import { mapGetters } from "vuex";
 import Avatar from "@/assets/images/avatar.png";
-// import { getToken } from "@/utils/auth";
+import { getToken } from "@/utils/storage";
 import myUpload from "vue-image-crop-upload";
-import { uploadUrl } from "@/utils/axios";
 import userInfo from "./userInfo";
 import resetPwd from "./resetPwd";
+import store from "@/store";
 export default {
   name: "Center",
   components: {
     myUpload,
     resetPwd,
-    userInfo
+    userInfo,
   },
   data() {
     return {
-      show: false,
+      isDisPlay: false,
       Avatar: Avatar,
       headers: {
-        // Authorization: getToken(),
+        Authorization: getToken(),
       },
       form: {},
       activeTab: "userinfo",
-      uploadApi: uploadUrl,
       fileName: null,
-      userInfo:{},
+      userInfo: {},
     };
   },
 
   computed: {
-    ...mapGetters(["user", "uploadAvatarApi", "baseApi"]),
+    ...mapGetters(["user"]),
   },
-  created() {
-    if (this.user.avatar) {
-      this.fileName = null; //require("../../../assets/avatar/" + this.user.avatar);
-    }
+  mounted() {
+    this.fileName = "//localhost:9000/static/" + this.user.avatar.split("\\")[4];
   },
   methods: {
     toggleShow() {
-      this.show = !this.show;
+      this.isDisPlay = !this.isDisPlay;
     },
     cropUploadSuccess(jsonData, field) {
-      // store.dispatch("GetInfo").then(() => {});
+      store.dispatch("GetInfo").then(() => {
+        setTimeout(() => {
+          this.isDisPlay = false;
+        }, 500);
+        this.fileName = "//localhost:9000/static/" + this.user.avatar.split("\\")[4];
+        console.log(this.fileName);
+      });
     },
     //上传失败回调
     cropUploadFail(status, field) {
@@ -147,6 +149,6 @@ export default {
       console.log("上传失败状态" + status);
       console.log("field: " + field);
     },
-  },
+  }
 };
 </script>
