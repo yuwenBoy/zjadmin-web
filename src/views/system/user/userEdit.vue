@@ -166,6 +166,7 @@ const defaultForm = {
   nick_name: "",
   sex: "1",
   disabled: 1,
+  avatar:'',
   deptId: {
     id: 0,
   },
@@ -256,7 +257,6 @@ export default {
 
     // 提交前做的操作
     [CRUD.HOOK.afterValidateCU](crud) {
-        debugger
       crud.form.dept_id = crud.form.deptId.id;
       crud.form.position_id = crud.form.positionId.id;
       if (!crud.form.dept_id) {

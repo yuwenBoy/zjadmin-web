@@ -165,6 +165,8 @@ function CRUD(options) {
                 return
             }
             crud.status.add = CRUD.STATUS.PREPARED
+            crud.form.create_time = undefined;
+            crud.form.update_time = undefined;
             callVmHook(crud, CRUD.HOOK.afterToAdd, crud.form)
             callVmHook(crud, CRUD.HOOK.afterToCU, crud.form)
         },
