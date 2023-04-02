@@ -319,9 +319,8 @@ function CRUD(options) {
 
             return crud.crudMethod.del(ids).then((res) => {
                if(res.success){
-                if (delAll) {
-                    crud.delAllLoading = false
-                } else dataStatus.delete = CRUD.STATUS.PREPARED
+                crud.delAllLoading = false
+                 dataStatus.delete = CRUD.STATUS.PREPARED
                 crud.dleChangePage(1)
                
                }else{
