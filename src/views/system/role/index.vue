@@ -22,7 +22,7 @@
                         <OPTOperation />
                       </el-form>
                     </el-col>
-                    <el-col :push="3" :span="7.2">
+                    <el-col :push="2" :span="8.2">
                       <el-button
                         v-if="crud.optShow.add"
                         v-authority="['role:add']"

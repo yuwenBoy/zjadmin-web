@@ -17,7 +17,7 @@
         <OPTOperation />
         </el-form>
       </el-col>
-      <el-col :push="10" :span="4">
+      <el-col :push="9" :span="5">
         <el-button
           v-if="crud.optShow.add"
           v-authority="['position:add']"

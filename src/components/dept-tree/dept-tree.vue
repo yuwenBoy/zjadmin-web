@@ -3,7 +3,7 @@
     <el-card>
       <div slot="header" class="clearfix">
         <span  v-if="title">{{ title }}</span>
-        <el-button :style="{'margin-left':title ? '65px':'80px'}"
+        <el-button :style="{'margin-left':title ? '30px':'50px'}"
         type="primary" plain
         round
         icon="el-icon-sort"

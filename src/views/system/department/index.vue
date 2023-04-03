@@ -4,7 +4,7 @@
       <div class="content-box box-shadow">
         <div class="text item">
           <el-row :gutter="24">
-            <el-col :span="6.8">
+            <el-col :xs="15" :sm="14" :md="12" :lg="9" :xl="9">
               <el-form label-width="0px" inline>
                 <el-form-item>
                   <el-input
@@ -18,7 +18,7 @@
                 <OPTOperation />
               </el-form>
             </el-col>
-            <el-col :span="1.2">
+            <el-col :xs="15" :sm="14" :md="12" :lg="3" :xl="9">
               <el-button
                 type="info"
                 round
@@ -28,7 +28,7 @@
                 >展开/折叠</el-button
               >
             </el-col>
-            <el-col :push="11" :span="3.5">
+            <el-col :xs="15" :sm="14" :md="12" :lg="12" :xl="9" style="text-align:right;">
               <el-button
                 v-if="crud.optShow.add"
                 v-authority="['dept:add']"
