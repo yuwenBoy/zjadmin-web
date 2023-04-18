@@ -128,7 +128,7 @@ export default {
     ...mapGetters(["user"]),
   },
   mounted() {
-    this.fileName = "//localhost:9000/static/" + this.user.avatar.split("\\")[4];
+    this.fileName = "/" + this.user.avatar.split("\\")[3];
   },
   methods: {
     toggleShow() {
@@ -139,7 +139,7 @@ export default {
         setTimeout(() => {
           this.isDisPlay = false;
         }, 500);
-        this.fileName = "//localhost:9000/static/" + this.user.avatar.split("\\")[4];
+        this.fileName = "/" + this.user.avatar.split("\\")[3];
         console.log(this.fileName);
       });
     },

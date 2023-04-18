@@ -135,8 +135,8 @@
                       height: 32px;
                       border-radius: 50%;
                       line-height: 32px;
-                      text-align:center;" :src="'//localhost:9000/static/' +scope.row.avatar.split('\\')[4]"
-                      :preview-src-list="['//localhost:9000/static/' +scope.row.avatar.split('\\')[4]]"></el-image>
+                      text-align:center;" :src="'/' +scope.row.avatar.split('\\')[4]"
+                      :preview-src-list="['/' +scope.row.avatar.split('\\')[4]]"></el-image>
                 </template>
               </el-table-column>
               <el-table-column

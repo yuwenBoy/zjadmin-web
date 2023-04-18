@@ -31,7 +31,7 @@
       >
         <div class="avatar-wrapper">
           <img
-            :src="user.avatar ?'//localhost:9000/static/' + user.avatar.split('\\')[4] : Avatar"
+            :src="user.avatar ?'/' + user.avatar.split('\\')[4] : Avatar"
             class="user-avatar"
           >
           <i class="el-icon-caret-bottom" />
@@ -77,7 +77,7 @@ export default {
     }
   },
   mounted() {
-    this.fileName = '//localhost:9000/static/'+this.user.avatar.split('\\')[4];
+    this.fileName = '/'+this.user.avatar.split('\\')[3];
     console.log(this.fileName)
   },
   computed: {
@@ -116,7 +116,7 @@ export default {
   watch:{
     user(oldVal,newVal){
         console.log(oldVal.fileName);
-        this.fileName = '//localhost:9000/static/'+newVal.avatar.split('\\')[4];
+        this.fileName = '/'+newVal.avatar.split('\\')[3];
         console.log(this.fileName);
     },
     deep: true, // 深度监听
