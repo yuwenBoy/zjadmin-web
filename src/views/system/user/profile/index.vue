@@ -103,6 +103,7 @@ import myUpload from "vue-image-crop-upload";
 import userInfo from "./userInfo";
 import resetPwd from "./resetPwd";
 import store from "@/store";
+import Config from '@/settings'
 export default {
   name: "Center",
   components: {
@@ -128,7 +129,7 @@ export default {
     ...mapGetters(["user"]),
   },
   mounted() {
-    this.fileName = "/" + this.user.avatar.split("\\")[3];
+    this.fileName = Config.baseImgUrl + this.user.avatar.split("\\")[3];
   },
   methods: {
     toggleShow() {

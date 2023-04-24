@@ -31,7 +31,7 @@
       >
         <div class="avatar-wrapper">
           <img
-            :src="user.avatar ?'/' + user.avatar.split('\\')[4] : Avatar"
+            :src="fileName"
             class="user-avatar"
           >
           <i class="el-icon-caret-bottom" />
@@ -55,12 +55,11 @@
 <script>
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
-import store from '@/store'
 import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import Search from '@/components/HeaderSearch'
 import Avatar from '@/assets/images/avatar.png'
-
+import Config from '@/settings'
 export default {
   name: 'Navbar',
   components: {
@@ -77,7 +76,7 @@ export default {
     }
   },
   mounted() {
-    this.fileName = '/'+this.user.avatar.split('\\')[3];
+    this.fileName = Config.baseImgUrl +this.user.avatar.split('\\')[3];
     console.log(this.fileName)
   },
   computed: {

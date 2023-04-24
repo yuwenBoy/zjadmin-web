@@ -1,4 +1,5 @@
 module.exports = {
+
     /**
      * @description 网站标题
      */
@@ -48,5 +49,9 @@ module.exports = {
     /**
      * 备案号
      */
-    caseNumber: ''
+    caseNumber: '',
+    /**
+     * nginx 图片资源访问地址
+     */
+    baseImgUrl:'//localhost:8080/'
 }
