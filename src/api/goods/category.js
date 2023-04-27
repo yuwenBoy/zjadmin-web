@@ -1,4 +1,4 @@
- 
+import request from "@/utils/request";
   export function add(params) {
     return request({
       url: "/category/add",

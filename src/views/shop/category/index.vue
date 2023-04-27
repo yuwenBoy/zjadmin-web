@@ -125,9 +125,31 @@
             size="small"
             label-width="80px"
           >
+           
             <el-row :gutter="24">
               <el-col :span="24">
-                <el-form-item label="上级组织" ref="deptRef">
+                <el-form-item label="品类名称" prop="name">
+                  <el-input
+                    v-model="form.name"
+                    clearable
+                    placeholder="请输入品类名称"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="24">
+              <el-col :span="24">
+                  <el-form-item label="是否父级:" prop="is_parent">
+                    <el-radio-group v-model="form.is_parent">
+                      <el-radio-button label="0">是</el-radio-button>
+                      <el-radio-button label="1">否</el-radio-button>
+                    </el-radio-group>
+                  </el-form-item>
+              </el-col>
+            </el-row>
+             <el-row :gutter="24" v-show="form.is_parent == 1">
+              <el-col :span="24">
+                <el-form-item label="上级品类名称" ref="deptRef">
                   <tree-select
                     :data="deptEntity"
                     :value="form.parent_id"
@@ -140,46 +162,11 @@
             </el-row>
             <el-row :gutter="24">
               <el-col :span="24">
-                <el-form-item label="组织名称" prop="department_name">
-                  <el-input
-                    v-model="form.department_name"
-                    clearable
-                    placeholder="请输入组织名称"
-                  />
+                <el-form-item label="品类图片" prop="">
+                 
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row :gutter="24">
-              <el-col :span="24">
-                <el-form-item label="组织编码" prop="department_code">
-                  <el-input
-                    v-model="form.department_code"
-                    clearable
-                    placeholder="请输入组织编码"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="24">
-              <el-col :span="24">
-                <el-form-item label="组织分类" prop="department_type">
-                  <el-select
-                    v-model="form.department_type"
-                    placeholder="请选择组织分类"
-                    clearable
-                    style="width: 100%"
-                  >
-                    <el-option
-                      v-for="item in department_typeList"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-  
             <el-row :gutter="24">
               <el-col :span="24">
                 <el-form-item label="排序" prop="sort">
@@ -217,10 +204,9 @@
   import treeSelect from "@/components/tree-select/tree-select.vue";
   const defaultForm = {
     id: null,
-    department_name: "",
-    department_code: "",
-    department_type: "",
-    sort: 0,
+    name: "",
+    is_parent: 0,
+    sort: 99,
     parent_id: 0,
   };
   export default {
@@ -242,25 +228,12 @@
         // 重新渲染表格状态
         refreshTable: true,
         rules: {
-          department_name: [
-            { required: true, message: "请输入部门组织名称", trigger: "blur" },
-          ],
-          department_type: [
-            { required: true, message: "请输入组织类型", trigger: "blur" },
+          name: [
+            { required: true, message: "请输入品类名称", trigger: "blur" },
           ],
           sort: [{ required: true, message: "请选择排序", trigger: "blur" }],
         },
         deptEntity: [],
-        department_typeList: [
-          {
-            label: "机构",
-            value: 1,
-          },
-          {
-            label: "部门",
-            value: 2,
-          },
-        ],
       };
     },
     mounted() {
