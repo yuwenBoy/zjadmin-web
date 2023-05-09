@@ -8,7 +8,7 @@
                 <el-form label-width="0px" inline>
                   <el-form-item>
                     <el-input
-                      v-model="crud.query.DepartmentName"
+                      v-model="crud.query.name"
                       clearable
                       size="small"
                       placeholder="请输入分类名称"
@@ -80,7 +80,7 @@
             <el-table-column
               :show-overflow-tooltip="true"
               label="分类名称"
-              prop="department_name"
+              prop="name"
             />
             <el-table-column label="排序" prop="sort" width="80" />
             <el-table-column prop="create_time" label="创建时间" width="145" />
@@ -151,7 +151,7 @@
               <el-col :span="24">
                 <el-form-item label="上级品类名称" ref="deptRef">
                   <tree-select
-                    :data="deptEntity"
+                    :data="treeEntity"
                     :value="form.parent_id"
                     v-model="form.parent_id"
                     @select="selectTree"
@@ -162,8 +162,8 @@
             </el-row>
             <el-row :gutter="24">
               <el-col :span="24">
-                <el-form-item label="品类图片" prop="">
-                 
+                <el-form-item label="品类图片">
+                    <pic-upload v-model="form.pic" style="width: 500px;" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -197,20 +197,22 @@
     </div>
   </template>
   <script>
-  import crudCategory from "@/api/goods/category";
-  import { getDeptAll } from "@/api/system/department";
+  import crudCategory from "@/api/shop/category";
+  import { getCategoryAll } from "@/api/shop/category";
   import CRUD, { presenter, form } from "@crud/crud";
   import OPTOperation from "@crud/OPT.operation";
   import treeSelect from "@/components/tree-select/tree-select.vue";
+  import picUpload from '@/components/pic-upload'
   const defaultForm = {
     id: null,
     name: "",
     is_parent: 0,
     sort: 99,
     parent_id: 0,
+    pic:''
   };
   export default {
-    components: { treeSelect, OPTOperation },
+    components: { treeSelect, OPTOperation,picUpload },
     cruds() {
       return CRUD({
         title: "品类",
@@ -233,7 +235,7 @@
           ],
           sort: [{ required: true, message: "请选择排序", trigger: "blur" }],
         },
-        deptEntity: [],
+        treeEntity: [],
       };
     },
     mounted() {
@@ -242,8 +244,8 @@
     methods: {
       // 新增与编辑前做的操作
       [CRUD.HOOK.afterToCU](crud, form) {
-        this.deptEntity = [];
-        this.getDeptAllApi();
+        this.treeEntity = [];
+        this.getTreeAllApi();
       },
       getMenus(tree, treeNode, resolve) {
         const params = { pid: tree.id, sort: "sort" };
@@ -253,10 +255,10 @@
           });
         }, 100);
       },
-      async getDeptAllApi() {
+      async getTreeAllApi() {
         let response_data = {};
-        response_data = await getDeptAll();
-        this.deptEntity = response_data.result;
+        response_data = await getCategoryAll();
+        this.treeEntity = response_data.result;
       },
   
       // 根据机构查询职位

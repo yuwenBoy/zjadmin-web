@@ -1,5 +1,5 @@
 // 统一请求路径前缀
-let baseUrl = 'basic-api'
+let baseUrl = 'basic-api',apiUrl = 'http://127.0.0.1:9000/';
 const api = {
     state: {
         // 部署包上传
@@ -9,7 +9,7 @@ const api = {
         // 实时控制台
         socketApi: baseUrl + '/websocket?token=kl',
         // 图片上传
-        imagesUploadApi: baseUrl + '/api/pictures',
+        imagesUploadApi: apiUrl + baseUrl + '/oss/pictures',
         // 上传头像
         // uploadAvatarApi: baseUrl + '/oss/updateAvatar',
         // 上传文件到七牛云

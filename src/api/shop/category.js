@@ -23,6 +23,19 @@ import request from "@/utils/request";
     });
   }
 
+
+  /***
+   * 获取全部品类
+   * 
+   */
+  export function getCategoryAll(params){
+    return request({
+        url: "/category/getCategoryAll",
+        method: "get",
+        params
+      });
+  }
+
   export default {
     add,
     edit,
