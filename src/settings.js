@@ -53,5 +53,5 @@ module.exports = {
     /**
      * nginx 图片资源访问地址
      */
-    baseImgUrl:'//localhost:8080/'
+    baseImgUrl:'//image.jxxqz.com:3001/'
 }
