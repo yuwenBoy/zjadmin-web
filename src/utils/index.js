@@ -351,6 +351,15 @@ export function removeClass(ele, cls) {
     }
 }
 
+/***
+ * 根据文件路径获取文件名
+ */
+export function getFileName(path) {
+    const filePath = path;
+    const fileName = filePath.substr(filePath.lastIndexOf('\\') + 1);
+    return fileName;
+}
+
 // 替换邮箱字符
 export function regEmail(email) {
     if (String(email).indexOf('@') > 0) {

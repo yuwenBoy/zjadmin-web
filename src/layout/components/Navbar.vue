@@ -60,6 +60,7 @@ import Screenfull from '@/components/Screenfull'
 import Search from '@/components/HeaderSearch'
 import Avatar from '@/assets/images/avatar.png'
 import Config from '@/settings'
+import { getFileName } from '@/utils/index'
 export default {
   name: 'Navbar',
   components: {
@@ -76,7 +77,7 @@ export default {
     }
   },
   mounted() {
-    this.fileName = Config.baseImgUrl +this.user.avatar.split('\\')[3];
+    this.fileName = Config.baseImgUrl +getFileName(this.user.avatar);
     console.log(this.fileName)
   },
   computed: {
