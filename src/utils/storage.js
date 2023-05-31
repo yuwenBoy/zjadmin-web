@@ -8,7 +8,7 @@ import AppStorageKey from '@/settings'
  * @param refreshToken
  */
 export function setToken (token, refreshToken) {
-    sessionStorage.setItem(AppStorageKey.TOKEN, token)
+    localStorage.setItem(AppStorageKey.TOKEN, token)
     setRefreshToken(refreshToken)
     // 解析过期时间，设置过期
     const rtExp = (jwtDecode(refreshToken)).exp * 1000
@@ -17,29 +17,29 @@ export function setToken (token, refreshToken) {
   
   export function getToken () {
     console.log(AppStorageKey)
-    return sessionStorage.getItem(AppStorageKey.TOKEN)
+    return localStorage.getItem(AppStorageKey.TOKEN)
   }
   
   export function setRefreshToken (refreshToken) {
-    sessionStorage.setItem(AppStorageKey.REFRESH_TOKEN, refreshToken)
+    localStorage.setItem(AppStorageKey.REFRESH_TOKEN, refreshToken)
   }
   
   export function getRefreshToken () {
-    return sessionStorage.getItem(AppStorageKey.REFRESH_TOKEN)
+    return localStorage.getItem(AppStorageKey.REFRESH_TOKEN)
   }
   
   export function setRTExp (exp) {
-    sessionStorage.setItem(AppStorageKey.REFRESH_TOKEN_EXP, `${exp}`)
+    localStorage.setItem(AppStorageKey.REFRESH_TOKEN_EXP, `${exp}`)
   }
   export function getRTExp () {
-    const rtExpStr = sessionStorage.getItem(AppStorageKey.REFRESH_TOKEN_EXP)
+    const rtExpStr = localStorage.getItem(AppStorageKey.REFRESH_TOKEN_EXP)
     return rtExpStr ? Number(rtExpStr) : 0
   }
 
   export function removeToken() {
-    return sessionStorage.removeItem(AppStorageKey.TOKEN);
+    return localStorage.removeItem(AppStorageKey.TOKEN);
   }
   
   export function clearAll () {
-    sessionStorage.clear()
+    localStorage.clear()
   }

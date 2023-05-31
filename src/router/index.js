@@ -8,7 +8,6 @@ import { filterAsyncRouter } from '@/store/modules/permission'
 import Config from '@/settings'
 NProgress.configure({ showSpinner: false })
 const whiteList = ['/login']
-console.log(123)
 router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     document.title = to.meta.title + '-' + Config.title
@@ -25,9 +24,7 @@ router.beforeEach((to, from, next) => {
         store.dispatch('GetInfo').then(res => {
           // 拉取userInfo
           loadMenus(next, to)
-          console.log('获取user信息')
         }).catch((err) => {
-          console.log(err)
           store.dispatch('LogOut').then(() => {
             location.reload() // 为了重新实例化vue-router对象 避免bug
           })
