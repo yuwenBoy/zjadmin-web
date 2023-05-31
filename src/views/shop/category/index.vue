@@ -4,7 +4,7 @@
         <div class="content-box box-shadow">
           <div class="text item">
             <el-row :gutter="24">
-              <el-col :xs="15" :sm="14" :md="12" :lg="9" :xl="9">
+              <el-col :xs="15" :sm="14" :md="12" :lg="7" :xl="7">
                 <el-form label-width="0px" inline>
                   <el-form-item>
                     <el-input
@@ -28,7 +28,7 @@
                   >展开/折叠</el-button
                 >
               </el-col>
-              <el-col :xs="15" :sm="14" :md="12" :lg="12" :xl="9" style="text-align:right;">
+              <el-col :xs="15" :sm="14" :md="14" :lg="14" :xl="9" style="text-align:right;">
                 <el-button
                   v-if="crud.optShow.add"
                   v-authority="['dept:add']"
@@ -80,9 +80,14 @@
             <el-table-column
               :show-overflow-tooltip="true"
               label="分类名称"
-              prop="name"
+              prop="name" align="center"
             />
-            <el-table-column label="排序" prop="sort" width="80" />
+            <el-table-column prop="avatar" label="分类图片" width="120" align="center">
+                <template slot-scope="scope">
+                  <el-image style="object-fit: cover;width: 35px;height: 100%; border-radius: 5px;" :src="scope.row.pic" :preview-src-list="[scope.row.pic]"></el-image>
+                </template>
+              </el-table-column>
+            <el-table-column label="排序" prop="sort" width="80" align="center" />
             <el-table-column prop="create_time" label="创建时间" width="145" />
             <!--   编辑与删除   -->
             <el-table-column label="操作" width="100px" align="left">

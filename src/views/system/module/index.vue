@@ -294,8 +294,8 @@
                 <el-col v-show="form.menuType != 1" :span="24">
                   <el-form-item label="菜单可见">
                     <el-radio-group v-model="form.hidden">
-                      <el-radio-button label="false">是</el-radio-button>
-                      <el-radio-button label="true">否</el-radio-button>
+                      <el-radio-button label="0">可见</el-radio-button>
+                      <el-radio-button label="1">不可见</el-radio-button>
                     </el-radio-group>
                   </el-form-item>
                 </el-col>
@@ -354,7 +354,7 @@ const defaultForm = {
   menuPath: "",
   parent_id: 0,
   permission: "",
-  hidden: false, // 菜单可见
+  hidden: 0, // 菜单可见
 };
 export default {
   components: { treeSelect, IconSelect, OPTOperation },
