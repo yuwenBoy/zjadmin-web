@@ -14,7 +14,7 @@
   </div>
 </template>
   
-  <script>
+<script>
 import { getToken } from "@/utils/storage";
 import { mapGetters } from "vuex";
 
@@ -41,7 +41,6 @@ export default {
   methods: {
     // 图片上传
     handleUploadSuccess(response, file, fileList) {
-      console.log(file);
       let url = Config.baseImgUrl + getFileName(file.response.result[0].location);
       this.$emit("input", url);
       this.value = url;

@@ -113,7 +113,6 @@ export default {
       data.forEach(function(item) {
         map[item.value] = item
       })
-      //        console.log(map);
       var val = []
       data.forEach(function(item) {
         // 以当前遍历项，的pid,去map对象中找到索引的id

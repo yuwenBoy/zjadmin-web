@@ -21,6 +21,7 @@
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { LOAD_CHILDREN_OPTIONS } from "@riophae/vue-treeselect";
+import { arrayToTree } from '@/utils';
 export default {
   name: "dept-tree",
   props: {
@@ -41,24 +42,8 @@ export default {
     };
   },
   mounted() {
-    // console.log("父组件调用子组件");
   },
   methods: {
-    /**
-     * 处理机构展示方式
-     */
-    arrayToTree(arr, pid) {
-      return arr.reduce((res, current) => {
-        if (current["parent_id"] == pid) {
-          current["children"] = this.arrayToTree(arr, current["id"]);
-          if (arr.filter((t) => t.parent_id == current["id"]).length == 0) {
-            current["children"] = undefined;
-          }
-          return res.concat(current);
-        }
-        return res;
-      }, []);
-    },
     //转换部门数据结构
     normalizer(node) {
       if (node.id> 0 && node.children && !node.children.length) {
@@ -78,7 +63,7 @@ export default {
 
     loadMenus({ action, parentNode, callback }) {
       if (action === LOAD_CHILDREN_OPTIONS) {
-        parentNode.children = this.arrayToTree(
+        parentNode.children = arrayToTree(
           this.treeList,
           parentNode.id
         ).map(function (obj) {
@@ -99,13 +84,15 @@ export default {
   watch: {
     data(val, oldVal) {
       if(this.nodeId>0){
-        this.treeList = this.arrayToTree(val, 0);
+        this.treeList = arrayToTree(val, 0);
       }
       else{
         this.treeList = [{id:0,label:'全部',children:[]}]
         this.treeList.forEach(item=>{
-            item.children = this.arrayToTree(val, 0)
+            item.children = arrayToTree(val, 0)
         })
+        console.log(this.treeList);
+
       }
       
     },

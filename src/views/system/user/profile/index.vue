@@ -141,16 +141,12 @@ export default {
         setTimeout(() => {
           this.isDisPlay = false;
         }, 500);
-        console.log(this.user.avatar);
         this.fileName = Config.baseImgUrl + getFileName(this.user.avatar);
-        console.log(this.fileName);
       });
     },
     //上传失败回调
     cropUploadFail(status, field) {
       console.log("-------- upload fail --------");
-      console.log("上传失败状态" + status);
-      console.log("field: " + field);
     },
   }
 };

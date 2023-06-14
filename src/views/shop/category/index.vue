@@ -84,7 +84,7 @@
             />
             <el-table-column prop="avatar" label="分类图片" width="120" align="center">
                 <template slot-scope="scope">
-                  <el-image style="object-fit: cover;width: 35px;height: 100%; border-radius: 5px;" :src="scope.row.pic" :preview-src-list="[scope.row.pic]"></el-image>
+                  <el-image style="object-fit: cover;max-width: 35px;max-height: 35px; border-radius: 5px;" :src="scope.row.pic" :preview-src-list="[scope.row.pic]"></el-image>
                 </template>
               </el-table-column>
             <el-table-column label="排序" prop="sort" width="80" align="center" />

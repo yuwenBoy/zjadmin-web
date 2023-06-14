@@ -10,11 +10,11 @@
                     <el-form label-width="0px" inline>
                       <el-form-item>
                         <el-input
-                          v-model="crud.query.cname"
+                          v-model="crud.query.goods_name"
                           clearable
                           size="mini"
                           autofocus
-                          placeholder="姓名、手机、邮箱"
+                          placeholder="商品名称"
                           class="filter-item round-left"
                         />
                       </el-form-item>
@@ -22,11 +22,11 @@
                         <el-select
                           v-model="crud.query.disabled"
                           clearable
-                          placeholder="用户状态"
+                          placeholder="上架状态"
                           class="wt100"
                         >
-                          <el-option label="启用" value="1" />
-                          <el-option label="锁定" value="2" />
+                          <el-option label="未上架" value="0" />
+                          <el-option label="已上架" value="1" />
                         </el-select>
                       </el-form-item>
                       <OPTOperation />
@@ -48,7 +48,7 @@
                       round
                       type="primary"
                       icon="el-icon-plus"
-                      @click="addSpu"
+                      @click="$router.push({name:'edit',query:{}})"
                       >新增</el-button
                     >
                     <el-button
@@ -84,20 +84,14 @@
                   label="商品名称"
                   align="center"
                 />
-                <el-table-column prop="cname" label="分类名称" align="center" />
+                <el-table-column prop="cname" label="一级分类名称" align="center" />
+                <el-table-column prop="cname" label="二级分类名称" align="center" />
                 <el-table-column
                   prop="sex"
                   label="所属品牌"
-                  width="50"
+                  width="80"
                   align="center"
                 >
-                  <template slot-scope="scope">
-                    <span v-if="scope.row.sex == 1" class="text-primary">男</span>
-                    <span v-else-if="scope.row.sex == 2" class="text-success"
-                      >女</span
-                    >
-                    <span v-else class="text-primary">未识别</span>
-                  </template>
                 </el-table-column>
                 <el-table-column
                   prop=""
@@ -105,9 +99,14 @@
                   width="120"
                   align="center"
                 >
-                  <template slot-scope="scope">
-                    <span>{{ scope.row.phone | fmt_phone }}</span>
-                  </template>
+                
+                </el-table-column>
+                <el-table-column
+                  prop="sex"
+                  label="上架状态"
+                  width="80"
+                  align="center"
+                >
                 </el-table-column>
                 <el-table-column
                   prop="create_time"
@@ -116,7 +115,7 @@
                   align="center"
                 />
                 <!--   编辑与删除   -->
-                <el-table-column label="操作" align="left" width="170">
+                <el-table-column label="操作" align="left" width="120">
                   <template slot-scope="scope">
                     <el-link
                       v-authority="['user:edit']"
@@ -127,18 +126,12 @@
                     >
                     <el-link
                       v-authority="['user:delete']"
-                      type="info"
+                      type="danger"
+                      style="font-size: 12px;"
                       :underline="false"
                       :disabled="scope.row.id === user.id"
                       @click="remove(scope.row)"
                       >删除</el-link
-                    >
-                    <el-link
-                      v-authority="['user:setRole']"
-                      type="info"
-                      :underline="false"
-                      @click="setRole(scope.row)"
-                      >设置角色</el-link
                     >
                   </template>
                 </el-table-column>
@@ -151,58 +144,34 @@
     </div>
   </template>
   <script>
-  import crudUser from "@/api/system/user";
-  import { setRoles, UpdateUserDisabled } from "@/api/system/user";
-  import { getDeptTree } from "@/api/system/department";
-  import { getRoleAllList } from "@/api/system/role";
-  import DeptTree from "@/components/dept-tree/dept-tree.vue";
+  import crudUser from "@/api/shop/goods";
   import CRUD, { presenter } from "@crud/crud";
   import OPTOperation from "@crud/OPT.operation";
   import pagination from "@crud/Pagination";
   import { mapGetters } from "vuex";
-  import Avatar from "@/assets/images/avatar.png";
   export default {
     components: {
       OPTOperation,
-      DeptTree,
       pagination,
     },
     cruds() {
       return CRUD({
         title: "用户",
-        url: "/user/getByCondition",
+        url: "/spu/getByCondition",
         crudMethod: { ...crudUser },
       });
     },
     mixins: [presenter()],
     data() {
       return {
-        request: false,
-        status: 0,
-        roles: [],
-        roleList: [],
-        userId: 0,
-        rolesIds: [],
-        Avatar: Avatar,
-        deptEntity: [],
       };
-    },
-    created() {
-      this.crud.msg.add = "新增成功，默认密码：jxxqz123";
     },
     computed: {
       ...mapGetters(["user"]),
     },
     mounted() {
-      this.getDeptTree();
     },
     methods: {
-      // 查询全部机构
-      async getDeptTree() {
-        let response_data = {};
-        response_data = await getDeptTree();
-        this.deptEntity = response_data.result;
-      },
       toDelete(datas) {
         this.$confirm(`确认删除选中的${datas.length}条数据?`, "提示", {
           confirmButtonText: "确定",
@@ -215,14 +184,7 @@
           })
           .catch(() => {});
       },
-
-      /**
-       * 新增SPU
-       */
-      async addSpu(){
-        debugger
-        this.$router.push({name:'/shop/spu/edit',query:{}})
-      },
+ 
       remove(obj) {
         this.$confirm(
           `确认删除账号【${obj.username}】吗，删除后不可恢复`,

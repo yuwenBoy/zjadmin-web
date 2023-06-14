@@ -78,7 +78,6 @@ export default {
   },
   mounted() {
     this.fileName = Config.baseImgUrl +getFileName(this.user.avatar);
-    console.log(this.fileName)
   },
   computed: {
     ...mapGetters(['sidebar', 'device', 'user', 'baseApi']),
@@ -115,9 +114,7 @@ export default {
   },
   watch:{
     user(oldVal,newVal){
-        console.log(oldVal.fileName);
         this.fileName = '/'+newVal.avatar.split('\\')[3];
-        console.log(this.fileName);
     },
     deep: true, // 深度监听
     immediate: true, // 第一次改变就执行

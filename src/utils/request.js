@@ -45,7 +45,6 @@ instance.interceptors.request.use(
   },
   error => {
     // Do something with request error
-    console.log(error); // for debug
     Promise.reject(error);
   }
 );
@@ -81,7 +80,6 @@ instance.interceptors.response.use(
     }
     if (code) {
       if (code === 401) {
-        console.log(getRTExp());
         // 如果刷新的过期时间小于当前时间，刷新token再请求一次获取新token
         if (getRTExp() <= Date.now()) {
           MessageBox.confirm(
@@ -124,7 +122,6 @@ instance.interceptors.response.use(
               return await request(config);
             }
           } catch (error) {
-            console.log(error);
           } finally {
             isRefreshing = false;
           }

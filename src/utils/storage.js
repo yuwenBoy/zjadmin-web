@@ -16,7 +16,6 @@ export function setToken (token, refreshToken) {
   }
   
   export function getToken () {
-    console.log(AppStorageKey)
     return localStorage.getItem(AppStorageKey.TOKEN)
   }
   

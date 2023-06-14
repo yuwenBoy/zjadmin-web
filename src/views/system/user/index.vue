@@ -454,7 +454,6 @@ export default {
     },
     // 保存角色
     saveRoles() {
-      console.log(this.roles);
       if (this.userId === 0) {
         return;
       } else {

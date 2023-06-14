@@ -92,7 +92,6 @@ export default {
     async getCode() {
       this.request = false
       const res = await getCodeData();
-      console.log(res);
       this.codeUrl =res;
           this.request = true
     },
@@ -137,12 +136,10 @@ export default {
             this.loading = false
             this.$router.push({ path: this.redirect || '/' })
           }).catch((error) => {
-            console.log(error)
             this.loading = false
             // this.getCode()
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })

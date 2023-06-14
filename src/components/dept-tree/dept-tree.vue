@@ -97,7 +97,6 @@ export default {
   watch: {
     data(val, oldVal) {
       this.treeList = val;
-      // this.treeList = this.arrayToTree(val, 0);
     },
     checkValue(val, oldVal) {
       console.log(val); // 清空菜单的选中

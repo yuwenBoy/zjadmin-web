@@ -94,7 +94,6 @@ export default {
   },
   methods: {
     toDelete(datas) {
-      console.log(datas)
       this.$confirm(`确认删除选中的${datas.length}条数据?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
