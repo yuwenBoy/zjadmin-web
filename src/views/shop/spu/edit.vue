@@ -27,17 +27,17 @@
       <el-row :gutter="24">
         <el-col :span="24">
           <el-form-item label="商品图片">
-            <pic-upload v-model="ruleForm.goods_pic" style="width: 500px" />
+            <multiple-upload v-model="ruleForm.goods_pic"></multiple-upload>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row :gutter="24">
+      <!-- <el-row :gutter="24">
         <el-form-item label="所属品牌" prop="brand_id">
           <el-select v-model="ruleForm.brand_id" placeholder="请选择" clearable>
             <el-option />
           </el-select>
         </el-form-item>
-      </el-row>
+      </el-row> -->
       <el-row :gutter="24">
         <el-col :span="24">
           <el-form-item label="商品描述" prop="goods_desc">
@@ -73,14 +73,14 @@
 </template>
 <script>
 import ElCascader from "@/components/el-cascader/el-cascader.vue";
-import picUpload from "@/components/pic-upload";
+import multipleUpload from "@/components/file/multiple-upload";
 import { quillEditor } from "vue-quill-editor";
 import { getCategoryAll } from "@/api/shop/category";
 import { arrayToTree } from '@/utils';
 export default {
   components: {
     ElCascader,
-    picUpload,
+    multipleUpload,
     quillEditor,
   },
   data() {

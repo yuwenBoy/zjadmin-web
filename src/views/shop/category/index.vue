@@ -207,7 +207,7 @@
   import CRUD, { presenter, form } from "@crud/crud";
   import OPTOperation from "@crud/OPT.operation";
   import treeSelect from "@/components/tree-select/tree-select.vue";
-  import picUpload from '@/components/pic-upload'
+  import picUpload from '@/components/file'
   const defaultForm = {
     id: null,
     name: "",

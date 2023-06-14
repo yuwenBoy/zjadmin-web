@@ -14,7 +14,7 @@
   </div>
 </template>
   
-<script>
+  <script>
 import { getToken } from "@/utils/storage";
 import { mapGetters } from "vuex";
 
