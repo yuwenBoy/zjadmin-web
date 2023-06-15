@@ -120,16 +120,13 @@ export default {
     },
     // 删除职位
     remove(row) {
-      this.$confirm(`确认删除此条数据吗，删除后不可恢复`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
+      this.$msg.confirm(`确认删除此条数据吗，删除后不可恢复?`, {
+        ok: () => {
           this.crud.delAllLoading = true;
           this.crud.doDelete(row);
-        })
-        .catch(() => {});
+        },
+        cancel: () => {},
+      });
     },
   },
 };

@@ -30,10 +30,7 @@
         trigger="click"
       >
         <div class="avatar-wrapper">
-          <img
-            :src="fileName"
-            class="user-avatar"
-          >
+          <img :src="fileName" class="user-avatar" />
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -53,73 +50,71 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
-import Screenfull from '@/components/Screenfull'
-import Search from '@/components/HeaderSearch'
-import Avatar from '@/assets/images/avatar.png'
-import Config from '@/settings'
-import { getFileName } from '@/utils/index'
+import { mapGetters } from "vuex";
+import Breadcrumb from "@/components/Breadcrumb";
+import Hamburger from "@/components/Hamburger";
+import Screenfull from "@/components/Screenfull";
+import Search from "@/components/HeaderSearch";
+import Avatar from "@/assets/images/avatar.png";
+import Config from "@/settings";
+import { getFileName } from "@/utils/index";
 export default {
-  name: 'Navbar',
+  name: "Navbar",
   components: {
     Breadcrumb,
     Hamburger,
     Screenfull,
-    Search
+    Search,
   },
   data() {
     return {
       Avatar: Avatar,
       dialogVisible: false,
-      fileName: null
-    }
+      fileName: null,
+    };
   },
   mounted() {
-    this.fileName = Config.baseImgUrl +getFileName(this.user.avatar);
+    this.fileName = Config.baseImgUrl + getFileName(this.user.avatar);
   },
   computed: {
-    ...mapGetters(['sidebar', 'device', 'user', 'baseApi']),
+    ...mapGetters(["sidebar", "device", "user", "baseApi"]),
     show: {
       get() {
-        return this.$store.state.settings.showSettings
+        return this.$store.state.settings.showSettings;
       },
       set(val) {
-        this.$store.dispatch('settings/changeSetting', {
-          key: 'showSettings',
-          value: val
-        })
-      }
-    }
+        this.$store.dispatch("settings/changeSetting", {
+          key: "showSettings",
+          value: val,
+        });
+      },
+    },
   },
   methods: {
     toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
+      this.$store.dispatch("app/toggleSideBar");
     },
     open() {
-      this.$confirm('确定注销并退出系统吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.logout()
-      })
+      this.$msg.confirm("确定注销并退出系统吗？", {
+        ok: () => {
+          this.logout();
+        },
+      });
     },
     logout() {
-      this.$store.dispatch('LogOut').then(() => {
-        location.reload()
-      })
-    }
+      this.$store.dispatch("LogOut").then(() => {
+        location.reload();
+      });
+    },
   },
-  watch:{
-    user(oldVal,newVal){
-        this.fileName = '/'+newVal.avatar.split('\\')[3];
+  watch: {
+    user(oldVal, newVal) {
+      this.fileName = "/" + newVal.avatar.split("\\")[3];
     },
     deep: true, // 深度监听
     immediate: true, // 第一次改变就执行
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -159,12 +154,13 @@ export default {
     &:focus {
       outline: none;
     }
-    .data{
-      position:absolute;right:392px;
+    .data {
+      position: absolute;
+      right: 392px;
     }
-    .data:hover{
-      border:1px solid red;
-      transition: all .3s;
+    .data:hover {
+      border: 1px solid red;
+      transition: all 0.3s;
     }
 
     .right-menu-item {

@@ -131,12 +131,18 @@
                   </div>
                   <el-image
                     v-else
-                      style="width: 32px;
+                    style="
+                      width: 32px;
                       height: 32px;
                       border-radius: 50%;
                       line-height: 32px;
-                      text-align:center;" :src="'//localhost:8080/' +scope.row.avatar.split('\\')[3]"
-                      :preview-src-list="['//localhost:8080/' +scope.row.avatar.split('\\')[3]]"></el-image>
+                      text-align: center;
+                    "
+                    :src="'//localhost:8080/' + scope.row.avatar.split('\\')[3]"
+                    :preview-src-list="[
+                      '//localhost:8080/' + scope.row.avatar.split('\\')[3],
+                    ]"
+                  ></el-image>
                 </template>
               </el-table-column>
               <el-table-column
@@ -345,32 +351,22 @@ export default {
       this.deptEntity = response_data.result;
     },
     toDelete(datas) {
-      this.$confirm(`确认删除选中的${datas.length}条数据?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
+      this.$msg.confirm(`确认删除选中的${datas.length}条数据?`, {
+        ok: () => {
           this.crud.delAllLoading = true;
           this.crud.doDelete(datas);
-        })
-        .catch(() => {});
+        },
+        cancel: () => {},
+      });
     },
     remove(obj) {
-      this.$confirm(
-        `确认删除账号【${obj.username}】吗，删除后不可恢复`,
-        "提示",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        }
-      )
-        .then(() => {
+      this.$msg.confirm(`确认删除账号【${obj.username}】吗，删除后不可恢复`, {
+        ok: () => {
           this.crud.delAllLoading = true;
           this.crud.doDelete(obj);
-        })
-        .catch(() => {});
+        },
+        cancel: () => {},
+      });
     },
     // 设置角色
     setRole(obj) {
@@ -412,37 +408,30 @@ export default {
      */
     setUserDisabled(data) {
       const [id, disabled] = [data.id, data.disabled];
-
-      this.$confirm(
+      this.$msg.confirm(
         `您确定${disabled == 2 ? "锁定" : "启用"}账号【${
           data.username
-        }】吗，操作后不可恢复`,
-        "提示",
+        }】吗，操作后不可恢复?`,
         {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
+          ok: () => {
+            this.crud.loading = true;
+            UpdateUserDisabled({
+              id: id,
+              disabled: disabled,
+            }).then((res) => {
+              if (res.success) {
+                this.crud.loading = false;
+
+                this.$msg.alert("修改成功");
+                this.crud.refresh();
+              }
+            });
+          },
+          cancel: () => {
+            this.crud.refresh();
+          },
         }
-      )
-        .then(() => {
-          this.crud.loading = true;
-          UpdateUserDisabled({
-            id: id,
-            disabled: disabled,
-          }).then((res) => {
-            if (res.success) {
-              this.crud.loading = false;
-              this.$message({
-                message: "修改成功",
-                type: "success",
-              });
-              this.crud.refresh();
-            }
-          });
-        })
-        .catch(() => {
-          this.crud.refresh();
-        });
+      );
     },
 
     // 关闭重置角色窗口
@@ -460,11 +449,7 @@ export default {
         setRoles(JSON.stringify({ userId: this.userId, roles: this.roles }))
           .then((res) => {
             if (res.success) {
-              this.$message({
-                message: "修改成功",
-                type: "success",
-              });
-
+              this.$msg.alert("修改成功");
               this.resetUserRoleForm();
             } else {
               Notification.error({

@@ -78,10 +78,7 @@ export default {
             newPassword: this.user.newPassword,
           }).then((response) => {
             if (response.success) {
-              this.$message({
-                message: "修改成功",
-                type: "success",
-              });
+              this.$msg.alert('修改成功');
             }
           });
         }

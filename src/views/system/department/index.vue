@@ -28,7 +28,14 @@
                 >展开/折叠</el-button
               >
             </el-col>
-            <el-col :xs="15" :sm="14" :md="12" :lg="12" :xl="9" style="text-align:right;">
+            <el-col
+              :xs="15"
+              :sm="14"
+              :md="12"
+              :lg="12"
+              :xl="9"
+              style="text-align: right"
+            >
               <el-button
                 v-if="crud.optShow.add"
                 v-authority="['dept:add']"
@@ -303,28 +310,22 @@ export default {
       this.$refs.deptRef.$emit("el.form.change", data); // 重点！自定义组件使用element的form表单校验
     },
     toDelete(datas) {
-      this.$confirm(`确认删除选中的${datas.length}条数据?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
+      this.$msg.confirm(`确认删除选中的${datas.length}条数据?`, {
+        ok: () => {
           this.crud.delAllLoading = true;
           this.crud.doDelete(datas);
-        })
-        .catch(() => {});
+        },
+        cancel: () => {},
+      });
     },
     remove(row) {
-      this.$confirm(`确认删除此条数据吗，删除后不可恢复`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
+      this.$msg.confirm(`确认删除此条数据吗，删除后不可恢复?`, {
+        ok: () => {
           this.crud.delAllLoading = true;
           this.crud.doDelete(row);
-        })
-        .catch(() => {});
+        },
+        cancel: () => {},
+      });
     },
 
     /** 展开/折叠操作 */

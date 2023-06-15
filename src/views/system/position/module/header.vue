@@ -14,7 +14,7 @@
               @keyup.enter.native="crud.toQuery"
             />
           </el-form-item>
-        <OPTOperation />
+          <OPTOperation />
         </el-form>
       </el-col>
       <el-col :push="9" :span="5">
@@ -27,7 +27,8 @@
           type="primary"
           icon="el-icon-plus"
           @click="crud.toAdd"
-        >新增</el-button>
+          >新增</el-button
+        >
         <el-button
           v-authority="['position:delete']"
           class="filter-item"
@@ -38,33 +39,31 @@
           :loading="crud.delAllLoading"
           :disabled="crud.selections.length === 0"
           @click="toDelete(crud.selections)"
-        >删除</el-button>
+          >删除</el-button
+        >
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-import { crud } from '@crud/crud'
-import OPTOperation from '@crud/OPT.operation'
+import { crud } from "@crud/crud";
+import OPTOperation from "@crud/OPT.operation";
 export default {
   mixins: [crud()],
   components: { OPTOperation },
   methods: {
     toDelete(datas) {
-      this.$confirm(`确认删除选中的${datas.length}条数据?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.crud.delAllLoading = true
-          this.crud.doDelete(datas)
-        })
-        .catch(() => {})
-    }
-  }
-}
+      this.$msg.confirm(`确认删除选中的${datas.length}条数据?`, {
+        ok: () => {
+          this.crud.delAllLoading = true;
+          this.crud.doDelete(datas);
+        },
+        cancel: () => {},
+      });
+    },
+  },
+};
 </script>
 
 <style>

@@ -324,11 +324,9 @@ function CRUD(options) {
                 crud.dleChangePage(1)
                
                }else{
-                this.$message({
-                    message: res.message,
-                    type: "error",
-                  });
+                  this.$msg.alert( res.message,'error');
                }
+               
                callVmHook(crud, CRUD.HOOK.afterDelete, data)
                crud.refresh()
             }).catch(() => {

@@ -87,14 +87,15 @@ export default {
   },
   methods: {
     toDelete(datas) {
-      this.$confirm(`确认删除选中的${datas.length}条数据?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.crud.delAllLoading = true
-        this.crud.doDelete(datas)
-      }).catch(() => {})
+      this.$msg.confirm(
+        `确认删除选中的${datas.length}条数据?`,
+            {
+              ok: () => {
+                this.crud.delAllLoading = true
+                this.crud.doDelete(datas)
+              }
+            }
+          );
     },
     // 审核通过|审核不通过|撤销|提交审核
     apply(status, row) {

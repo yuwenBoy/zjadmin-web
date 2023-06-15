@@ -219,16 +219,13 @@ export default {
       this.menuEntity = response_data.result;
     },
     toDelete(datas) {
-      this.$confirm(`确认删除选中的${datas.length}条数据?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
+      this.$msg.confirm(`确认删除选中的${datas.length}条数据?`, {
+        ok: () => {
           this.crud.delAllLoading = true;
           this.crud.doDelete(datas);
-        })
-        .catch(() => {});
+        },
+        cancel: () => {},
+      });
     },
     nodeExpand(expend) {
       for (var i = 0; i < this.$refs.tree.store._getAllNodes().length; i++) {
@@ -236,16 +233,13 @@ export default {
       }
     },
     remove(row) {
-      this.$confirm(`确认删除此条数据吗，删除后不可恢复`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
+      this.$msg.confirm(`确认删除此条数据吗，删除后不可恢复`, {
+        ok: () => {
           this.crud.delAllLoading = true;
           this.crud.doDelete(row);
-        })
-        .catch(() => {});
+        },
+        cancel: () => {},
+      });
     },
 
     // 单击角色查找已赋值的权限菜单
@@ -285,10 +279,7 @@ export default {
         .saveOptionAuthority(roleModule)
         .then((res) => {
           if (res.success) {
-            this.$message({
-              message: "资源授权成功",
-              type: "success",
-            });
+            this.$msg.alert("资源授权成功");
             this.optInfo.loading = false;
           }
         })

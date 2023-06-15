@@ -20,13 +20,13 @@
             </el-col>
             <el-col :span="1.2">
               <el-button
-                  type="info"
-                  round
-                  icon="el-icon-sort"
-                  size="mini"
-                  @click="toggleExpandAll"
-                  >展开/折叠</el-button
-                >
+                type="info"
+                round
+                icon="el-icon-sort"
+                size="mini"
+                @click="toggleExpandAll"
+                >展开/折叠</el-button
+              >
             </el-col>
             <el-col :span="3.5" :push="9">
               <el-button
@@ -130,7 +130,8 @@
             prop="create_time"
             label="创建时间"
             width="135"
-            align="center" />
+            align="center"
+          />
           <el-table-column label="操作" width="100px" align="left">
             <template slot-scope="scope">
               <el-link
@@ -417,31 +418,25 @@ export default {
       this.form.icon = name;
     },
     toDelete(datas) {
-      this.$confirm(`确认删除选中的${datas.length}条数据?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
+      this.$msg.confirm(`确认删除选中的${datas.length}条数据?`, {
+        ok: () => {
           this.crud.delAllLoading = true;
           this.crud.doDelete(datas);
-        })
-        .catch(() => {});
+        },
+        cancel: () => {},
+      });
     },
     remove(row) {
-      this.$confirm(`确认删除此条数据吗，删除后不可恢复`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
+      this.$msg.confirm(`确认删除此条数据吗，删除后不可恢复?`, {
+        ok: () => {
           this.crud.delAllLoading = true;
           this.crud.doDelete(row);
-        })
-        .catch(() => {});
+        },
+        cancel: () => {},
+      });
     },
-     /** 展开/折叠操作 */
-     toggleExpandAll() {
+    /** 展开/折叠操作 */
+    toggleExpandAll() {
       this.refreshTable = false;
       this.isExpandAll = !this.isExpandAll;
       this.$nextTick(() => {

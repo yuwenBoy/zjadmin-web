@@ -260,16 +260,10 @@ export default {
       crud.form.dept_id = crud.form.deptId.id;
       crud.form.position_id = crud.form.positionId.id;
       if (!crud.form.dept_id) {
-        this.$message({
-          message: "机构不能为空",
-          type: "warning",
-        });
+        this.$msg.alert('机构不能为空',"warning");
         return false;
       } else if (!crud.form.position_id) {
-        this.$message({
-          message: "职位不能为空",
-          type: "warning",
-        });
+        this.$msg.alert('职位不能为空',"warning");
         return false;
       }
       return true;
