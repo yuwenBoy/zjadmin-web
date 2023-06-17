@@ -61,27 +61,40 @@
               <ul class="item">
                 <li
                   class="item-list item-list-red no-radios"
-                  v-for="(item, key) in 33"
-                  @click="item_click(item, false)"
+                  :style="
+                    item === '已选'
+                      ? 'font-size:12px;background-color:#c0c0c0'
+                      : ''
+                  "
+                  v-for="(item, key) in red_numList"
+                  @click="red_click(item, key)"
                 >
                   {{ item }}
                 </li>
                 <li
                   class="item-list item-list-blue no-radios"
-                  v-for="(item, key) in 16"
-                  @click="item_click(item, true)"
+                  :style="
+                    item === '已选'
+                      ? 'font-size:12px;background-color:#c0c0c0'
+                      : ''
+                  "
+                  v-for="(item, key) in blue_numList"
+                  @click="blue_click(item, key)"
                 >
                   {{ item }}
                 </li>
               </ul>
               <div>
-                已选号码：
-                <span v-for="item in emptList"
+                已选号码：<span
+                  v-for="(item, key) in emptList"
+                  @click="reset(item, key)"
+                  style="font-size: 18px; font-weight: 600"
                   >{{ item }}&nbsp;&nbsp;&nbsp;</span
                 >
               </div>
               <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">关闭</el-button>
+                <el-button type="primary" @click="save">保存</el-button>
+                <el-button @click="cancel">关闭</el-button>
               </div>
             </el-dialog>
           </div>
@@ -104,6 +117,44 @@ export default {
       type: "",
       dialogFormVisible: false,
       emptList: [],
+
+      red_numList: [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+      ],
+      blue_numList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+      arr30List: [
+        "11,12,15,18,29,33 + 02",
+        "01,03,12,19,28,32 + 14",
+        "02,07,08,10,26,31 + 06",
+        "02,14,17,20,26,33 + 14",
+        "01,07,11,12,16,18 + 04",
+        "04,08,17,20,22,27 + 13",
+        "11,19,23,24,26,33 + 15",
+        "01,04,06,11,12,22 + 15",
+        "09,11,17,19,30,31 + 11",
+        "02,06,13,22,27,32 + 06",
+        "10,17,22,26,30,33 + 11",
+        "02,05,10,17,24,32 + 03",
+        "08,14,15,18,23,33 + 08",
+        "03,04,20,23,27,32 + 13",
+        "05,06,09,10,15,26 + 12",
+        "01,07,14,20,27,30 + 15",
+        "03,04,05,08,12,17 + 06",
+        "22,26,29,30,32,33 + 14",
+        "02,07,09,14,22,23 + 05",
+        "05,07,14,23,25,27 + 02",
+        "02,03,10,24,28,30 + 08",
+        "05,07,14,23,31,33 + 07",
+        "06,08,17,25,26,28 + 03",
+        "03,06,12,21,27,28 + 04",
+        "02,08,15,22,24,26 + 16",
+        "05,08,12,20,24,28 + 10",
+        "10,17,20,23,27,30 + 10",
+        "01,06,12,13,15,24 + 06",
+        "09,16,17,24,29,31 + 08",
+        "02,03,09,13,19,28 + 09",
+      ],
     };
   },
   methods: {
@@ -146,25 +197,73 @@ export default {
      * 手动选号
      * @param {*} data
      */
-    item_click(data, flag) {
+    red_click(data, index) {
       debugger;
-      this.emptList.push(data);
-      if (this.emptList.length == 7) {
-        this.$msg.confirm("确认选定此注号码？", {
-          ok:()=>{
-            this.dialogFormVisible = false;
-            this.chooseNumberList = this.emptList;
-            this.emptList = [];
-          },
-          cancel:()=> {
-            console.log("取消操作");
-          },
-        });
+      if (this.emptList.length >= 6 && this.red_numList.filter(item=>typeof item === 'string').length >=6) {
+        this.$msg.alert("红球只能选择6个", "error");
+      } else {
+        if (typeof data === "string") return false;
+        this.emptList.push(data);
+        this.red_numList[index] = "已选";
+      }
+    },
+    blue_click(data, index) {
+      if (this.emptList.length == 6 && this.blue_numList.filter(item=>typeof item === 'string').length == 0) {
+        if (typeof data === "string") return false;
+        this.emptList.push(data);
+        this.blue_numList[index] = "已选";
+      } else if (this.emptList.length == 7) {
+        this.$msg.alert("已选完号码", "error");
+      } else {
+        this.$msg.alert("请先选择完红球", "error");
       }
     },
     clear_number() {
       this.chooseNumberList = [];
       this.emptList = [];
+    },
+    save() {
+      debugger;
+      if (this.emptList.length != 7) {
+        this.$msg.alert("尚未选完号码，请选择完整后保存", "error");
+      } else {
+        this.dialogFormVisible = false;
+        this.chooseNumberList = this.emptList;
+        if (!this.dialogFormVisible) {
+          this.emptList = [];
+        }
+        this.initData();
+      }
+    },
+    initData() {
+      this.red_numList = [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+      ];
+      this.blue_numList = [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+      ];
+    },
+    cancel() {
+      this.dialogFormVisible = false;
+      this.chooseNumberList = [];
+      if (!this.dialogFormVisible) {
+        this.emptList = [];
+      }
+      this.initData();
+    },
+    reset(data, index) {
+      debugger;
+      if (index == 6) {
+        this.blue_numList = this.blue_numList.map((item, key) =>
+          key == data - 1 ? data : item
+        );
+      } else {
+        this.red_numList = this.red_numList.map((item, key) =>
+          key == data - 1 ? data : item
+        );
+      }
+      this.emptList.splice(index, 1);
     },
 
     /***
