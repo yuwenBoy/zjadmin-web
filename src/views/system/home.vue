@@ -5,6 +5,7 @@
         <div class="title flex space-between">
           <span class="fs12">最新通知</span>
         </div>
+        <Socket />
       </div>
       <div class="box-shadow right">
         <div class="title flex space-between">
@@ -107,9 +108,11 @@
 <script>
 import Clock from "@/components/Clock/index.vue";
 import { randomRang } from "@/utils/random";
+import Socket from "@/components/socket/index.vue";
 export default {
   components: {
     Clock,
+    Socket,
   },
   data() {
     return {
