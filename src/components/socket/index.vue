@@ -78,10 +78,12 @@
           return;
         }
         let params = {
-          userId: _this.userId,
-          msg: _this.contentText
+          data:{userId: _this.userId,
+          msg: _this.contentText},  
+          event:'hello2'
         };
-        _this.ws.send(JSON.stringify(params)); //调用WebSocket send()发送信息的方法
+        console.log(_this.ws);
+        _this.ws.send({"event":"hello","data":"测试数据"}); //调用WebSocket send()发送信息的方法
         _this.contentText = "";
         setTimeout(() => {
           _this.scrollBottm();
@@ -95,6 +97,7 @@
           // 10.12.16.27:8181 是我本地IP地址 此处的 :8181 端口号 要与后端配置的一致
           let ws = new WebSocket("ws://"+window.location.hostname+":3002");
           _this.ws = ws;
+          console.log(ws);
           ws.onopen = function(e) {
             console.log("服务器连接成功");
           };
@@ -105,6 +108,7 @@
             console.log("服务器连接出错");
           };
           ws.onmessage = function(e) {
+            debugger
             //接收服务器返回的数据
             let resData = JSON.parse(e.data);
             if (resData.funName == "userCount") {
