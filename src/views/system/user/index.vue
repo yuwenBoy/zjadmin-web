@@ -18,7 +18,7 @@
           <div class="content-box box-shadow">
             <div class="text item">
               <el-row :gutter="24">
-                <el-col :xs="15" :sm="14" :md="18" :lg="18" :xl="1">
+                <el-col :xs="15" :sm="14" :md="16" :lg="16" :xl="1">
                   <el-form label-width="0px" inline>
                     <el-form-item>
                       <el-input
@@ -53,10 +53,11 @@
                     <OPTOperation />
                   </el-form>
                 </el-col>
-                <el-col :xs="9" :sm="8" :md="6" :lg="6" :xl="2" style="text-align: right">
+                <el-col :xs="9" :sm="8" :md="8" :lg="8" :xl="2" style="text-align: right">
                   <el-button v-if="crud.optShow.add" v-authority="['user:add']" class="filter-item" size="mini" round type="primary" icon="el-icon-plus" @click="crud.toAdd">新增</el-button>
                   <el-button v-authority="['user:delete']" class="filter-item" size="mini" round type="danger" icon="el-icon-delete" :loading="crud.delAllLoading" :disabled="crud.selections.length === 0" @click="toDelete(crud.selections)">删除</el-button>
                   <el-button type="info" class="filter-item" round plain icon="el-icon-upload2" size="mini" @click="handleImport">导入</el-button>
+                  <el-button type="warning" class="filter-item" round icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
                 </el-col>
               </el-row>
             </div>
@@ -157,7 +158,7 @@
                 align="center"
               >
                 <template slot-scope="scope">
-                  <span>{{ scope.row.phone | fmt_phone }}</span>
+                  <span v-if="scope.row.phone">{{ scope.row.phone | fmt_phone }}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -273,7 +274,7 @@
         :limit="1"
         accept=".xlsx, .xls"
         :headers="upload.headers"
-        :action="upload.url + '?updateSupport=' + upload.updateSupport"
+        :action="upload.url"
         :disabled="upload.isUploading"
         :on-progress="handleFileUploadProgress"
         :on-success="handleFileSuccess"
@@ -283,9 +284,6 @@
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
         <div class="el-upload__tip text-center" slot="tip">
-          <div class="el-upload__tip" slot="tip">
-            <el-checkbox v-model="upload.updateSupport" /> 是否更新已经存在的用户数据
-          </div>
           <span>仅允许导入xls、xlsx格式文件。</span>
           <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplate">下载模板</el-link>
         </div>
@@ -299,7 +297,7 @@
 </template>
 <script>
 import crudUser from "@/api/system/user";
-import { setRoles, UpdateUserDisabled } from "@/api/system/user";
+import { setRoles, UpdateUserDisabled,exportData } from "@/api/system/user";
 import { getDeptTree } from "@/api/system/department";
 import { getRoleAllList } from "@/api/system/role";
 import DeptTree from "@/components/dept-tree/dept-tree.vue";
@@ -336,15 +334,13 @@ export default {
       Avatar: Avatar,
       deptEntity: [],
          // 用户导入参数
-         upload: {
+      upload: {
         // 是否显示弹出层（用户导入）
         open: false,
         // 弹出层标题（用户导入）
         title: "",
         // 是否禁用上传
         isUploading: false,
-        // 是否更新已经存在的用户数据
-        updateSupport: 0,
         // 设置上传的请求头部
         headers: { Authorization: getToken() },
         // 上传的地址
@@ -391,7 +387,6 @@ export default {
       this.status = 1;
       this.userId = obj.id;
       this.getRoleData(this.userId);
-      // this.getRoleIdsData(this.userId);
     },
     checkboxT(row, rowIndex) {
       return row.id !== this.user.id;
@@ -490,9 +485,23 @@ export default {
     },
        /** 导出按钮操作 */
     handleExport() {
-      this.download('system/user/export', {
-        ...this.queryParams
-      }, `user_${new Date().getTime()}.xlsx`)
+    //   this.download('/user/export', {
+    //     ...this.queryParams
+    //   }, `user_${new Date().getTime()}.xlsx`)
+
+      exportData().then((res) => {
+            if (res.success) {
+              this.$msg.alert("修改成功");
+              this.resetUserRoleForm();
+            } else {
+              Notification.error({
+                title: "设置失败",
+                duration: 2000,
+              });
+              this.status = 1;
+            }
+          })
+          .catch(() => {});
     },
     /** 导入按钮操作 */
     handleImport() {
@@ -501,7 +510,7 @@ export default {
     },
     /** 下载模板操作 */
     importTemplate() {
-      this.download('system/user/importTemplate', {
+      this.download('/user/importTemplate', {
       }, `user_template_${new Date().getTime()}.xlsx`)
     },
      // 文件上传中处理
@@ -514,7 +523,6 @@ export default {
       this.upload.isUploading = false;
       this.$refs.upload.clearFiles();
       this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.message + "</div>", "导入结果", { dangerouslyUseHTMLString: true });
-    //   this.getList();
       this.crud.toQuery();
     },
     // 提交上传文件

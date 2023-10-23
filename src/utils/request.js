@@ -1,10 +1,11 @@
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 import router from "@/router/routers";
-import { Notification, MessageBox, Loading } from "element-ui";
+import { Notification,Message, Loading } from "element-ui";
 import store from "../store";
 import { getToken, setToken, getRTExp, getRefreshToken } from "@/utils/storage";
 import Config from "@/settings";
+import { tansParams, blobValidate } from "@/utils";
 var loading,
   isRefreshing = false,
   retryReqs = [];
@@ -23,13 +24,13 @@ function endLoading() {
 }
 
 // 创建axios实例
-const instance = axios.create({
+const service = axios.create({
   baseURL: process.env.VUE_APP_BASEURL,
   timeout: Config.timeout // 请求超时时间
 });
 
 // request拦截器
-instance.interceptors.request.use(
+service.interceptors.request.use(
   config => {
     if (getToken()) {
       config.headers["Authorization"] = getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
@@ -45,7 +46,7 @@ instance.interceptors.request.use(
 );
 
 // response 拦截器
-instance.interceptors.response.use(
+service.interceptors.response.use(
   response => {
     const code = response.data.code;
     endLoading();
@@ -145,10 +146,37 @@ instance.interceptors.response.use(
       });
     }
     return Promise.reject(error);
-  }
-);
+});
+
+let downloadLoadingInstance = null;
+// 通用下载方法
+export function download(url,params,filename,config){
+    downloadLoadingInstance = Loading.service({text:'正在下载数据，请稍等',spinner:'el-icon-loading',background:'rgba(0,0,0,0.7)'});
+    return service.post(url,params,{
+           transformRequest:[(params)=>{return tansParams(params)}],
+           headers:{'Content-Type':'application/x-www-form-urlencoded'},
+           responseType:'blob',
+           ...config
+    }).then(async (data) => {
+        const isBlob = blobValidate(data);
+        if (isBlob) {
+          const blob = new Blob([data])
+          saveAs(blob, filename)
+        } else {
+          const resText = await data.text();
+          const rspObj = JSON.parse(resText);
+          const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode['default']
+          Message.error(errMsg);
+        }
+        downloadLoadingInstance.close();
+      }).catch((r) => {
+            console.error(r)
+            Message.error('下载文件出现错误，请联系管理员！')
+            downloadLoadingInstance.close();
+      })
+}
 async function request(req) {
-  return instance.request(req);
+  return service.request(req);
 }
 
-export default instance;
+export default service;

@@ -14,11 +14,14 @@ import './assets/icons'
 import './router/index'
 import store from './store'
 
+import { download } from '@/utils/request'
+
 import './filter/index'
 import U from '@/utils/enum'
 import alert from '@/utils/alert'
 Vue.prototype.$enum = U
 Vue.prototype.$msg =alert
+Vue.prototype.download = download
 
 import jxxqzhas from './components/Permission'
 

@@ -14,6 +14,19 @@ export function add(params) {
 }
 
 /**
+ * 新增用户
+ * @param {*} params
+ * @returns
+ */
+export function exportData(params) {
+    return request({
+      url: "/user/export",
+      method: "post",
+      data: params
+    });
+  }
+
+/**
  * 编辑用户
  * @param {*} params
  * @returns
