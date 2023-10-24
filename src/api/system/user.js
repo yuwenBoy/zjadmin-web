@@ -14,17 +14,31 @@ export function add(params) {
 }
 
 /**
- * 新增用户
+ * 批量导出用户
  * @param {*} params
  * @returns
  */
-export function exportData(params) {
-    return request({
-      url: "/user/export",
-      method: "post",
-      data: params
-    });
-  }
+export function exportUser(params) {
+  return request({
+    url: "/user/export",
+    method: "post",
+    data: params,
+    responseType: "blob" // 指定响应类型为 Blob
+  });
+}
+
+/**
+ * 导入模板下载
+ * @param {*} params
+ * @returns
+ */
+export function importTemplate() {
+  return request({
+    url: "/user/importTemplate",
+    method: "post",
+    responseType: "blob" // 指定响应类型为 Blob
+  });
+}
 
 /**
  * 编辑用户
@@ -56,7 +70,6 @@ export function del(params) {
  * 设置角色
  */
 export function setRoles(params) {
-  // return postRequest("/user/setRoles", params)
   return request({
     url: "/role/setRoles",
     method: "post",

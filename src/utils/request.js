@@ -1,11 +1,10 @@
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 import router from "@/router/routers";
-import { Notification,Message, Loading } from "element-ui";
+import { Notification, Message, Loading } from "element-ui";
 import store from "../store";
 import { getToken, setToken, getRTExp, getRefreshToken } from "@/utils/storage";
 import Config from "@/settings";
-import { tansParams, blobValidate } from "@/utils";
 var loading,
   isRefreshing = false,
   retryReqs = [];
@@ -13,7 +12,8 @@ var loading,
 function startLoading() {
   loading = Loading.service({
     lock: true,
-    text: "资源加载中……",
+    text: "数据加载中……",
+    spinner: "el-icon-loading",
     background: "rgba(0, 0, 0, 0.7)"
   });
 }
@@ -48,14 +48,13 @@ service.interceptors.request.use(
 // response 拦截器
 service.interceptors.response.use(
   response => {
-    const code = response.data.code;
     endLoading();
-
-    if (code != 0) {
-      Notification.error({
-        title: response.data.message
-      });
-      return Promise.reject("error");
+    if (response.config.responseType === "blob") {
+      if (response.status === 200) {
+        return response;
+      } else {
+        Notification.error({ title: "文件下载失败，或此文件不存在。" });
+      }
     } else {
       return response.data;
     }
@@ -146,35 +145,8 @@ service.interceptors.response.use(
       });
     }
     return Promise.reject(error);
-});
-
-let downloadLoadingInstance = null;
-// 通用下载方法
-export function download(url,params,filename,config){
-    downloadLoadingInstance = Loading.service({text:'正在下载数据，请稍等',spinner:'el-icon-loading',background:'rgba(0,0,0,0.7)'});
-    return service.post(url,params,{
-           transformRequest:[(params)=>{return tansParams(params)}],
-           headers:{'Content-Type':'application/x-www-form-urlencoded'},
-           responseType:'blob',
-           ...config
-    }).then(async (data) => {
-        const isBlob = blobValidate(data);
-        if (isBlob) {
-          const blob = new Blob([data])
-          saveAs(blob, filename)
-        } else {
-          const resText = await data.text();
-          const rspObj = JSON.parse(resText);
-          const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode['default']
-          Message.error(errMsg);
-        }
-        downloadLoadingInstance.close();
-      }).catch((r) => {
-            console.error(r)
-            Message.error('下载文件出现错误，请联系管理员！')
-            downloadLoadingInstance.close();
-      })
-}
+  }
+);
 async function request(req) {
   return service.request(req);
 }

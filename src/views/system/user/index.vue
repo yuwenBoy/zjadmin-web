@@ -53,11 +53,56 @@
                     <OPTOperation />
                   </el-form>
                 </el-col>
-                <el-col :xs="9" :sm="8" :md="8" :lg="8" :xl="2" style="text-align: right">
-                  <el-button v-if="crud.optShow.add" v-authority="['user:add']" class="filter-item" size="mini" round type="primary" icon="el-icon-plus" @click="crud.toAdd">新增</el-button>
-                  <el-button v-authority="['user:delete']" class="filter-item" size="mini" round type="danger" icon="el-icon-delete" :loading="crud.delAllLoading" :disabled="crud.selections.length === 0" @click="toDelete(crud.selections)">删除</el-button>
-                  <el-button type="info" class="filter-item" round plain icon="el-icon-upload2" size="mini" @click="handleImport">导入</el-button>
-                  <el-button type="warning" class="filter-item" round icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
+                <el-col
+                  :xs="9"
+                  :sm="8"
+                  :md="8"
+                  :lg="8"
+                  :xl="2"
+                  style="text-align: right"
+                >
+                  <el-button
+                    v-if="crud.optShow.add"
+                    v-authority="['user:add']"
+                    class="filter-item"
+                    size="mini"
+                    round
+                    type="primary"
+                    icon="el-icon-plus"
+                    @click="crud.toAdd"
+                    >新增</el-button
+                  >
+                  <el-button
+                    v-authority="['user:delete']"
+                    class="filter-item"
+                    size="mini"
+                    round
+                    type="danger"
+                    icon="el-icon-delete"
+                    :loading="crud.delAllLoading"
+                    :disabled="crud.selections.length === 0"
+                    @click="toDelete(crud.selections)"
+                    >删除</el-button
+                  >
+                  <el-button
+                    type="info"
+                    class="filter-item"
+                    round
+                    plain
+                    icon="el-icon-upload2"
+                    size="mini"
+                    @click="handleImport"
+                    >导入</el-button
+                  >
+                  <el-button
+                    type="warning"
+                    class="filter-item"
+                    round
+                    icon="el-icon-download"
+                    size="mini"
+                    @click="handleExport"
+                    >导出</el-button
+                  >
                 </el-col>
               </el-row>
             </div>
@@ -158,7 +203,9 @@
                 align="center"
               >
                 <template slot-scope="scope">
-                  <span v-if="scope.row.phone">{{ scope.row.phone | fmt_phone }}</span>
+                  <span v-if="scope.row.phone">{{
+                    scope.row.phone | fmt_phone
+                  }}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -267,8 +314,13 @@
         >
       </div>
     </el-dialog>
-     <!-- 用户导入对话框 -->
-     <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
+    <!-- 用户导入对话框 -->
+    <el-dialog
+      :title="upload.title"
+      :visible.sync="upload.open"
+      width="400px"
+      append-to-body
+    >
       <el-upload
         ref="upload"
         :limit="1"
@@ -285,7 +337,13 @@
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
         <div class="el-upload__tip text-center" slot="tip">
           <span>仅允许导入xls、xlsx格式文件。</span>
-          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplate">下载模板</el-link>
+          <el-link
+            type="primary"
+            :underline="false"
+            style="font-size: 12px; vertical-align: baseline"
+            @click="importTemplate"
+            >下载模板</el-link
+          >
         </div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
@@ -297,7 +355,7 @@
 </template>
 <script>
 import crudUser from "@/api/system/user";
-import { setRoles, UpdateUserDisabled,exportData } from "@/api/system/user";
+import { setRoles, UpdateUserDisabled, exportUser,importTemplate } from "@/api/system/user";
 import { getDeptTree } from "@/api/system/department";
 import { getRoleAllList } from "@/api/system/role";
 import DeptTree from "@/components/dept-tree/dept-tree.vue";
@@ -308,6 +366,8 @@ import jForm from "./userEdit";
 import { mapGetters } from "vuex";
 import Avatar from "@/assets/images/avatar.png";
 import { getToken } from "@/utils/storage";
+import { excelDownload } from "@/utils";
+
 export default {
   components: {
     OPTOperation,
@@ -333,7 +393,7 @@ export default {
       rolesIds: [],
       Avatar: Avatar,
       deptEntity: [],
-         // 用户导入参数
+      // 用户导入参数
       upload: {
         // 是否显示弹出层（用户导入）
         open: false,
@@ -344,7 +404,7 @@ export default {
         // 设置上传的请求头部
         headers: { Authorization: getToken() },
         // 上传的地址
-        url:process.env.VUE_APP_BASEURL + "/user/import"
+        url: process.env.VUE_APP_BASEURL + "/user/import",
       },
     };
   },
@@ -443,7 +503,8 @@ export default {
           cancel: () => {
             this.crud.refresh();
           },
-        });
+        }
+      );
     },
 
     // 关闭重置角色窗口
@@ -483,25 +544,10 @@ export default {
       }
       this.crud.toQuery();
     },
-       /** 导出按钮操作 */
-    handleExport() {
-    //   this.download('/user/export', {
-    //     ...this.queryParams
-    //   }, `user_${new Date().getTime()}.xlsx`)
-
-      exportData().then((res) => {
-            if (res.success) {
-              this.$msg.alert("修改成功");
-              this.resetUserRoleForm();
-            } else {
-              Notification.error({
-                title: "设置失败",
-                duration: 2000,
-              });
-              this.status = 1;
-            }
-          })
-          .catch(() => {});
+    /** 批量导出 */
+    async handleExport() {
+      const response = await exportUser(this.crud.getQueryParams());
+      excelDownload(response);
     },
     /** 导入按钮操作 */
     handleImport() {
@@ -509,12 +555,12 @@ export default {
       this.upload.open = true;
     },
     /** 下载模板操作 */
-    importTemplate() {
-      this.download('/user/importTemplate', {
-      }, `user_template_${new Date().getTime()}.xlsx`)
+    async importTemplate() {
+      const response = await importTemplate();
+      excelDownload(response);
     },
-     // 文件上传中处理
-     handleFileUploadProgress(event, file, fileList) {
+    // 文件上传中处理
+    handleFileUploadProgress(event, file, fileList) {
       this.upload.isUploading = true;
     },
     // 文件上传成功处理
@@ -522,13 +568,19 @@ export default {
       this.upload.open = false;
       this.upload.isUploading = false;
       this.$refs.upload.clearFiles();
-      this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.message + "</div>", "导入结果", { dangerouslyUseHTMLString: true });
+      this.$alert(
+        "<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" +
+          response.message +
+          "</div>",
+        "导入结果",
+        { dangerouslyUseHTMLString: true }
+      );
       this.crud.toQuery();
     },
     // 提交上传文件
     submitFileForm() {
       this.$refs.upload.submit();
-    }
+    },
   },
 };
 </script>

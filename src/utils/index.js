@@ -413,34 +413,26 @@ export function arrayToTree(arr, pid) {
     return res;
   }, []);
 }
-
-/**
-* 参数处理
-* @param {*} params  参数
-*/
-export function tansParams(params) {
-    let result = ''
-    for (const propName of Object.keys(params)) {
-      const value = params[propName];
-      var part = encodeURIComponent(propName) + "=";
-      if (value !== null && value !== "" && typeof (value) !== "undefined") {
-        if (typeof value === 'object') {
-          for (const key of Object.keys(value)) {
-            if (value[key] !== null && value[key] !== "" && typeof (value[key]) !== 'undefined') {
-              let params = propName + '[' + key + ']';
-              var subPart = encodeURIComponent(params) + "=";
-              result += subPart + encodeURIComponent(value[key]) + "&";
-            }
-          }
-        } else {
-          result += part + encodeURIComponent(value) + "&";
+  // 对下载的流进行处理，直接从浏览器下载下来
+  export function excelDownload(res){
+    if (res.data.type === 'application/json') {
+        // 错误以及无权限
+        const reader = new FileReader(res.data)
+        reader.readAsText(res.data)
+        reader.onload = () => {
+            const result = JSON.parse(reader.result)
+            message.error(result.msg)
         }
-      }
+    } else {
+        const contentDisposition = res.headers['content-disposition']
+        const patt = new RegExp('filename=([^;]+\\.[^\\.;]+);*')
+        const $link = document.createElement('a')
+        const url = URL.createObjectURL(new Blob([res.data]))
+        $link.href = url
+        $link.download = decodeURIComponent(patt.exec(contentDisposition)[1])
+        $link.click()
+        document.body.appendChild($link)
+        document.body.removeChild($link) // 下载完成移除元素
+        window.URL.revokeObjectURL($link.href) // 释放掉blob对象
     }
-    return result
-  }
-  
-  // 验证是否为blob格式
-  export function blobValidate(data) {
-    return data.type !== 'application/json'
   }
