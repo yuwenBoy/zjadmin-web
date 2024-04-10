@@ -14,7 +14,7 @@ module.exports = {
   devServer: {
     host: '127.0.0.1',
     port: 3500,
-    open: true,
+    open: false,
     proxy: {
       [`/${process.env.VUE_APP_BASEURL}`]: {
         target: process.env.VUE_APP_URL, // 请求本地 需要jxxqz后端项目

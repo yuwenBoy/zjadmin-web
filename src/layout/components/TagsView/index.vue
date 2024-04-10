@@ -71,7 +71,6 @@ export default {
     },
     filterAffixTags(routes, basePath = '/') {
       let tags = []
-      console.info("routes========的值"+routes);
       routes.forEach(route => {
         if (route.meta && route.meta.affix) {
           const tagPath = path.resolve(basePath, route.path)

@@ -5,7 +5,6 @@
         <div class="title flex space-between">
           <span class="fs12">最新通知</span>
         </div>
-        <Socket />
       </div>
       <div class="box-shadow right">
         <div class="title flex space-between">
@@ -108,11 +107,9 @@
 <script>
 import Clock from "@/components/Clock/index.vue";
 import { randomRang } from "@/utils/random";
-import Socket from "@/components/socket/index.vue";
 export default {
   components: {
     Clock,
-    Socket,
   },
   data() {
     return {
@@ -201,7 +198,6 @@ export default {
      * @param {*} data
      */
     red_click(data, index) {
-      debugger;
       if (this.emptList.length >= 6 && this.red_numList.filter(item=>typeof item === 'string').length >=6) {
         this.$msg.alert("红球只能选择6个", "error");
       } else {
@@ -226,7 +222,6 @@ export default {
       this.emptList = [];
     },
     save() {
-      debugger;
       if (this.emptList.length != 7) {
         this.$msg.alert("尚未选完号码，请选择完整后保存", "error");
       } else {
@@ -256,7 +251,6 @@ export default {
       this.initData();
     },
     reset(data, index) {
-      debugger;
       if (index == 6) {
         this.blue_numList = this.blue_numList.map((item, key) =>
           key == data - 1 ? data : item
