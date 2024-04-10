@@ -76,7 +76,7 @@ export default {
       immediate: true
     }
   },
-  created() {
+  mounted() {
     this.getBgImages()
     // 获取验证码
     // this.getCode()
