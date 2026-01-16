@@ -148,10 +148,6 @@ export function fetchMainCategories() {
           params
     });
   }
-
-
-    
-
   export default {
     productListPager,
     create,
