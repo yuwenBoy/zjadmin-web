@@ -38,4 +38,10 @@ new Vue({
     router,
     store,
     render: h => h(App),
+    created() {
+    // 应用启动时初始化 WebSocket
+    if (localStorage.getItem('token')) {
+      this.$store.dispatch('chat/initSocket');
+    }
+  },
 }).$mount('#app')
