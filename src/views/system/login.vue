@@ -39,6 +39,7 @@
 
 <script>
 import { hashSync} from 'bcryptjs';
+import msg  from '@/utils/alert'
 import { getCodeData } from '@/api/base'
 import Config from '@/settings'
 import Cookies from 'js-cookie'
@@ -135,7 +136,9 @@ export default {
           this.$store.dispatch('Login', user).then(() => {
             this.loading = false
             this.$router.push({ path: this.redirect || '/' })
-          }).catch((error) => {
+          }).catch(error => {
+            console.log(error);
+            msg.alert('账号密码错误，请重新登录','error');
             this.loading = false
             // this.getCode()
           })
@@ -196,7 +199,7 @@ export default {
   }
   .login-code {
     width: 33%;
-    display: inline-block;
+    display: block;
     height: 38px;
     float: right;
     img{

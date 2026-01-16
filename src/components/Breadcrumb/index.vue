@@ -7,7 +7,7 @@
       </el-breadcrumb-item>
     </transition-group>
   </el-breadcrumb>
-</template>
+</template>  
 
 <script>
 //simport pathToRegexp from 'path-to-regexp'

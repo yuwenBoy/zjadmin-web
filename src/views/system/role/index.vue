@@ -78,7 +78,13 @@
                       align="center"
                       width="50"
                     />
+                    <el-table-column prop="id" label="角色ID" width="80"/>
                     <el-table-column prop="name" label="角色名称" />
+                    <el-table-column prop="roleType" label="角色类型">
+                        <template slot-scope="scope">
+                            <span style="font-weight:bold;" :style="{color: $enum.roleTypeEnumColor[scope.row.roleType]  }">{{ $enum.roleTypeEnum[scope.row.roleType] }}</span>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="code" label="角色编码" />
                     <el-table-column
                       prop="create_time"
@@ -250,9 +256,7 @@ export default {
         this.currentRoleId = val.id;
         // 清空菜单的选中
         this.setCheckList = [];
-        api
-          .getModuleIdsByRoleId({ roleId: val.id })
-          .then((res) => {
+        api.getModuleIdsByRoleId({ roleId: val.id }).then((res) => {
             if (res.success) {
               that.setCheckList = [];
               for (var i = 0; i < res.result.length; i++) {

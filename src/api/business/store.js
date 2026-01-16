@@ -1,0 +1,57 @@
+import request from "@/utils/request";
+  export function add(params) {
+    return request({
+      url: "/store/add",
+      method: "post",
+      data: params
+    });
+  }
+  
+  export function edit(params) {
+    return request({
+      url: "/store/edit",
+      method: "post",
+      data: params
+    });
+  }
+
+  /**
+   * 修改门店营业时间
+   */
+  export function updateShopServingTime(){
+    return request({
+        url:'/hours/updateShopServingTime',
+        method:'post',
+        data:params,
+    })
+  }
+  
+  export function del(params) {
+    return request({
+      url: "/store/delete",
+      method: "post",
+      data: params
+    });
+  }
+
+  
+
+  /**
+   *获取门店列表
+   * @param {*} params
+   */
+  export function getStoreList(params) {
+    return request({
+      url: "/store/getStoreList",
+      method: "get",
+      params
+    });
+  }
+
+  export default {
+    add,
+    edit,
+    del,
+    getStoreList,
+    updateShopServingTime,
+  };

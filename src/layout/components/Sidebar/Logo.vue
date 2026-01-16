@@ -2,11 +2,11 @@
   <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
+        <img v-if="leftLogo" :src="leftLogo" class="sidebar-logo">
         <h1 v-else class="sidebar-title">{{ title }} </h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
+        <img v-if="leftLogo" :src="leftLogo" class="sidebar-logo">
         <h1 class="sidebar-title">{{ title }} </h1>
       </router-link>
     </transition>
@@ -15,6 +15,10 @@
 
 <script>
 import Logo from '@/assets/images/logo.png'
+
+import BusinessLogo from '@/assets/images/business_logo.png'
+
+import StoreLogo from '@/assets/images/business_logo.png'
 export default {
   name: 'SidebarLogo',
   props: {
@@ -26,8 +30,26 @@ export default {
   data() {
     return {
       title: 'JXXQZ后台管理系统',
-      logo: Logo
+      logo: Logo,
+      businessLogo:BusinessLogo,
+      storeLogo:StoreLogo,
+      userInfo:{},
+      leftLogo:'',
     }
+  },
+  mounted(){
+    this.userInfo = this.$store.state.user.user;
+    if(this.userInfo.userType == 2){
+        this.title ='JXXQZ商家端'; 
+        this.leftLogo = this.businessLogo;
+    }else if(this.userInfo.userType == 3){
+        this.leftLogo = this.storeLogo;
+        this.title ='JXXQZ门店端'; 
+    }else{
+        this.leftLogo = this.logo;
+    }
+    // this.$forceUpdate(); // 强制触发视图更新
+    console.log(this.leftLogo);
   }
 }
 </script>

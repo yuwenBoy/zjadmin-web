@@ -2,20 +2,22 @@
   <div class="navbar">
     <hamburger
       id="hamburger-container"
-      :is-active="sidebar.opened"
-      class="hamburger-container"
-      @toggleClick="toggleSideBar"
+      :is-active="sidebar.opened"     
+      class="hamburger-container"    
+      @toggleClick="toggleSideBar"       
     />
 
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
-    <div class="right-menu">
+   
+    <div class="right-menu">   
       <template v-if="device !== 'mobile'">
         <!-- <router-link to="/dataDnalyse" target="_blank" class="data">
           数据监控
         </router-link> -->
         <!-- <search id="header-search" class="right-menu-item" /> -->
-
+        <store-menu id="business-store-container" class="business-store-container" v-if="user.userType==2"></store-menu>  
+   
         <el-tooltip content="全屏缩放" effect="dark" placement="bottom">
           <screenfull id="screenfull" class="right-menu-item hover-effect" />
         </el-tooltip>
@@ -25,16 +27,13 @@
         </el-tooltip>
       </template>
 
-      <el-dropdown
-        class="avatar-container right-menu-item hover-effect"
-        trigger="click"
-      >
+      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="fileName" class="user-avatar" />
-          <i class="el-icon-caret-bottom" />
+            <img :src="fileName" class="user-avatar" />
+            <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
-          <span style="display: block" @click="show = true">
+          <span style="display: block" @click="show = true">  
             <el-dropdown-item> 布局设置 </el-dropdown-item>
           </span>
           <router-link to="/user/profile">
@@ -52,16 +51,18 @@
 <script>
 import { mapGetters } from "vuex";
 import Breadcrumb from "@/components/Breadcrumb";
+import StoreMenu from "@/components/StoreMenu";
 import Hamburger from "@/components/Hamburger";
 import Screenfull from "@/components/Screenfull";
 import Search from "@/components/HeaderSearch";
 import Avatar from "@/assets/images/avatar.png";
 import Config from "@/settings";
 import { getFileName } from "@/utils/index";
-export default {
-  name: "Navbar",
+export default {  
+  name: "Navbar",  
   components: {
     Breadcrumb,
+    StoreMenu,
     Hamburger,
     Screenfull,
     Search,
@@ -75,6 +76,7 @@ export default {
   },
   mounted() {
     this.fileName = Config.baseImgUrl + getFileName(this.user.avatar);
+
   },
   computed: {
     ...mapGetters(["sidebar", "device", "user", "baseApi"]),
@@ -103,12 +105,12 @@ export default {
     },
     logout() {
       this.$store.dispatch("LogOut").then(() => {
-        location.reload();
+        location.reload();  
       });
     },
-  },
+  },  
   watch: {
-    user(oldVal, newVal) {
+    user(oldVal, newVal) {  
       this.fileName = "/" + newVal.avatar.split("\\")[3];
     },
     deep: true, // 深度监听
@@ -122,12 +124,13 @@ export default {
   height: 50px;
   overflow: hidden;
   position: relative;
-  background: #00d1d3;
-  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+//   background: #00d1d3;  
+background: #FFFFFF;  
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);  
   .hamburger-container {
-    line-height: 46px;
+    line-height: 46px;    
     height: 100%;
-    float: left;
+    float: left;    
     cursor: pointer;
     transition: background 0.3s;
     -webkit-tap-highlight-color: transparent;
@@ -156,7 +159,7 @@ export default {
     }
     .data {
       position: absolute;
-      right: 392px;
+      right: 392px;  
     }
     .data:hover {
       border: 1px solid red;

@@ -1,4 +1,5 @@
 import router from './routers'
+import Layout from '../layout/index'
 import store from '@/store'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css' // progress bar style
@@ -7,13 +8,14 @@ import { getModuleAll } from '@/api/system/module'
 import { filterAsyncRouter } from '@/store/modules/permission'
 import Config from '@/settings'
 NProgress.configure({ showSpinner: false })
-const whiteList = ['/login']
+const whiteList = ['/login','/businessLogin','/merchantApplication']
 router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     document.title = to.meta.title + '-' + Config.title
   }
   NProgress.start()
   if (getToken()) {
+    
     // 已登录且要跳转的页面是登录页
     if (to.path === '/login') {
       next({ path: '/' })
@@ -48,11 +50,67 @@ router.beforeEach((to, from, next) => {
   }
 })
 
+
+// 系统后台首页
+const systemHomeRouter = {
+    path: '/',
+    component: Layout,
+    redirect: '/dashboard',
+    children:[{
+        path: 'dashboard',
+        component: (resolve) => require(['@/views/system/home'], resolve),
+        name: 'dashboard',
+        meta: { title: '首页', icon: 'index', affix: true, noCache: true }
+      }]
+}
+
+// 商家端后台首页
+const businessHomeRouter = {
+    path: '/',
+    component: Layout,
+    redirect: '/BDashboard',
+    children: [{
+      path: 'BDashboard',
+      component: (resolve) => require(['@/views/business/home'], resolve),
+      name: 'BDashboard',
+      meta: { title: '首页', icon: 'index', affix: true, noCache: true }
+    }]
+}
+
+
+// 门店端后台首页
+const StoreHomeRouter = {
+    path: '/',
+    component: Layout,
+    redirect: '/Sdashboard',
+    children: [{
+      path: 'Sdashboard',
+      component: (resolve) => require(['@/views/business/storeHome'], resolve),
+      name: 'Sdashboard',
+      meta: { title: '首页', icon: 'index', affix: true, noCache: true }
+    }]
+}
+
+
 export const loadMenus = (next, to) => {
   getModuleAll().then(res => {
     const asyncRouter = filterAsyncRouter(res.result)
-    asyncRouter.push({ path: '*', redirect: '/404', hidden: true })
+
+    asyncRouter.push({ path: '*', redirect: '/404', hidden: true });
+
+    console.log('loadMenus',store.getters.user.userType)
+    
     store.dispatch('GenerateRoutes', asyncRouter).then(() => { // 存储路由
+        // 商家后台首页
+    if(store.getters.user.userType==2){
+        asyncRouter.unshift(businessHomeRouter);
+    } else if(store.getters.user.userType==3){
+        // 门店后台首页
+        asyncRouter.unshift(StoreHomeRouter);
+    }else{
+         // 系统管理后台首页
+        asyncRouter.unshift(systemHomeRouter);
+    }
       router.addRoutes(asyncRouter) // 动态添加可访问路由表
       next({ ...to, replace: true })
     })

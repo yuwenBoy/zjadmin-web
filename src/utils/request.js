@@ -94,7 +94,7 @@ service.interceptors.response.use(
             const res = await request({
               url: "/auth/updateToken",
               method: "post",
-              data: { id: user.id, username: user.username }
+              data: { id: user.id, username: user.username,business_id:user.business_id,userType:user.userType }
             });
             if (res.code === 0) {
               const data = res.result;

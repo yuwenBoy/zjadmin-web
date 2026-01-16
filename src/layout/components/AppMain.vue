@@ -7,11 +7,11 @@
       </keep-alive>
     </transition>
     </div>
-    <div v-if="$store.state.settings.showFooter" id="el-main-footer">
+    <!-- <div v-if="$store.state.settings.showFooter" id="el-main-footer">
       <span v-html="$store.state.settings.footerTxt" />
       <span> ⋅ </span>
       <a href="http://www.beian.miit.gov.cn" target="_blank">{{ $store.state.settings.caseNumber }}</a>
-    </div>
+    </div> -->
   </section>
 </template>
 
@@ -38,8 +38,10 @@ export default {
   position: relative;
   overflow: hidden;
   .app-main-content {
-    height: calc(100vh - 84px);
-    overflow-y: auto;
+    height: calc(100vh - 50px);
+    overflow-y: hidden;
+    background-color: #f5f7fc;
+    overflow-x: hidden;
   }
 }
 

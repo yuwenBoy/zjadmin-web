@@ -7,7 +7,7 @@ module.exports = {
     /**
      * @description 是否显示 tagsView
      */
-    tagsView: true,
+    tagsView: false,
     /**
      * @description 固定头部
      */
@@ -53,5 +53,6 @@ module.exports = {
     /**
      * nginx 图片资源访问地址
      */
-    baseImgUrl:'//image.jxxqz.com:3001/'
+    baseImgUrl:'//image.jxxqz.com:3001/',
+    weatherAPIKey:'0a6a76126434abffa21e08398266e517', // 483569520b741ebca59287681f3a6427
 }

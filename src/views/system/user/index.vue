@@ -3,7 +3,7 @@
     <el-row :gutter="24">
       <el-col :xs="9" :sm="6" :md="5" :lg="4" :xl="4">
         <div style="padding-top: 10px">
-          <dept-tree :data="deptEntity" :checkValue="[]" @change="change" />
+          <dept-tree :data="deptEntity" :checkValue="[]" @change="change" :defaultSelectedKey="3" />
         </div>
       </el-col>
       <el-col
@@ -290,12 +290,9 @@
       :before-close="handleClose"
     >
       <el-checkbox-group v-if="request" v-model="roles">
-        <el-checkbox
-          v-for="role in roleList"
-          :key="role.value"
-          :label="role.value"
-          >{{ role.name }}</el-checkbox
-        >
+        <el-checkbox v-for="role in roleList" :key="role.value" :label="role.value">
+            <span >{{ role.name }}</span>
+        </el-checkbox>
       </el-checkbox-group>
       <div slot="footer" class="dialog-footer">
         <el-button
@@ -535,7 +532,6 @@ export default {
           .catch(() => {});
       }
     },
-    // 切换部门
     change(data) {
       if (data.pid === 0) {
         this.crud.query.deptId = null;

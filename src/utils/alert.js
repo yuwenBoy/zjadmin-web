@@ -28,21 +28,15 @@ function alert(msg, type = "success") {
  *
  * 确认提示消息框
  */
-function confirm(msg, options, type = "warnging") {
-  return MessageBox.confirm(msg, "提示", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: type
-  })
-    .then(() => {
-      if (options.hasOwnProperty("ok") && typeof options.ok === 'function') {
-        options.ok();
-      }
-    })
-    .catch(() => {
-      if (options.hasOwnProperty("cancel") && typeof options.cancel === "function") {
-        options.cancel();
-      }
+function confirm(msg, options,title="提示",buttonConfig={confirmButtonText:'确定',cancelButtonText: "取消"}, type = "warnging") {
+  return MessageBox.confirm(msg, title,{...buttonConfig}).then(() => {
+        if (options.hasOwnProperty("ok") && typeof options.ok === 'function') {
+            options.ok();
+        }    
+     }).catch(() => {
+        if (options.hasOwnProperty("cancel") && typeof options.cancel === "function") {
+            options.cancel();
+        }    
     });
 }
 

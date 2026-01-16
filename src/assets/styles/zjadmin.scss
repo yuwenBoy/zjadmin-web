@@ -151,3 +151,12 @@
     display: inline-block;
 }
 .el-link:last-child::after{display: none;content: '';}
+
+.flex{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.grey-text{
+    color: #999;
+}

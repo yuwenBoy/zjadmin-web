@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 import Layout from '../layout/index'
 
+
 Vue.use(Router)
 
 export const constantRouterMap = [{
@@ -10,6 +11,18 @@ export const constantRouterMap = [{
   meta: { title: '登录', noCache: true },
   component: (resolve) => require(['@/views/system/login'], resolve),
   hidden: true
+},
+{
+    path: '/businessLogin',
+    meta: { title: '登录', noCache: true },
+    component: (resolve) => require(['@/views/business/login'], resolve),
+    hidden: true
+},
+{
+    path: '/merchantApplication',
+    meta: { title: '商家入驻申请', noCache: false },
+    component: (resolve) => require(['@/views/business/business/merchantApplication'], resolve),
+    hidden: true
 },
 {
   path: '/404',
@@ -23,17 +36,6 @@ export const constantRouterMap = [{
   children: [{
     path: '/redirect/:path*',
     component: (resolve) => require(['@/views/features/redirect'], resolve)
-  }]
-},
-{
-  path: '/',
-  component: Layout,
-  redirect: '/dashboard',
-  children: [{
-    path: 'dashboard',
-    component: (resolve) => require(['@/views/system/home'], resolve),
-    name: 'Dashboard',
-    meta: { title: '首页', icon: 'index', affix: true, noCache: true }
   }]
 },
 {
@@ -156,6 +158,7 @@ export const constantRouterMap = [{
   ]
 }
 ]
+
 export default new Router({
   mode: 'hash', // history
   scrollBehavior: () => ({ y: 0 }),

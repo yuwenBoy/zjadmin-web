@@ -436,3 +436,26 @@ export function arrayToTree(arr, pid) {
         window.URL.revokeObjectURL($link.href) // 释放掉blob对象
     }
   }
+
+
+ /**
+  * 验证数组对象某个属性是否重复
+  * @param {*} array 
+  * @param {*} property 
+  * @returns 
+  */ 
+export function hasDuplicateProperty(array, property) {
+    const seenValues = new Set();
+    
+    for (const obj of array) {
+      if (obj.hasOwnProperty(property)) {
+        const value = obj[property];
+        if (seenValues.has(value)) {
+          return true; // 发现重复
+        }
+        seenValues.add(value);
+      }
+    }
+    
+    return false; // 没有发现重复
+  }

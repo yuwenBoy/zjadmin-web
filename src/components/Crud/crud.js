@@ -121,7 +121,6 @@ function CRUD(options) {
         },
         // 搜索
         toQuery() {
-            console.log('搜索点击事件...')
             crud.page.page = 1
             crud.refresh()
         },

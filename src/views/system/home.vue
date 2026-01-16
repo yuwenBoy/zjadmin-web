@@ -107,6 +107,7 @@
 <script>
 import Clock from "@/components/Clock/index.vue";
 import { randomRang } from "@/utils/random";
+import { getWeather } from '@/api/base';
 export default {
   components: {
     Clock,
@@ -157,6 +158,12 @@ export default {
       ],
     };
   },
+mounted(){
+    getWeather('Datong').then(res=>{
+        console.log(res);
+    })
+},
+
   methods: {
     /**
      * 机选号码

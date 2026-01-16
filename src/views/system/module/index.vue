@@ -101,12 +101,9 @@
             label="菜单类型"
             prop="menuType"
             align="center"
-            width="85"
-          >
+            width="85">
             <template slot-scope="scope">
-              <span v-if="scope.row.menuType == 1">按钮</span>
-              <span v-else-if="scope.row.menuType == 2">菜单</span>
-              <span v-else>目录</span>
+              <span style="font-weight:bold;" :style="{color: $enum.moduleMenuTypeEnumColor[scope.row.menuType] }">{{ $enum.moduleMenuTypeEnum[scope.row.menuType] }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -118,6 +115,17 @@
             <template slot-scope="scope">
               <span v-if="scope.row.hidden == 1">不可见</span>
               <span v-else>可见</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="是否可授权员工"
+            prop="isAuthorized"
+            align="center"
+            width="125"
+          >
+            <template slot-scope="scope">
+              <span v-if="scope.row.isAuthorized == 1">是</span>
+              <span v-else>否</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -183,16 +191,7 @@
               </el-row>
               <el-row :gutter="24">
                 <el-col :span="24">
-                  <el-form-item
-                    :label="
-                      form.menuType == 2
-                        ? '菜单名称'
-                        : form.menuType == 3
-                        ? '目录名称'
-                        : '按钮名称'
-                    "
-                    prop="name"
-                  >
+                  <el-form-item :label="$enum.moduleMenuTypeEnum[form.menuType]"  prop="name">
                     <el-input
                       v-model="form.name"
                       clearable
@@ -302,6 +301,26 @@
                 </el-col>
               </el-row>
               <el-row :gutter="24">
+                <el-col v-show="form.menuType ==3" :span="24">
+                  <el-form-item label="资源可授权员工">
+                    <el-radio-group v-model="form.isAuthorized">
+                      <el-radio-button label="0">否</el-radio-button>
+                      <el-radio-button label="1">是</el-radio-button>
+                    </el-radio-group>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row :gutter="24">
+                <el-col v-show="form.isAuthorized ==1" :span="24">
+                  <el-form-item label="资源是否可继承父级">
+                    <el-radio-group v-model="form.inheritAuthorization">
+                      <el-radio-button label="0">是</el-radio-button>
+                      <el-radio-button label="1">否</el-radio-button>
+                    </el-radio-group>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row :gutter="24">
                 <el-col v-show="form.menuType != 3" :span="24">
                   <el-form-item label="上级菜单" ref="deptRef">
                     <tree-select
@@ -356,6 +375,8 @@ const defaultForm = {
   parent_id: 0,
   permission: "",
   hidden: 0, // 菜单可见
+  isAuthorized:0, // 资源是否可授权给员工 0 不可授权 
+  inheritAuthorization:0, // 可继承父级资源
 };
 export default {
   components: { treeSelect, IconSelect, OPTOperation },

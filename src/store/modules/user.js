@@ -28,16 +28,22 @@ const user = {
     actions: {
         // 登录
         Login({ commit }, userInfo) {
-            const rememberMe = userInfo.rememberMe
+            const rememberMe = userInfo.rememberMe;
             return new Promise((resolve, reject) => {
                 login(userInfo).then(res => {
                     let data = res.result;
                     setToken(data.accessToken,data.refreshToken)
-                    commit('SET_TOKEN',data.accessToken)
-                    setUserInfo(data, commit)
+                        commit('SET_TOKEN',data.accessToken)
+                        setUserInfo(data, commit)
                         // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
-                    commit('SET_LOAD_MENUS', true)
-                    resolve()
+                        commit('SET_LOAD_MENUS', true);
+
+                        console.log('登录成功后，data数据',data);
+                        // 立即设置 tagsView 状态
+                        console.log('user.userType',data.user.userType);
+                        commit('settings/CHANGE_SETTING', { key: 'tagsView', value: data.user.userType==1?true:false });
+                        console.log('TagsView state:', this.state.settings.tagsView);
+                        resolve();
                 }).catch(error => {
                     reject(error)
                 })
