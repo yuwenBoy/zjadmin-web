@@ -14,7 +14,7 @@
       </template>
       <sidebar-item
         v-for="child in item.children"
-        :key="child.path"
+        :key="child.key"
         :is-nest="true"
         :item="child"
         :base-path="resolvePath(child.path)"
@@ -55,6 +55,11 @@ export default {
     // TODO: refactor with render function
     this.onlyOneChild = null
     return {}
+  },
+  mounted(){
+    this.item && this.item.children && this.item.children.length > 0 && this.item.children.forEach((item) => {
+      item.key = item.path + new Date().getTime()
+    })
   },
   methods: {
     hasOneShowingChild(children = [], parent) {
