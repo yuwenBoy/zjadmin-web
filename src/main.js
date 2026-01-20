@@ -2,6 +2,7 @@ import 'babel-polyfill'
 import Vue from 'vue'
 import Cookies from 'js-cookie'
 import 'normalize.css/normalize.css'
+import { getToken } from "@/utils/storage"
 
 import Element from 'element-ui'
 
@@ -40,7 +41,7 @@ new Vue({
     render: h => h(App),
     created() {
     // 应用启动时初始化 WebSocket
-    if (localStorage.getItem('token')) {
+    if (getToken()) {
       this.$store.dispatch('chat/initSocket');
     }
   },

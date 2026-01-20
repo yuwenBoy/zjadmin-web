@@ -1,5 +1,6 @@
 // 统一请求路径前缀
-let baseUrl = 'basic-api',apiUrl = 'http://127.0.0.1:9000/';
+let baseUrl = 'basic-api',
+apiUrl = 'http://127.0.0.1:9000/';
 const api = {
     state: {
         // 部署包上传
