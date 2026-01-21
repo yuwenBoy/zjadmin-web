@@ -124,7 +124,7 @@ export default {
 .chat-window {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 300px;
 }
 .message-list {
   flex: 1;

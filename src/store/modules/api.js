@@ -8,7 +8,7 @@ const api = {
         // SQL脚本上传
         databaseUploadApi: baseUrl + '/api/database/upload',
         // 实时控制台
-        socketApi: baseUrl + '/websocket?token=kl',
+        socketApi: apiUrl + 'chat',
         // 图片上传
         imagesUploadApi: apiUrl + baseUrl + '/oss/pictures',
         // 上传头像

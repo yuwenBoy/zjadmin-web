@@ -25,7 +25,6 @@
 <script>
 import Clock from "@/components/Clock/index.vue"
 import ChatWindow from "@/components/ChatWindow/index.vue"
-import { getWeather } from '@/api/base';
 export default {
   components: {
     Clock,
@@ -40,9 +39,6 @@ export default {
     };
   },
 mounted(){
-    // getWeather('Datong').then(res=>{
-    //     console.log(res);
-    // })
 },
 
   methods: {
