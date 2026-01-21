@@ -11,7 +11,8 @@ const state = {
   messages: [], // 当前会话消息
   currentChat: null, // { type: 'private'|'group', id: number }
   isConnected: false,
-  id: null // 当前用户ID
+  id: null, // 当前用户ID
+  messageStatus: {}, // ✅ 存储消息状态 { messageId: 'sent' }
 };
 
 const mutations = {
@@ -30,7 +31,26 @@ const mutations = {
   },
   SET_MESSAGES(state, messages) {
     state.messages = messages;
-  }
+  },
+  SET_MESSAGE_STATUS(state, { messageId, status }) {
+    state.messageStatus = {
+      ...state.messageStatus,
+      [messageId]: status,
+    };
+  },
+
+  UPDATE_MESSAGE_STATUS(state, { messageId, status, readAt }) {
+    const message = state.messages.find(m => m.id === messageId);
+    if (message) {
+      message.status = status;
+      if (readAt) message.readAt = readAt;
+    }
+    
+    state.messageStatus = {
+      ...state.messageStatus,
+      [messageId]: status,
+    };
+  },
 };
 
 const actions = {
@@ -63,9 +83,24 @@ const actions = {
       commit("SET_CONNECTED", false);
     });
 
+     // 监听消息状态更新
+    socket.on('message_status_updated', (data) => {
+      console.log('📊 消息状态更新:', data);
+      commit('UPDATE_MESSAGE_STATUS', data);
+    });
+
     // 监听新消息
     socket.on("new_message", message => {
       console.log("📨 收到新消息:", message); // 调试用
+      setTimeout(() => {
+        socket.emit('mark_as_read', { messageIds: [message.id] });
+        console.log('发送已读回执'); // ✅ 必须有
+        //  // ✅ 标记为已送达
+        // commit('SET_MESSAGE_STATUS', { 
+        //     messageId: message.id, 
+        //     status: 1
+        // });
+    }, 1000);
       commit("ADD_MESSAGE", message);
     });
 
@@ -113,12 +148,47 @@ const actions = {
   },
 
   // 发送私聊消息
-  sendPrivateMessage({ state }, { receiverId, content }) {
+  sendPrivateMessage({commit, state }, { receiverId, content }) {
     console.log("发送私聊消息", receiverId, content);
     state.socket.emit("private_message", {
       receiverId,
       content
     });
+    // 暂时用时间戳作为临时ID
+    const tempId = `temp_${Date.now()}`;
+    commit('SET_MESSAGE_STATUS', { 
+      messageId: tempId, 
+      status: 0
+    });
+  },
+
+  /**
+   * ✅ 标记消息为已送达（发送方调用）
+   */
+  markAsDelivered({ state }, messageIds) {
+    state.socket.emit('mark_as_delivered', { messageIds });
+  },
+
+  /**
+   * ✅ 标记消息为已读（接收方调用）
+   */
+  markAsRead({ state }, messageIds) {
+    state.socket.emit('mark_as_read', { messageIds });
+  },
+
+  /**
+   * ✅ 自动标记可见消息为已读
+   */
+  async autoMarkAsRead({ state, dispatch }) {
+    if (!state.currentChat || !state.messages.length) return;
+
+    const unreadMessageIds = state.messages
+      .filter(m => !m.isRead && m.senderId !== state.id)
+      .map(m => m.id);
+
+    if (unreadMessageIds.length > 0) {
+      dispatch('markAsRead', unreadMessageIds);
+    }
   },
 
   // 发送群聊消息

@@ -14,6 +14,9 @@
             <div class="userinfo">
                  <span class="sender cname">{{ msg.senderId === user.id? '我' : msg.senderUsername }}（{{ msg.senderId }}）</span>
                  <div class="message-content">{{ msg.content }}</div>
+                  <span class="message-status" v-if="msg.senderId === user.id" >
+                   {{ getMessageStatusText(msg) }}
+                  </span>
             </div>
         </div>
       </div>
@@ -69,12 +72,16 @@ export default {
       this.$store.state.chat.socket.emit('join_room', `group_${this.chatId}`);
     }
 
+    this.autoMarkAsRead();
     this.scrollToBottom();
   },
   watch: {
     messages() {
       this.$nextTick(() => {
         this.scrollToBottom();
+        setTimeout(() => {
+            this.autoMarkAsRead(); 
+        }, 500);
       });
     },
   },
@@ -104,6 +111,24 @@ export default {
       if (el) {
         el.scrollTop = el.scrollHeight;
       }
+    },
+    getMessageStatusText(message) {
+      const status = this.$store.state.chat.messageStatus[message.id] || message.status;
+      switch (status) {
+        case 1:
+          return '已发送';        // 已发送（灰色）
+        case 2:
+          return '已读';       // 已送达（灰色双勾）
+        case 3:
+          return '发送失败';       // 已读（蓝色双勾）
+        default:
+          return '发送中';        // 发送中
+      }
+    },
+    
+    // 自动标记已读
+    autoMarkAsRead() {
+      this.$store.dispatch('chat/autoMarkAsRead');
     },
   },
   watch: {
@@ -174,6 +199,7 @@ export default {
 .messsage-list ,.userinfo{
     padding-left: 6px;
     text-align: left;
+    position: relative;
 }
 .messsage-list ,.userinfo ,.cname{
    font-size: 14px;
@@ -197,5 +223,17 @@ input {
 button {
   margin-left: 10px;
   padding: 8px 20px;
+}
+
+.message-status {
+  font-size: 12px;
+  color: #999;
+  margin-left: 5px;
+  position: absolute;
+  right: 10px;
+  top: 66px;
+}
+.message-status.read {
+  color: #1890ff; /* 已读蓝色 */
 }
 </style>
