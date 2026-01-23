@@ -94,6 +94,56 @@ export function formatTime(time, option) {
 }
 
 /**
+ * 格式化时间戳为 QQ 风格
+ * @param {number} timestamp - 毫秒时间戳
+ * @returns {string} - 格式化后的时间字符串
+ */
+export function formatChatTimestamp(timestamp) {
+  const targetDate = new Date(timestamp);
+  const now = new Date();
+  // Step 1: 计算基于 UTC 的天数差 (确保跨时区无误差)
+  const dayDiff = Math.floor(
+    (Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) -
+      Date.UTC(
+        targetDate.getUTCFullYear(),
+        targetDate.getUTCMonth(),
+        targetDate.getUTCDate()
+      )) /
+      (1000 * 60 * 60 * 24)
+  );
+  // Step 2: 获取时间部分 (HH:mm)
+  const timePart = targetDate.toTimeString().slice(0, 5); // "10:07"
+  // Step 3: 根据天数差返回不同格式
+  if (dayDiff === 0) {
+    // 同一天
+    return timePart;
+  } else if (dayDiff === 1) {
+    // 昨天
+    return "昨天 " + timePart;
+  } else if (dayDiff === 2) {
+    // 前天
+    return "前天 " + timePart;
+  } else {
+    // 其他情况返回完整日期
+    const year = targetDate.getFullYear();
+    const month = (targetDate.getMonth() + 1).toString().padStart(2, "0");
+    const day = targetDate
+      .getDate()
+      .toString()
+      .padStart(2, "0");
+    const hour = targetDate
+      .getHours()
+      .toString()
+      .padStart(2, "0");
+    const minute = targetDate
+      .getMinutes()
+      .toString()
+      .padStart(2, "0");
+    return `${year}-${month}-${day} ${hour}:${minute}`;
+  }
+}
+
+/**
  * @param {string} url
  * @returns {Object}
  */
@@ -413,49 +463,49 @@ export function arrayToTree(arr, pid) {
     return res;
   }, []);
 }
-  // 对下载的流进行处理，直接从浏览器下载下来
-  export function excelDownload(res){
-    if (res.data.type === 'application/json') {
-        // 错误以及无权限
-        const reader = new FileReader(res.data)
-        reader.readAsText(res.data)
-        reader.onload = () => {
-            const result = JSON.parse(reader.result)
-            message.error(result.msg)
-        }
-    } else {
-        const contentDisposition = res.headers['content-disposition']
-        const patt = new RegExp('filename=([^;]+\\.[^\\.;]+);*')
-        const $link = document.createElement('a')
-        const url = URL.createObjectURL(new Blob([res.data]))
-        $link.href = url
-        $link.download = decodeURIComponent(patt.exec(contentDisposition)[1])
-        $link.click()
-        document.body.appendChild($link)
-        document.body.removeChild($link) // 下载完成移除元素
-        window.URL.revokeObjectURL($link.href) // 释放掉blob对象
-    }
+// 对下载的流进行处理，直接从浏览器下载下来
+export function excelDownload(res) {
+  if (res.data.type === "application/json") {
+    // 错误以及无权限
+    const reader = new FileReader(res.data);
+    reader.readAsText(res.data);
+    reader.onload = () => {
+      const result = JSON.parse(reader.result);
+      message.error(result.msg);
+    };
+  } else {
+    const contentDisposition = res.headers["content-disposition"];
+    const patt = new RegExp("filename=([^;]+\\.[^\\.;]+);*");
+    const $link = document.createElement("a");
+    const url = URL.createObjectURL(new Blob([res.data]));
+    $link.href = url;
+    $link.download = decodeURIComponent(patt.exec(contentDisposition)[1]);
+    $link.click();
+    document.body.appendChild($link);
+    document.body.removeChild($link); // 下载完成移除元素
+    window.URL.revokeObjectURL($link.href); // 释放掉blob对象
   }
+}
 
+/**
+ * 验证数组对象某个属性是否重复
+ * @param {*} array
+ * @param {*} property
+ * @returns
+ */
 
- /**
-  * 验证数组对象某个属性是否重复
-  * @param {*} array 
-  * @param {*} property 
-  * @returns 
-  */ 
 export function hasDuplicateProperty(array, property) {
-    const seenValues = new Set();
-    
-    for (const obj of array) {
-      if (obj.hasOwnProperty(property)) {
-        const value = obj[property];
-        if (seenValues.has(value)) {
-          return true; // 发现重复
-        }
-        seenValues.add(value);
+  const seenValues = new Set();
+
+  for (const obj of array) {
+    if (obj.hasOwnProperty(property)) {
+      const value = obj[property];
+      if (seenValues.has(value)) {
+        return true; // 发现重复
       }
+      seenValues.add(value);
     }
-    
-    return false; // 没有发现重复
   }
+
+  return false; // 没有发现重复
+}

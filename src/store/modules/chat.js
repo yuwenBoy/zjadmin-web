@@ -162,35 +162,6 @@ const actions = {
     });
   },
 
-  /**
-   * ✅ 标记消息为已送达（发送方调用）
-   */
-  markAsDelivered({ state }, messageIds) {
-    state.socket.emit('mark_as_delivered', { messageIds });
-  },
-
-  /**
-   * ✅ 标记消息为已读（接收方调用）
-   */
-  markAsRead({ state }, messageIds) {
-    state.socket.emit('mark_as_read', { messageIds });
-  },
-
-  /**
-   * ✅ 自动标记可见消息为已读
-   */
-  async autoMarkAsRead({ state, dispatch }) {
-    if (!state.currentChat || !state.messages.length) return;
-
-    const unreadMessageIds = state.messages
-      .filter(m => !m.isRead && m.senderId !== state.id)
-      .map(m => m.id);
-
-    if (unreadMessageIds.length > 0) {
-      dispatch('markAsRead', unreadMessageIds);
-    }
-  },
-
   // 发送群聊消息
   sendGroupMessage({ state }, { groupId, content }) {
     state.socket.emit("group_message", {
@@ -219,20 +190,36 @@ const actions = {
     // 按时间正序排列
     messages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     commit("SET_MESSAGES", messages);
-  }
+  },
+  
+  /**
+   * ✅ 标记消息为已送达（发送方调用）
+   */
+  markAsDelivered({ state }, messageIds) {
+    state.socket.emit('mark_as_delivered', { messageIds });
+  },
 
-  //    // ✅ 处理新消息通知（更新未读数）
-  //   handleNewMessageNotification({ state, commit }, message) {
-  //     if (!state.currentChat || message.senderId !== state.socket?.data?.userId) {
-  //       // 不在当前会话，或未读消息
-  //       const chatKey = message.groupId
-  //         ? `group_${message.groupId}`
-  //         : `user_${message.senderId}`;
+  /**
+   * ✅ 标记消息为已读（接收方调用）
+   */
+  markAsRead({ state }, messageIds) {
+    state.socket.emit('mark_as_read', { messageIds });
+  },
 
-  //       const currentCount = state.unreadCounts[chatKey] || 0;
-  //       commit('SET_UNREAD_COUNT', { chatKey, count: currentCount + 1 });
-  //     }
-  //   },
+  /**
+   * ✅ 自动标记可见消息为已读
+   */
+  async autoMarkAsRead({ state, dispatch }) {
+    if (!state.currentChat || !state.messages.length) return;
+
+    const unreadMessageIds = state.messages
+      .filter(m => !m.isRead && m.senderId !== state.id)
+      .map(m => m.id);
+
+    if (unreadMessageIds.length > 0) {
+      dispatch('markAsRead', unreadMessageIds);
+    }
+  },
 };
 
 export default {

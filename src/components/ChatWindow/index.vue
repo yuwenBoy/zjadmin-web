@@ -7,8 +7,10 @@
         :key="msg.id"
         class="message"
         :class="{ 'message-sent': msg.senderId === user.id }"
+        :data-message-id="msg.id"
+        :data-sender-id="msg.senderId"
       >
-        <div class="message-time">{{ formatTime(msg.createdAt) }}</div>
+        <div class="message-time">{{ formatChatTimestamp(Date.parse(msg.createdAt)) }}</div>
         <div :class="msg.senderId === user.id? 'sender-box' : 'receiver-box'" style="display:flex">
             <el-avatar :size="40" :src="msg.senderAvatar"></el-avatar>
             <div class="userinfo">
@@ -32,6 +34,7 @@
 
 <script>
 import { mapState,mapGetters } from 'vuex';
+import { formatChatTimestamp } from '@/utils'
 
 export default {
   name: 'ChatWindow',
@@ -48,6 +51,7 @@ export default {
   data() {
     return {
       newMessage: '',
+      
     };
   },
   computed: {
@@ -103,9 +107,10 @@ export default {
 
       this.newMessage = '';
     },
-    formatTime(timestamp) {
-      return new Date(timestamp).toLocaleTimeString();
-    },
+    // formatChatTimestamp(timestamp) {
+    //   return new Date(timestamp).toLocaleTimeString();
+    // },
+    formatChatTimestamp,
     scrollToBottom() {
       const el = this.$refs.messageList;
       if (el) {
@@ -149,7 +154,7 @@ export default {
 .chat-window {
   display: flex;
   flex-direction: column;
-  height: 300px;
+  height: 500px;
 }
 .message-list {
   flex: 1;
