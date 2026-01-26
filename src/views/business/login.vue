@@ -7,7 +7,7 @@
         </div>
         <div class="right-panel">
              <div class="login-header">
-                <span>没有账号，</span> <a href="javascript:void(0)" class="register" @click="$router.push('/merchantApplication')">去开店</a>
+                <span>没有账号，</span> <a href="javascript:void(0)" class="register" @click="goShop">去开店</a>
              </div>
              <el-form ref="loginForm" size="medium" :model="loginForm" :rules="loginRules" label-position="left" label-width="0px" class="login-form">
                 <h3 class="title">JXXQZ 商家端登录</h3>
@@ -21,14 +21,6 @@
                         <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
                     </el-input>
                 </el-form-item>
-                <!-- <el-form-item prop="code">
-                <el-input v-model="loginForm.code" auto-complete="off" placeholder="验证码" style="width: 63%" @keyup.enter.native="handleLogin">
-                    <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
-                </el-input>
-                <div class="login-code">
-                    <img :src="codeUrl" @click="getCode">
-                </div>
-                </el-form-item> -->
                 <el-checkbox v-model="loginForm.rememberMe" style="margin:0 0 25px 0;">记住我</el-checkbox>
                 <el-form-item style="width:100%;">
                 <el-button :loading="loading" round type="primary"  @click.native.prevent="handleLogin">
@@ -42,7 +34,6 @@
   </template>
   
   <script>
-  import { hashSync} from 'bcryptjs';
   import msg  from '@/utils/alert'
   import { getCodeData } from '@/api/base'
   import Config from '@/settings'
@@ -92,7 +83,7 @@
         this.request = false
         const res = await getCodeData();
         this.codeUrl =res;
-            this.request = true
+        this.request = true
       },
       getCookie() {
         const username = Cookies.get('username')
@@ -153,7 +144,14 @@
           })
           Cookies.remove('point')
         }
-      }
+      },
+      // 去开店
+      goShop() {
+        // 解析当前路由对象，获取完整的 href
+        const href = this.$router.resolve({ path: '/merchantApplication' }).href;
+        // 使用 _blank 打开新标签页
+        window.open(href, '_blank');
+    }
     }
   }
   </script>

@@ -105,7 +105,11 @@ export default {
     },
     logout() {
       this.$store.dispatch("LogOut").then(() => {
-        location.reload();  
+        if(this.user.userType==2){
+            this.$router.push('/businessLogin');
+        }else{
+          location.reload();  
+        }
       });
     },
   },  
