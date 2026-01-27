@@ -1,6 +1,7 @@
 {
   "name": "zjadmin-web",
   "version": "2.6.0",
+  "main": "main.js",
   "description": "后台管理系统",
   "author": "Zhao Jian",
   "license": "Apache-2.0",
@@ -12,7 +13,36 @@
     "lint": "eslint --ext .js,.vue src",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
     "svgo": "svgo -f src/assets/icons/svg --config=src/assets/icons/svgo.yml",
-    "new": "plop"
+    "new": "plop",
+    "electron:dev": "cross-env NODE_ENV=development electron .",
+    "electron:build": "npm run build && electron-builder",
+    "electron:dev-all": "concurrently \"npm run dev\" \"npm run electron:dev\"",
+    "build": "vue-cli-service build"
+  },
+  "build": {
+    "appId": "com.yourcompany.zjadmin",
+    "productName": "后台管理系统",
+    "directories": {
+      "output": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "main.js",
+      "preload.js"
+    ],
+    "win": {
+      "icon": "build/icons/icon.ico",
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "differentialPackage": false
+    },
+    "asarUnpack": [
+      "**/*.node"
+    ],
+    "asar": true
   },
   "husky": {
     "hooks": {
@@ -43,6 +73,7 @@
     "echarts": "^4.2.1",
     "echarts-gl": "^1.1.1",
     "echarts-wordcloud": "^1.1.3",
+    "electron-updater": "^6.7.3",
     "element-ui": "^2.13.2",
     "fast-deep-equal": "^3.1.3",
     "file-saver": "^1.3.8",
@@ -94,7 +125,11 @@
     "babel-plugin-transform-remove-console": "^6.9.4",
     "chalk": "2.4.2",
     "chokidar": "2.1.5",
+    "concurrently": "^9.2.1",
     "connect": "3.6.6",
+    "cross-env": "^10.1.0",
+    "electron": "^20.3.12",
+    "electron-builder": "^26.4.0",
     "eslint": "5.15.3",
     "eslint-plugin-vue": "5.2.2",
     "html-webpack-plugin": "3.2.0",

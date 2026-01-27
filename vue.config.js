@@ -20,7 +20,9 @@ module.exports = {
         target: process.env.VUE_APP_URL, // 请求本地 需要jxxqz后端项目
         ws: true
       }
-    }
+    },
+    hot: false,
+    inline: false // ← 禁用 inline 模式
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
@@ -62,6 +64,10 @@ module.exports = {
         symbolId: 'icon-[name]'
       })
       .end()
+      // 生产环境移除所有 HMR 相关代码
+    if (process.env.NODE_ENV === 'production') {
+      config.plugins.delete('hmr')
+    }
   },
   transpileDependencies: []
 }

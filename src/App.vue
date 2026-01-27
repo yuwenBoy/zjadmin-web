@@ -1,12 +1,41 @@
 <template>
   <div id="app">
     <div class="load_box"></div>
-    <router-view />
+     <TitleBar v-if="isElectron" />
+      <div :class="isElectron && 'main-content'">
+        <router-view />
+      </div>
   </div>
 </template>
 <script>
+import TitleBar from '@/components/electron/TitleBar/index.vue'
 export default {
-  name: 'App'
+  name: 'App',
+  components: { TitleBar },
+  computed: {
+    isElectron() {
+      return window.electronAPI && window.electronAPI.isElectron;
+    }
+  },
+  mounted(){
+  const BASE_API = window.electronAPI ? window.electronAPI.apiBase : '/basic-api';
+  console.log('BASE_API:', BASE_API);
+    // 延迟检测，确保 preload 注入完成
+  setTimeout(() => {
+    console.log('检测 window.electronAPI:', window.electronAPI);
+    
+    if (window.electronAPI && window.electronAPI.isElectron) {
+      console.log('🎉 成功运行在 Electron 桌面端！');
+    } else {
+      console.log('⚠️ 当前运行在浏览器环境');
+    }
+  }, 500); // 延迟 500ms
+  },
+  methods: {
+    exitApp() {
+        window.electronAPI.quitApp()
+    }
+ }
 }
 </script>
 <style lang="scss" scoped>
@@ -49,5 +78,11 @@ export default {
 }
 .el-dialog__header {
   border-bottom: 1px solid #e8e8e8;
+}
+/* 为标题栏留出空间 */
+.main-content {
+  padding-top: 32px;  /* 与 TitleBar 高度一致 */
+  height: calc(100vh - 32px);
+  overflow: auto;
 }
 </style>

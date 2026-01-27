@@ -401,7 +401,7 @@ export default {
         // 设置上传的请求头部
         headers: { Authorization: getToken() },
         // 上传的地址
-        url: process.env.VUE_APP_BASEURL + "/user/import",
+        url:  (window.electronAPI ? window.electronAPI.apiBase : '/basic-api') + "/user/import",
       },
     };
   },

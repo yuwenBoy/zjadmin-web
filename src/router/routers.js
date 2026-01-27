@@ -159,8 +159,9 @@ export const constantRouterMap = [{
 }
 ]
 
+// 必须改成 hash 模式，否则 Electron 加载会白屏
 export default new Router({
-  mode: 'history', // history
+  mode: 'hash', // history
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 })

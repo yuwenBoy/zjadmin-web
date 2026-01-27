@@ -5,6 +5,8 @@ import { Notification, Message, Loading } from "element-ui";
 import store from "../store";
 import { getToken, setToken, getRTExp, getRefreshToken } from "@/utils/storage";
 import Config from "@/settings";
+// 改成
+import { BASE_API } from '@/config/api.js';
 var loading,
   isRefreshing = false,
   retryReqs = [];
@@ -25,7 +27,7 @@ function endLoading() {
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASEURL,
+  baseURL:BASE_API,// process.env.VUE_APP_BASEURL,
   timeout: Config.timeout // 请求超时时间
 });
 

@@ -3,7 +3,7 @@ import Vuex from "vuex";
 import io from "socket.io-client";
 import { getToken } from "@/utils/storage";
 import axios from "axios";
-
+import { BASE_API } from '@/config/api.js';
 Vue.use(Vuex);
 
 const state = {
@@ -175,9 +175,9 @@ const actions = {
     let _token = getToken();
     let url = "";
     if (type === "private") {
-      url = `/basic-api/messages/private?userId=${id}&page=${page}`;
+      url = `${BASE_API}/messages/private?userId=${id}&page=${page}`;
     } else {
-      url = `/basic-api/messages/group?groupId=${id}&page=${page}`;
+      url = `${BASE_API}/messages/group?groupId=${id}&page=${page}`;
     }
 
     const response = await axios.get(url, {

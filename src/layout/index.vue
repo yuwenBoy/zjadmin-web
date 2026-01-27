@@ -1,9 +1,9 @@
 <template>
     <div :class="classObj" class="app-wrapper">
-        <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar class="sidebar-container" />
+    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
+    <sidebar :class="['sidebar-container',isElectron && 'top32']"/>
     <div :class="{hasTagsView:needTagsView}" class="main-container">
-      <div :class="{'fixed-header':fixedHeader}">
+      <div :class="{'fixed-header':fixedHeader,'top32':isElectron}">
         <navbar />
         <tags-view v-if="needTagsView" />
       </div>
@@ -43,7 +43,10 @@ export default {
       device: state => state.app.device,
       showSettings: state => state.settings.showSettings,
       needTagsView: state => state.settings.tagsView,
-      fixedHeader: state => state.settings.fixedHeader
+      fixedHeader: state => state.settings.fixedHeader,
+      isElectron() {
+         return window.electronAPI && window.electronAPI.isElectron;
+      }
     }),
     classObj() {
       return {
@@ -114,5 +117,8 @@ export default {
 
   .mobile .fixed-header {
     width: 100%;
+  }
+  .top32{
+    top:32px !important;
   }
 </style>
