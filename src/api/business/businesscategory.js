@@ -42,20 +42,9 @@ export function fetchMainCategories() {
       method: 'get'
     });
   }
-  
-  // 获取子分类
-  export function fetchSubCategories(parentId) {
-    return request({
-      url: `/businesscategory/sub`,
-      method: 'get',
-      params: { parent_id: parentId }
-    });
-  }
-
   export default {
     add,
     edit,
     del,
     fetchMainCategories,
-    fetchSubCategories,
   };

@@ -28,9 +28,6 @@ export default {
       console.log('⚠️ 当前运行在浏览器环境');
     }
   }, 500); // 延迟 500ms
-        let config = await window.electronAPI.getAppConfig()
-        console.log('API Base:', config.apiBase)
-        console.log('Token:', config.token)
   },
   methods: {
     exitApp() {

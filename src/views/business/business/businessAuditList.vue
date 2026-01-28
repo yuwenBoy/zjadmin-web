@@ -24,6 +24,7 @@
             v-if="refreshTable"
             ref="table"
             :data="crud.data"
+            row-key="id"
           >
             <el-table-column
               type="selection"
@@ -49,7 +50,7 @@
             <el-table-column label="操作" width="150px" align="left">
               <template slot-scope="scope">
                 <el-link
-                  type="danger"
+                  type="warning"
                   :underline="false"
                    @click="$router.push({ name: 'businessAuditEdit', query: {...scope.row} })"
                   >审核</el-link

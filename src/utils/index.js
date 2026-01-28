@@ -509,3 +509,52 @@ export function hasDuplicateProperty(array, property) {
 
   return false; // 没有发现重复
 }
+
+
+/**
+ * 构造树型结构数据
+ * @param {*} data 数据源
+ * @param {*} id id字段 默认 'id'
+ * @param {*} parentId 父节点字段 默认 'parentId'
+ * @param {*} children 孩子节点字段 默认 'children'
+ */
+export function handleTree(data, id, parentId, children) {
+  let config = {
+    id: id || 'id',
+    parentId: parentId || 'parentId',
+    childrenList: children || 'children'
+  }
+
+  var childrenListMap = {}
+  var tree = []
+  for (let d of data) {
+    let id = d[config.id]
+    childrenListMap[id] = d
+    if (!d[config.childrenList]) {
+      d[config.childrenList] = []
+    }
+  }
+
+  for (let d of data) {
+    let parentId = d[config.parentId]
+    let parentObj = childrenListMap[parentId]
+    if (!parentObj) {
+      tree.push(d)
+    } else {
+      parentObj[config.childrenList].push(d)
+    }
+  }
+  // 递归删除空的 children 属性
+  const removeEmptyChildren = (nodes) => {
+    nodes.forEach(node => {
+      if (node[config.childrenList] && node[config.childrenList].length === 0) {
+        delete node[config.childrenList]
+      } else if (node[config.childrenList]) {
+        removeEmptyChildren(node[config.childrenList])
+      }
+    })
+  }
+  
+  removeEmptyChildren(tree)
+  return tree
+}

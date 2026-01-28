@@ -12,10 +12,7 @@
   </template>
   
   <script>
-  import { fetchMainCategories, fetchSubCategories } from "@/api/business/businesscategory"; // 引入商家经营范围分类接口方法
-  
   import { fetchMainProductCategories, fetchSubProductCategories } from "@/api/business"; // 引入产品类目接口
-  
   export default {
     name: 'CategoryCascader',
     props: {
@@ -63,9 +60,6 @@
             const mainCategories = await fetchMainProductCategories();
             console.log(mainCategories);
             resolve(mainCategories.result);
-          }else if(this.urlRequestType==1){
-            const mainCategories = await fetchMainCategories();
-            resolve(mainCategories.result);
           }
         } else {
           // 获取子分类
@@ -77,14 +71,6 @@
                     leaf:item.hasChildren,
                 }));
                 resolve(formattedSubCategories);  
-          }else if(this.urlRequestType==1){
-                const subCategories = await fetchSubCategories(value);
-                const formattedSubCategories = subCategories.result.map(item => ({
-                    label: item.label, // 确保接口返回的字段是 label 和 value
-                    value: item.value,
-                    leaf:item.hasChildren,
-                }));
-                resolve(formattedSubCategories);   
           }
         }
       }

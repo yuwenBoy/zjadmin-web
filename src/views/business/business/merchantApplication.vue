@@ -96,7 +96,12 @@
                 <el-row :gutter="24">
                     <el-col :span="24">
                         <el-form-item label="经营范围" prop="categories">
-                            <CategoryCascader v-model="form.categories" ref="categoryCascader"></CategoryCascader>
+                                <el-cascader ref="cascader" placeholder="请选择经营范围" style="width:100%" :props="{multiple: true,checkStrictly: true}" collapse-tags v-model="form.categories" :options="categoriesDataList" @change="change" filterable clearable>
+                                    <template slot-scope="{ node, data }">
+                                        <span>{{ data.label }}</span>
+                                        <span v-if="!node.isLeaf"> ({{ data.children.length }}) </span>
+                                    </template>
+                                </el-cascader>
                         </el-form-item>
                     </el-col>
                  </el-row>
@@ -113,8 +118,8 @@
 </template>
 
 <script>
-import picUpload from "@/components/file";
-import CategoryCascader from '@/components/CategoryCascader';
+import picUpload from "@/components/file"
+import { fetchMainCategories } from "@/api/business/businesscategory"
 import { create } from "@/api/business/signup";; // 引入接口方法
 export default {
   data() {
@@ -153,20 +158,32 @@ export default {
         description:'',
         categories: []
       },
+      categoriesDataList:[]
     }
   },
-  computed: {
-    
+  created() {
+      this.getCategoriesDataList()
   },
   mounted() {
   },
   methods: {
+    change(){
+        this.$refs.cascader.dropDownVisible = false;
+    },
+   /** 获取经营范围类目列表 */ 
+   async getCategoriesDataList(){
+       const {code,message,result,success} = await fetchMainCategories()
+       let data = this.handleTree(result,'id','parent_id')
+       this.categoriesDataList = data
+    },
     submitForm(form) {
           this.$refs[form].validate((valid) =>   {
           if (valid) {
             this.$msg.confirm(`确定提交入驻申请吗？操作后不可恢复`, {
                 ok: () => {
-                    this.form.categories = this.form.categories[0].toString();
+                    this.form.categories = this.form.categories.flatMap(item=>item)
+                    this.form.logoUrl = this.form.logoUrl && this.form.logoUrl.length > 0 ? this.form.logoUrl[0].location : ''
+                   this.form.coverUrl = this.form.coverUrl && this.form.coverUrl.length > 0 ? this.form.coverUrl[0].location : ''
                     create(JSON.stringify(this.form)).then(response => {
                         // 处理响应
                         this.$msg.success('申请成功，平台将在1-3个工作日进行审核，请耐心等待！');
@@ -188,12 +205,11 @@ export default {
         this.$refs[form].resetFields();
       },
   },
-  components: { picUpload,CategoryCascader },
+  components: { picUpload },
 }
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-   
     .container{
         margin: 15px;
         .header-title{

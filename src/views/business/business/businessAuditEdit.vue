@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <el-alert title="管理员审核商家入驻信息" type="warning" description="请仔细核实商家信息，严格审核信息" show-icon></el-alert>
-        <el-form ref="form" :model="form" :rules="rules" size="medium" label-width="130px">
+        <el-form ref="form" :model="form" :rules="rules" size="medium" label-width="130px" style="height:300px;overflow-y:auto;">
         <div class="header-content">
             <div class="title">基本信息</div>
             <div class="itemBox">
@@ -96,7 +96,12 @@
                 <el-row :gutter="24">
                     <el-col :span="24">
                         <el-form-item label="经营范围" prop="categories">
-                            <CategoryCascader v-model="form.categories" :categoryOptions="categoryOptions" ref="categoryCascader"></CategoryCascader>
+                              <el-cascader ref="cascader" placeholder="请选择经营范围" style="width:100%" :props="{multiple: true,checkStrictly: true}" collapse-tags v-model="form.categories" :options="categoriesDataList" @change="change" filterable clearable>
+                                    <template slot-scope="{ node, data }">
+                                        <span>{{ data.label }}</span>
+                                        <span v-if="!node.isLeaf"> ({{ data.children.length }}) </span>
+                                    </template>
+                                </el-cascader>
                         </el-form-item>
                     </el-col>
                  </el-row>
@@ -137,7 +142,7 @@
 
 <script>
 import picUpload from "@/components/file";
-import CategoryCascader from '@/components/CategoryCascader';
+import { fetchMainCategories } from "@/api/business/businesscategory"
 import { apply } from "@/api/business/signup";; // 引入接口方法
 export default {
   data() {
@@ -168,30 +173,12 @@ export default {
         categories: [],
         status:'',
       },
+      categoriesDataList:[],
       audit:{
         id:'',
         reason:'',
         status:'',
       },
-      categoryOptions: [
-        {
-          value: 'restaurant',
-          label: '餐饮',
-          children: [
-            { value: 'chinese_food', label: '中餐' },
-            { value: 'western_food', label: '西餐' },
-            { value: 'fast_food', label: '快餐' }
-          ]
-        },
-        {
-          value: 'retail',
-          label: '零售',
-          children: [
-            { value: 'convenience_store', label: '便利店' },
-            { value: 'supermarket', label: '超市' }
-          ]
-        }
-      ]
     }
   },
   computed: {
@@ -204,13 +191,20 @@ export default {
     this.audit.status = this.form.status;
     console.log(this.form)
     this.form.status = '';
+    this.getCategoriesDataList()
   },
   mounted() {
   },
   methods: {
-    // change(data){
-    //      alert(data);
-    // },
+     /** 获取经营范围类目列表 */ 
+   async getCategoriesDataList(){
+       const {code,message,result,success} = await fetchMainCategories()
+       let data = this.handleTree(result,'id','parent_id')
+       this.categoriesDataList = data
+    },
+     change(){
+        this.$refs.cascader.dropDownVisible = false;
+    },
     submitForm(form) {
           this.$refs[form].validate((valid) =>   {
           if (valid) {
@@ -256,7 +250,7 @@ export default {
         });
       },
   },
-  components: { picUpload,CategoryCascader },
+  components: { picUpload },
 }
 </script>
 

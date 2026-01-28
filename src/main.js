@@ -18,8 +18,11 @@ import store from './store'
 import './filter/index'
 import U from '@/utils/enum'
 import alert from '@/utils/alert'
+
+import { handleTree } from '@/utils/index'
 Vue.prototype.$enum = U
 Vue.prototype.$msg =alert
+Vue.prototype.handleTree = handleTree
 
 import jxxqzhas from './components/Permission'
 

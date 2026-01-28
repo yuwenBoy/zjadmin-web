@@ -1,7 +1,7 @@
 <template>
    <div>
      <div>商家后台首页</div>
-     <ChatWindow chatType="private" :chatId="19" />
+     <ChatWindow chatType="private" :chatId="user.id" />
    </div>
 </template>
 <script> 

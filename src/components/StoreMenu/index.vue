@@ -1,20 +1,19 @@
 <template>
     <div>
         <el-dropdown>
-        <el-tooltip :content="storeList[0].storeName" effect="dark" placement="bottom">
-          <span class="el-dropdown-link">
-                {{ storeList[0].storeName }}<i class="el-icon-arrow-down el-icon--right"></i>
+            <span class="el-dropdown-link">
+                {{ storeInfo.storeName }}<i class="el-icon-arrow-down el-icon--right"></i>
             </span>
-        </el-tooltip>
             <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item v-for="(item,index) in storeList" :key="index"> {{item.storeName}}</el-dropdown-item>
             </el-dropdown-menu>   
         </el-dropdown>
         <el-popover width="280" trigger="click" placement="bottom" :visible-arrow="false" v-model="isPopoverVisible">
             <div class="storeMenuItem">
-               <div class="store-name">{{storeList[0].storeName}} 
-                  <span v-show="storeList[0].online==1" class="online-up">门店已上线</span>
-                  <span v-show="storeList[0].online==0" class="online-down">门店已下线</span>
+               <div class="store-name">
+                  {{storeInfo.storeName}} 
+                  <span v-show="storeInfo.online==1" class="online-up">门店已上线</span>
+                  <span v-show="storeInfo.online==0" class="online-down">门店已下线</span>
                 </div> 
                 <div class="store-down-online-desc">
                         <div class="flex">
@@ -52,6 +51,7 @@
     data() {
       return {
         storeList:[],
+        storeInfo:{},
         isPopoverVisible:false,
       }
     },
@@ -61,7 +61,8 @@
       }
     },
     created(){
-        this.storeList =this.$store.state.user.user.business.store.filter(t=>t.isDefault==1);
+        this.storeList =this.$store.state.user.user.business.store;
+        this.storeInfo = this.$store.state.user.user.business.store.find(t=>t.isDefault==1)
     },
     mounted() {
      
