@@ -47,6 +47,17 @@ service.interceptors.request.use(
       config.headers["Authorization"] = getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
     }
     config.headers["Content-Type"] = "application/json";
+    let storeId = null
+    if(store.getters.user.userType == 2 && store.getters.user.business && store.getters.user.business.store){
+        storeId = store.getters.user.business.store.find(item=>item.isDefault).id  
+    }
+    if (storeId) {
+    if (config.method === 'get') {
+      config.params = { ...config.params, storeId };
+    } else {
+      config.data = { ...config.data, storeId };
+    }
+  }
     startLoading();
     return config;
   },
