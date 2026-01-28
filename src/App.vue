@@ -2,7 +2,7 @@
   <div id="app">
     <div class="load_box"></div>
      <TitleBar v-if="isElectron" />
-      <div :class="isElectron && 'main-content'">
+      <div :class="isElectron ? 'main-content':'web-content'">
         <router-view />
       </div>
   </div>
@@ -83,7 +83,11 @@ export default {
 /* 为标题栏留出空间 */
 .main-content {
   padding-top: 32px;  /* 与 TitleBar 高度一致 */
-  height: calc(100vh - 32px);
+  height: 100%;
+  overflow: auto;
+}
+.web-content{
+   height: 100%;
   overflow: auto;
 }
 </style>

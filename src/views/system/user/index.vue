@@ -3,7 +3,12 @@
     <el-row :gutter="24">
       <el-col :xs="9" :sm="6" :md="5" :lg="4" :xl="4">
         <div style="padding-top: 10px">
-          <dept-tree :data="deptEntity" :checkValue="[]" @change="change" :defaultSelectedKey="3" />
+          <dept-tree
+            :data="deptEntity"
+            :checkValue="[]"
+            @change="change"
+            :defaultSelectedKey="3"
+          />
         </div>
       </el-col>
       <el-col
@@ -17,20 +22,18 @@
         <div class="head-container">
           <div class="content-box box-shadow">
             <div class="text item">
-              <el-row :gutter="24">
-                <el-col :xs="15" :sm="14" :md="16" :lg="16" :xl="1">
-                  <el-form label-width="0px" inline>
-                    <el-form-item>
-                      <el-input
-                        v-model="crud.query.cname"
-                        clearable
-                        size="mini"
-                        autofocus
-                        placeholder="姓名、手机、邮箱"
-                        class="filter-item round-left"
-                      />
-                    </el-form-item>
-                    <!-- <el-form-item>
+              <el-form label-width="0px" inline>
+                <el-form-item>
+                  <el-input
+                    v-model="crud.query.cname"
+                    clearable
+                    size="mini"
+                    autofocus
+                    placeholder="姓名、手机、邮箱"
+                    class="filter-item round-left"
+                  />
+                </el-form-item>
+                <!-- <el-form-item>
                       <Department
                         v-model="crud.query.departmentId"
                         :is-lazy="isLazy"
@@ -39,30 +42,19 @@
                         @input="updateLyDeptId"
                       />
                     </el-form-item> -->
-                    <el-form-item>
-                      <el-select
-                        v-model="crud.query.disabled"
-                        clearable
-                        placeholder="用户状态"
-                        class="wt100"
-                      >
-                        <el-option label="启用" value="1" />
-                        <el-option label="锁定" value="2" />
-                      </el-select>
-                    </el-form-item>
-                    <OPTOperation />
-                  </el-form>
-                </el-col>
-                <el-col
-                  :xs="9"
-                  :sm="8"
-                  :md="8"
-                  :lg="8"
-                  :xl="2"
-                  style="text-align: right"
-                >
-                  <el-button
-                    v-if="crud.optShow.add"
+                <el-form-item>
+                  <el-select
+                    v-model="crud.query.disabled"
+                    clearable
+                    placeholder="用户状态"
+                    class="wt100"
+                  >
+                    <el-option label="启用" value="1" />
+                    <el-option label="锁定" value="2" />
+                  </el-select>
+                </el-form-item>
+                <OPTOperation />
+                <el-button v-if="crud.optShow.add"
                     v-authority="['user:add']"
                     class="filter-item"
                     size="mini"
@@ -101,10 +93,9 @@
                     icon="el-icon-download"
                     size="mini"
                     @click="handleExport"
-                    >导出</el-button
-                  >
-                </el-col>
-              </el-row>
+                    >导出</el-button>
+              </el-form>
+               
             </div>
             <el-table
               ref="table"
@@ -174,7 +165,7 @@
               <el-table-column
                 prop="sex"
                 label="性别"
-                width="50"
+                width="70"
                 align="center"
               >
                 <template slot-scope="scope">
@@ -246,7 +237,7 @@
                 align="center"
               />
               <!--   编辑与删除   -->
-              <el-table-column label="操作" align="left" width="170">
+              <el-table-column label="操作" align="left" width="150">
                 <template slot-scope="scope">
                   <el-link
                     v-authority="['user:edit']"
@@ -290,8 +281,12 @@
       :before-close="handleClose"
     >
       <el-checkbox-group v-if="request" v-model="roles">
-        <el-checkbox v-for="role in roleList" :key="role.value" :label="role.value">
-            <span >{{ role.name }}</span>
+        <el-checkbox
+          v-for="role in roleList"
+          :key="role.value"
+          :label="role.value"
+        >
+          <span>{{ role.name }}</span>
         </el-checkbox>
       </el-checkbox-group>
       <div slot="footer" class="dialog-footer">
@@ -352,7 +347,12 @@
 </template>
 <script>
 import crudUser from "@/api/system/user";
-import { setRoles, UpdateUserDisabled, exportUser,importTemplate } from "@/api/system/user";
+import {
+  setRoles,
+  UpdateUserDisabled,
+  exportUser,
+  importTemplate,
+} from "@/api/system/user";
 import { getDeptTree } from "@/api/system/department";
 import { getRoleAllList } from "@/api/system/role";
 import DeptTree from "@/components/dept-tree/dept-tree.vue";
@@ -401,7 +401,9 @@ export default {
         // 设置上传的请求头部
         headers: { Authorization: getToken() },
         // 上传的地址
-        url:  (window.electronAPI ? window.electronAPI.apiBase : '/basic-api') + "/user/import",
+        url:
+          (window.electronAPI ? window.electronAPI.apiBase : "/basic-api") +
+          "/user/import",
       },
     };
   },

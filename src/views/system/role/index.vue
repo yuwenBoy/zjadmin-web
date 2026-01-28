@@ -79,13 +79,13 @@
                       width="50"
                     />
                     <el-table-column prop="id" label="角色ID" width="80"/>
-                    <el-table-column prop="name" label="角色名称" />
+                    <el-table-column prop="name" label="角色名称" show-overflow-tooltip/>
                     <el-table-column prop="roleType" label="角色类型">
                         <template slot-scope="scope">
                             <span style="font-weight:bold;" :style="{color: $enum.roleTypeEnumColor[scope.row.roleType]  }">{{ $enum.roleTypeEnum[scope.row.roleType] }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="code" label="角色编码" />
+                    <el-table-column prop="code" label="角色编码" show-overflow-tooltip/>
                     <el-table-column
                       prop="create_time"
                       label="创建时间"
@@ -97,7 +97,7 @@
                       show-overflow-tooltip
                     />
                     <!--   编辑与删除   -->
-                    <el-table-column label="操作" align="left" width="170">
+                    <el-table-column label="操作" align="left" width="150">
                       <template slot-scope="scope">
                         <el-link
                           v-authority="['role:edit']"

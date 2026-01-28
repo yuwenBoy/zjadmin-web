@@ -1,13 +1,13 @@
 <template>
   <div class="tree-content">
-    <el-card>
+    <el-card style="height:100%">
       <header class="header flex">
            <span  v-if="title">{{ title }}</span>
            <el-button type="primary" plain round icon="el-icon-sort" size="mini" @click="nodeExpand(isExpandAll)">展开/折叠</el-button>
            <slot name="content"></slot>
       </header>
       <el-input clearable  v-model="name" size="small"  placeholder="输入名称搜索" prefix-icon="el-icon-search" class="filter-item" style="padding-bottom: 10px" />
-      <el-tree class="child-tree" ref="tree" 
+      <el-tree ref="tree" 
         :data="treeList" 
         :show-checkbox="isShowCheck" 
         :check-strictly="isCheckStrictly"  
@@ -179,14 +179,8 @@ export default {
 <style lang="scss" scoped>
 .tree-content {
   width: 100%;
-  height: 100%;
-   .header{height: 45px;line-height: 45px;}
-  .child-tree {
-    height: calc(100vh - 265px);
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
+  height: calc(100vh - 80px);
+  .header{height: 45px;line-height: 45px;}
   .node-wrapper {  
   position: relative;  
   padding-right: 100px; /* 根据操作按钮宽度调整 */  

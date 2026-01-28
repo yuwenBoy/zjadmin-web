@@ -1,6 +1,6 @@
 <template>
   <section class="app-main">
-    <div class="app-main-content">
+    <div :class="isElectron? 'app-client-main-content' : 'app-main-content'">
       <transition name="fade-transform" mode="out-in">
       <keep-alive :include="cachedViews">
         <router-view :key="key" />
@@ -22,8 +22,10 @@ export default {
     cachedViews() {
       return this.$store.state.tagsView.cachedViews
     },
+    isElectron() {
+      return window.electronAPI && window.electronAPI.isElectron;
+    },
     key() {
-      console.log(this.$route.path)
       return this.$route.path
     }
   }
@@ -38,7 +40,13 @@ export default {
   position: relative;
   overflow: hidden;
   .app-main-content {
-    height: calc(100vh - 50px);
+    height: calc(100vh - 30px);
+    overflow-y: hidden;
+    background-color: #f5f7fc;
+    overflow-x: hidden;
+  }
+  .app-client-main-content{
+    height: calc(100vh - 83px);
     overflow-y: hidden;
     background-color: #f5f7fc;
     overflow-x: hidden;
