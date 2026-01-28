@@ -33,8 +33,17 @@ const service = axios.create({
 
 // request拦截器
 service.interceptors.request.use(
-  config => {
-    if (getToken()) {
+  async config => {
+    // 获取 Token
+    let token;
+    if (window.electronAPI) {
+        const config = await window.electronAPI.getAppConfig()
+        console.log(config)
+        token = config.token // Electron
+    } else {
+        token = getToken() // 浏览器
+    }
+    if (token) {
       config.headers["Authorization"] = getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
     }
     config.headers["Content-Type"] = "application/json";

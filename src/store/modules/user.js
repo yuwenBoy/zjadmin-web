@@ -30,9 +30,16 @@ const user = {
         Login({ commit }, userInfo) {
             const rememberMe = userInfo.rememberMe;
             return new Promise((resolve, reject) => {
-                login(userInfo).then(res => {
-                    let data = res.result;
-                    setToken(data.accessToken,data.refreshToken)
+                login(userInfo).then(async res => {
+                       let data = res.result;
+                         if(window.electronAPI){
+                            // ✅ 保存 Token 到主进程
+                            window.electronAPI.setToken(data.accessToken)
+
+                            const config = await window.electronAPI.getAppConfig()
+                            console.log('✅ [Login.vue] 重新获取配置确认:', config.token ? 'Token 存在' : 'Token 仍为空')
+                         }
+                        setToken(data.accessToken,data.refreshToken)
                         commit('SET_TOKEN',data.accessToken)
                         setUserInfo(data, commit)
                         // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
@@ -82,9 +89,13 @@ const user = {
     }
 }
 
-export const logOut = (commit) => {
+export const logOut = async (commit) => {
     commit('SET_TOKEN', '')
     commit('SET_ROLES', [])
+    if (window.electronAPI) {
+        const result = await window.electronAPI.removeToken()
+        console.log('✅ [Logout.vue] 主进程 Token 已清除:', result)
+    }
     removeToken()
 }
 

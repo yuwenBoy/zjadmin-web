@@ -419,7 +419,6 @@ export default {
      * 批量修改分组
      */
     batchEditProduct(type,row){
-        debugger
         if(row.length===0){
           this.$msg.alert('请选择商品','error');
           return false;

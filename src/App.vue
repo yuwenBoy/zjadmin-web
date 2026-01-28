@@ -17,9 +17,7 @@ export default {
       return window.electronAPI && window.electronAPI.isElectron;
     }
   },
-  mounted(){
-  const BASE_API = window.electronAPI ? window.electronAPI.apiBase : '/basic-api';
-  console.log('BASE_API:', BASE_API);
+  async mounted(){
     // 延迟检测，确保 preload 注入完成
   setTimeout(() => {
     console.log('检测 window.electronAPI:', window.electronAPI);
@@ -30,10 +28,16 @@ export default {
       console.log('⚠️ 当前运行在浏览器环境');
     }
   }, 500); // 延迟 500ms
+        let config = await window.electronAPI.getAppConfig()
+        console.log('API Base:', config.apiBase)
+        console.log('Token:', config.token)
   },
   methods: {
     exitApp() {
-        window.electronAPI.quitApp()
+       // 调用 electronAPI 退出
+      if (window.electronAPI && window.electronAPI.quitApp) {
+           window.electronAPI.quitApp()
+      }
     }
  }
 }

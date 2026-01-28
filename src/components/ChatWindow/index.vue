@@ -12,7 +12,7 @@
       >
         <div class="message-time">{{ formatChatTimestamp(Date.parse(msg.createdAt)) }}</div>
         <div :class="msg.senderId === user.id? 'sender-box' : 'receiver-box'" style="display:flex">
-            <el-avatar :size="40" :src="msg.senderAvatar"></el-avatar>
+            <el-avatar :size="40"></el-avatar>
             <div class="userinfo">
                  <span class="sender cname">{{ msg.senderId === user.id? '我' : msg.senderUsername }}（{{ msg.senderId }}）</span>
                  <div class="message-content">{{ msg.content }}</div>
