@@ -24,7 +24,7 @@
                           </el-select>
                     </el-form-item>
                     <el-form-item label="商品类目" prop="categories" style="width:65%">
-                          <category-cascader v-model="form.categories" :urlRequestType="2" :multiple="false" ref="categoryCascader" @input="handerCategory"></category-cascader>
+                        <el-cascader v-model="form.categories" ref="categoryCascader" style="width:100%;" :options="productCategoryList" :props="{ expandTrigger: 'hover' }" @change="handerCategory"></el-cascader>
                     </el-form-item>
                     <el-form-item label="封面">
                          <pic-upload v-model="form.imageUrl" :maxUploadCount="5" />
@@ -258,13 +258,13 @@
 import picUpload from "@/components/file";
 import {fetchProductGroup} from "@/api/business/index";
 import { create,detail } from "@/api/business/product";; // 引入接口方法
-import CategoryCascader from '@/components/CategoryCascader';
 import {getDynamicAttributeByCategoryId} from "@/api/system/dynamicAttribute";
 import MyDialog from '@/components/my-dialog';
 import CustomPopconfirm from '@/components/CustomPopconfirm';
 import product from '@/api/mock/product.js'
 import ProductSpec from '@/views/business/components/productSpec.vue';
 import productProperties from '@/views/business/components/productProperties.vue';
+import { fetchMainProductCategories } from "@/api/business";
 export default {
   data() {
     return {
@@ -298,6 +298,8 @@ export default {
       productId:null,
       newProductDynamic:[],
       state2: '',
+      // 产品类目list
+      productCategoryList:[],
     }
   },
   computed: {
@@ -308,6 +310,7 @@ export default {
   },
   mounted() {
     this.getProductGroupList();
+    this.getProductCategoryList();
     this.productId = this.$route.query.id;
     if(this.productId>0){
       detail({id:this.productId}).then((data)=>{
@@ -333,6 +336,12 @@ export default {
         this.routeTitle = '编辑产品';
         this.$route.meta.title = '编辑产品';
       }
+    },
+    /** 获取经营范围类目列表 */ 
+   async getProductCategoryList(){
+       const {code,message,result,success} = await fetchMainProductCategories()
+       let data = this.handleTree(result,'id','parent_id')
+       this.productCategoryList = data
     },
     updateDynamicRules() {
             // 详情属性验证
@@ -422,8 +431,9 @@ export default {
      * 
      */
      handerCategory(val){
+        debugger
         let categoryId = val[val.length-1];
-        getDynamicAttributeByCategoryId(JSON.stringify({categoryId})).then(res=>{
+        getDynamicAttributeByCategoryId({categoryId:categoryId}).then(res=>{
             this.$set(this.form, 'dynamicAttributeList', res.result);
             this.form.dynamicAttributeList = res.result;
             this.updateDynamicRules();
@@ -559,7 +569,7 @@ export default {
       }
     },
   },
-  components: { picUpload,CategoryCascader,MyDialog,CustomPopconfirm,ProductSpec,productProperties },
+  components: { picUpload,MyDialog,CustomPopconfirm,ProductSpec,productProperties },
 }
 </script>
 <style lang="scss">

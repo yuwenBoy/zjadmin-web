@@ -198,11 +198,13 @@
                                     </template>
                                 </el-table-column>
                             </el-table>
-                            <div v-else class="flex" style="height:500px;">
-                                <div style="display: block;height: 120px; margin: 0px auto; width: 120px;">
-                                    <img src="@/assets/images/noData.png" />
+                            <div v-else class="no-product">
+                                <div class="empty">
+                                    <!-- <img src="@/assets/images/noData.png" /> -->
                                 </div>
-                                <div>该分组下无商品</div>
+                                <div class="text" style="color:#999;text-align:center;font-size:14px;">
+                                    <p>暂无商品</p>
+                                </div>
                             </div>
                     </div>
                    </el-col>
@@ -238,7 +240,6 @@ export default {
       title: "分组",
       url: "product_group/productGroupAll",
       crudMethod: { ...crudCategory },
-
     });
   },
   mixins: [presenter(), form(defaultForm)],
@@ -702,6 +703,19 @@ s.group-list .group-item .el-icon-edit {
 .product-options .table .batchAll .batch-item-list:hover {
     color: #1a71ff;
     background: #f8f8fa;
+}
+
+.product-options .table .no-product{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+.product-options .table .no-product .empty{
+    background: url('~@/assets/images/noData.png') no-repeat center center;
+    width:360px;
+    height: 360px;
+    background-size: 60%
 }
 .el-alert__icon.is-big{font-size: 16px;}
 .el-alert.is-light .el-alert__closebtn{display: none;}
