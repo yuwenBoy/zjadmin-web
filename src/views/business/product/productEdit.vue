@@ -1,17 +1,17 @@
 <template>
 <div ref="container" style="height:calc(100vh - 150px);overflow-y:auto;overflow-x:hidden;box-sizing: border-box;">
- <div class="container-form" style="box-sizing:border-box;width:73%;margin-left:15px;">
-    <el-page-header class="cusomter-header" @back="$router.replace('index')" :content="form.id>0 ? '编辑商品':'手动录菜'"></el-page-header>
-    <div class="sticky-tabs">
-        <!-- Tabs 组件 -->
-         <el-tabs v-model="activeTab" @tab-click="handleTabClick" style="background-color: #ffffff; ">
-              <el-tab-pane label="基础信息" name="tab1"></el-tab-pane>
-              <el-tab-pane label="详细信息" name="tab2"></el-tab-pane>
-              <el-tab-pane label="售卖信息" name="tab3"></el-tab-pane>
-              <el-tab-pane label="高级设置" name="tab4"></el-tab-pane>
-        </el-tabs>
-    </div>
-    <el-form ref="form" :model="form" :rules="rules" size="medium" label-width="85px" style="margin-top:15px;">
+   <div class="container-form" style="box-sizing:border-box;width:73%;margin-left:15px;">
+       <el-page-header class="cusomter-header" @back="$router.replace('index')" :content="form.id>0 ? '编辑商品':'手动录菜'"></el-page-header>
+        <div class="sticky-tabs">
+                <!-- Tabs 组件 -->
+                <el-tabs v-model="activeTab" @tab-click="handleTabClick" style="background-color: #ffffff; ">
+                    <el-tab-pane label="基础信息" name="tab1"></el-tab-pane>
+                    <el-tab-pane label="详细信息" name="tab2"></el-tab-pane>
+                    <el-tab-pane label="售卖信息" name="tab3"></el-tab-pane>
+                    <el-tab-pane label="高级设置" name="tab4"></el-tab-pane>
+                </el-tabs>
+        </div>
+    <el-form ref="form" :model="form" :rules="dynamicRules" size="medium" label-width="85px" style="margin-top:15px;">
             <!-- 页面内容 -->
             <div class="headerTitle">基础信息</div>
                 <div ref="content1" class="content">
@@ -41,8 +41,9 @@
                         <el-col :span="22" style="margin-left:0">
                            <div class="desc-text">准确填写有助于商品在搜索和推荐中露出，标❤的项可提升曝光及订单转化率详情</div>
                               <div class="itemContrainer">
-                                    <el-form label-position="top" label-width="80px" style="padding:0 15px;" v-for="(item,index) in form.dynamicAttributeList" :key="index"> 
-                                        <!-- 文本 -->
+                                     <div class="dynamic-attrs-wrapper" style="padding:0 15px;">
+                                       <div class="attr-item-box" v-for="(item,index) in form.dynamicAttributeList" :key="`${item.attributeId || 'attr'}-${index}`">
+                                         <!-- 文本 -->
                                         <el-form-item v-if="parseInt(item.attributeType) === 1" :label="item.attributeName" :prop="`dynamicAttributeList.${index}.attributeValue`">
                                             <el-input size="small" clearable :placeholder="item.description" v-model="item.attributeValue" />
                                         </el-form-item>
@@ -62,7 +63,8 @@
                                                 <el-option  v-for="cItem in item.values" :key="cItem.id" :label="cItem.value" :value="cItem.id" />
                                             </el-select>
                                         </el-form-item>
-                                    </el-form>
+                                       </div>
+                                     </div>
                                 </div>
                             </el-col>
                     </el-row>
@@ -302,30 +304,44 @@ export default {
       productCategoryList:[],
     }
   },
-  computed: {
-
+computed: {
+   dynamicRules(){
+            const rules = {};
+            if(this.form.dynamicAttributeList && this.form.dynamicAttributeList.length>0){
+                // 详情属性验证
+                this.form.dynamicAttributeList.forEach((item, index) => {
+                    debugger
+                    // 根据 attributeType 设置验证规则
+                    let triggerType = 'blur';
+                    if (parseInt(item.attributeType) === 2 || parseInt(item.attributeType) === 4) {
+                        triggerType = 'change';
+                    }
+                    let isRequired = parseInt(item.isRequired) === 1
+                    // 设置验证规则
+                    rules[`dynamicAttributeList.${index}.attributeValue`] = [
+                        {
+                            required: isRequired,
+                            message: item.attributeName + '不得为空',
+                            trigger: triggerType,
+                            validator: this.getValidator(item,isRequired)
+                        }
+                    ]
+               })
+            }
+        return { ...this.rules,...rules }; // 合并验证规则
+    }
   },
-  created(){
-    // this.initialFormData = this.form;
-  },
-  mounted() {
+async created(){
     this.getProductGroupList();
     this.getProductCategoryList();
     this.productId = this.$route.query.id;
     if(this.productId>0){
-      detail({id:this.productId}).then((data)=>{
-        this.form = data.result;
-        this.newProductDynamic = data.result.newProductDynamic;
-        this.form.groupId = parseInt(this.$route.query.groupId);
-        this.handerCategory(this.form.categories);
-      });
-    }else{
-      this.form.groupId = parseInt(this.$route.query.groupId);
-      this.updateDynamicRules();
+         const {result,success,message,code} =  await detail({id:this.productId})
+         this.form = result
+         this.newProductDynamic = result.newProductDynamic;
+         this.handerCategory(this.form.categories);
     }
-  },
-   beforeDestroy() {
-    // window.removeEventListener('scroll', this.handleScroll,true);
+    this.form.groupId = parseInt(this.$route.query.groupId);
   },
   methods: {
     updateTitle() {
@@ -342,51 +358,6 @@ export default {
        const {code,message,result,success} = await fetchMainProductCategories()
        let data = this.handleTree(result,'id','parent_id')
        this.productCategoryList = data
-    },
-    updateDynamicRules() {
-            // 详情属性验证
-            this.form.dynamicAttributeList.forEach((item, index) => {
-            // 显式地将 isRequired 转换为布尔值
-            const isRequired = parseInt(item.isRequired) === 1;
-
-            // 根据 attributeType 设置验证规则
-            let type = '';
-            if (parseInt(item.attributeType) === 2 || parseInt(item.attributeType) === 4) {
-            type = 'array';
-            }
-
-            // 设置验证规则
-            this.rules[`dynamicAttributeList.${index}.attributeValue`] = [
-                {
-                    required: isRequired,
-                    message: item.attributeName + '不得为空，请输入',
-                    trigger: 'blur',
-                    // type: type,
-                    validator: (rule, value, callback) => {
-                    // 如果 required 为 false，直接通过验证
-                    if (!isRequired) {
-                        callback();
-                        return;
-                    }
-                if (item.attributeType >1) {
-                    // 如果有值（输入框有文本，下拉框有选中项），则通过验证
-                    if (value !== null && value !== undefined && value !== '' && (Array.isArray(value) ? value.length > 0 : true)) {
-                    callback(); // 验证通过
-                    } else {
-                    callback(new Error(item.attributeName + '不得为空，请输入')); // 验证失败
-                    }
-                } else {
-                    if (value !== null && value !== undefined && value !== '' && (Array.isArray(value) ? value.length > 0 : true)) {
-                    callback(); // 验证通过
-                    }
-                    else {
-                    callback(new Error(item.attributeName + '不得为空，请输入')); // 验证失败
-                    }
-                }
-                }
-                }
-            ];
-        });
     },
    // 标签点击事件处理函数
    handleTabClick(tab, event) {
@@ -424,19 +395,29 @@ export default {
      let response_data = await fetchProductGroup();
       this.productGroupList = response_data.result;
     },
-
+    // 详情属性验证规则
+    getValidator(item,isRequired){
+      return (rule, value, callback) => {
+        if (!isRequired) return callback();
+           const hasValue = value !== null && value !== undefined && value !== '' && (Array.isArray(value) ? value.length > 0 : true);
+              if (hasValue) {
+                   callback();
+              } else {
+                callback(new Error(`${item.attributeName}不得为空`));
+            }   
+        } 
+    },
     /**
      * 商品类目事件
      * @param form 
      * 
      */
      handerCategory(val){
-        debugger
         let categoryId = val[val.length-1];
         getDynamicAttributeByCategoryId({categoryId:categoryId}).then(res=>{
             this.$set(this.form, 'dynamicAttributeList', res.result);
             this.form.dynamicAttributeList = res.result;
-            this.updateDynamicRules();
+            // this.updateDynamicRules();
             this.$nextTick(() => {
               if(this.productId>0){
                 // 编辑产品绑定各种属性值回显
@@ -451,11 +432,9 @@ export default {
                         });
                     }
                 });
-                console.log('',this.form.dynamicAttributeList);
               }
             });
         }).catch(err=>{
-
         })
      },
     // 添加规格信息
@@ -515,14 +494,14 @@ export default {
     submitForm(form,submitType) {
           this.$refs[form].validate((valid) =>   {
           if (valid) {
-            this.form.newProductDynamic = undefined;
+            console.log(this.form)
             if(this.form.imageUrl instanceof Array){
                 this.form.imageUrl = this.form.imageUrl.map(t=>t.location);
             }
             else{
                 this.form.imageUrl = this.form.imageUrl.split(',');
             }
-            create(JSON.stringify(this.form)).then(response => {
+            create(this.form).then(response => {
                 if(submitType==2){
                     // 发布并继续新建
                     this.$msg.success('发布成功您可以继续添加下一个');
@@ -548,9 +527,6 @@ export default {
     'form.dynamicAttributeList': {
       deep: true,
       handler() {
-       if(!this.productId){
-         this.updateDynamicRules();
-       }
         let minPrice = Math.min(...this.form.product_spea.map(t=>t.price));
         let indexOfMin = this.form.product_spea.findIndex(item=>item.price == minPrice)
         this.preViewActived = indexOfMin;
@@ -629,9 +605,9 @@ export default {
             box-sizing: border-box;
         }
    .productDescInfo{
-    //    .el-form-item__label{
-    //       width: 50px !important;
-    //    }
+     .attr-item-box{
+        display: inline-block;
+     }
    
     .cusomte-label{
         font-size:14px;padding-left:10px;color: #333;
@@ -683,8 +659,8 @@ export default {
             }
             .specList:last-child{
                 border-radius: 0 0 8px 8px;
-            }
         }
+     }
    }
    
    .last-content {

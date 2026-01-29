@@ -52,12 +52,13 @@ service.interceptors.request.use(
         storeId = store.getters.user.business.store.find(item=>item.isDefault).id  
     }
     if (storeId) {
-    if (config.method === 'get') {
-      config.params = { ...config.params, storeId };
-    } else {
-      config.data = { ...config.data, storeId };
-    }
-  }
+        if (config.method === 'get') {
+              config.params = { ...config.params, storeId };
+        } else {
+             config.data = { ...config.data, storeId };
+        }
+        config.headers["X-Store-Id"] = storeId;
+   }
     startLoading();
     return config;
   },
