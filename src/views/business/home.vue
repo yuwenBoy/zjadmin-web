@@ -1,7 +1,8 @@
 <template>
    <div>
      <div>商家后台首页</div>
-     <ChatWindow chatType="private" :chatId="user.id" />
+     <!-- 给平台admin（用户ID=19）用户发送私聊消息 -->
+     <ChatWindow chatType="private" :chatId="19" />
    </div>
 </template>
 <script> 

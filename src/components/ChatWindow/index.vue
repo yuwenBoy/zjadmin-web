@@ -3,8 +3,8 @@
     <!-- 消息列表 -->
     <div class="message-list" ref="messageList">
       <div
-        v-for="msg in messages"
-        :key="msg.id"
+        v-for="(msg,index) in messages"
+        :key="index"
         class="message"
         :class="{ 'message-sent': msg.senderId === user.id }"
         :data-message-id="msg.id"

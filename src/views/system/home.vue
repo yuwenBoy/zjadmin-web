@@ -6,6 +6,7 @@
           <span class="fs12">最新通知</span>
         </div>
         <div class="content">
+            <!-- 给用户merchant(userId=191)发私信 -->
             <ChatWindow chatType="private" :chatId="191" />
         </div>
       </div>
