@@ -201,6 +201,37 @@ export default {
        const {code,message,result,success} = await fetchMainCategories()
        let data = this.handleTree(result,'id','parent_id')
        this.categoriesDataList = data
+       this.form.categories = this.convertDeptIdsToPaths(this.form.categories)
+    },
+    // 转换方法：根据 deptId 找到完整路径
+    convertDeptIdsToPaths(deptIds) {
+        const paths = []
+        deptIds.forEach(id => {
+            console.log(this.deptDataList)
+            const path = this.findDeptPath(id, this.deptDataList)
+            if (path.length > 0) {
+            paths.push(path)
+            }
+        })
+        return paths
+    },
+    // 递归查找部门路径
+    findDeptPath(deptId, tree, path = []) {
+        for (const node of tree) {
+            const currentPath = [...path, node.deptId] // 或 node.deptId，根据你的数据结构
+            if (parseInt(node.deptId) === parseInt(deptId)) { // 或 node.deptId
+                return currentPath
+            }
+            if (node.children && node.children.length > 0) {
+                const childPath = this.findDeptPath(parseInt(deptId), node.children);
+                if (childPath.length > 0) {
+                    const fullPath = [...currentPath, ...childPath];
+                    console.log('✅ 找到路径:', fullPath);
+                    return fullPath;
+                }
+            }
+        }
+        return []
     },
      change(){
         this.$refs.cascader.dropDownVisible = false;
