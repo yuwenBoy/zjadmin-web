@@ -24,6 +24,13 @@ export default {
     
     if (window.electronAPI && window.electronAPI.isElectron) {
       console.log('🎉 成功运行在 Electron 桌面端！');
+       window.electronAPI.onNavAction((action) => {
+        if (action === 'back') {
+          this.handleBack();
+        } else if (action === 'forward') {
+          this.handleForward();
+        }
+      });
     } else {
       console.log('⚠️ 当前运行在浏览器环境');
     }
@@ -35,6 +42,16 @@ export default {
       if (window.electronAPI && window.electronAPI.quitApp) {
            window.electronAPI.quitApp()
       }
+    },
+    handleBack() {
+      // 判断边界：不能返回登录页或空页面
+      if (this.$route.path === '/login' || window.history.length <= 1) {
+        return;
+      }
+      this.$router.back();
+    },
+    handleForward() {
+      this.$router.forward();
     }
  }
 }
@@ -82,12 +99,12 @@ export default {
 }
 /* 为标题栏留出空间 */
 .main-content {
-  padding-top: 32px;  /* 与 TitleBar 高度一致 */
+  padding-top: 42px;  /* 与 TitleBar 高度一致 */
   height: 100%;
   overflow: auto;
 }
 .web-content{
-   height: 100%;
+  height: 100%;
   overflow: auto;
 }
 </style>

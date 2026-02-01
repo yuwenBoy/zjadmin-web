@@ -130,20 +130,31 @@ app.whenReady().then(() => {
   ipcMain.on('show-context-menu', (event) => {
     console.log('🖱️ [main.js] 收到右键菜单请求')
     const template = [
+      {
+        label: '返回',
+        click: () => {
+          mainWindow.webContents.send('nav-action', 'back');
+        }
+      },
+      {
+        label: '前进',
+        click: () => {
+          mainWindow.webContents.send('nav-action', 'forward');
+        }
+      },
       { label: '刷新',
         click: () => mainWindow.reload()
       },
-       { label: '复制',
+      { type: 'separator' },
+      { label: '复制',
         click: () => mainWindow.webContents.copy()
       },
        { label: '粘贴',
         click: () => mainWindow.webContents.paste()
       },
+      { type: 'separator' },
       { label: '检查',
         click: () => mainWindow.webContents.openDevTools()
-      },
-      { label: '关闭',
-        click: () => mainWindow.close()
       }
     ]
     const menu = Menu.buildFromTemplate(template)

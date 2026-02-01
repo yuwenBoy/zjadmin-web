@@ -11,6 +11,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
   close: () => ipcRenderer.send('window-close'),
   quitApp: () => ipcRenderer.send('quit-app'),
   openDevTools: () => ipcRenderer.send('open-devtools'),
+  // 发送路由状态给主进程
+  updateRouterState: (state) => ipcRenderer.send('router-state-update', state),
+  // 监听主进程菜单命令
+  onNavAction: (callback) => ipcRenderer.on('nav-action', (e, action) => callback(action)),
+  // 移除监听（防止内存泄漏）
+  removeNavListener: () => ipcRenderer.removeAllListeners('nav-action'),
   // Token 管理
   setToken: (token) => ipcRenderer.invoke('set-auth-token', token),
   removeToken: () => ipcRenderer.invoke('remove-auth-token'),

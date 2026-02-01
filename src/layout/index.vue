@@ -1,9 +1,9 @@
 <template>
     <div :class="classObj" class="app-wrapper">
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar :class="['sidebar-container',isElectron && 'top32']"/>
+    <sidebar :class="['sidebar-container',isElectron && 'top42']"/>
     <div :class="{hasTagsView:needTagsView}" class="main-container">
-      <div :class="{'fixed-header':fixedHeader,'top32':isElectron}">
+      <div :class="{'fixed-header':fixedHeader,'top42':isElectron}">
         <navbar />
         <tags-view v-if="needTagsView" />
       </div>
@@ -118,7 +118,7 @@ export default {
   .mobile .fixed-header {
     width: 100%;
   }
-  .top32{
-    top:32px !important;
+  .top42{
+    top:42px !important;
   }
 </style>

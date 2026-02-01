@@ -62,6 +62,25 @@ export const loadMenus = (next, to) => {
   })
 }
 
-router.afterEach(() => {
+// 维护历史栈用于判断（简单版）
+const historyStack = [];
+let currentIndex = -1;
+router.afterEach((to) => {
+  // 更新历史栈
+  if (currentIndex < historyStack.length - 1) {
+    // 如果在中间插入新路由，截断后面的
+    historyStack.splice(currentIndex + 1);
+  }
+  historyStack.push(to.path);
+  currentIndex++;
+  
+  // 同步状态给 Electron 主进程
+  if (window.electronAPI) {
+      window.electronAPI.updateRouterState({
+        canGoBack: currentIndex > 0 && to.path !== '/login', // 登录页不能返回
+        canGoForward: currentIndex < historyStack.length - 1,
+        currentPath: to.path
+      });
+  }
   NProgress.done()
 })
