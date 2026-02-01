@@ -1,11 +1,13 @@
 <template>
   <div class="custom-title-bar" v-if="isElectron">
-    <button class="nav-btn btn-back" @click="goBack">
-      <i class="el-icon el-icon-back"></i>
-    </button>
-    <button class="nav-btn btn-refresh" @click="refresh" title="刷新">
-      <i class="el-icon el-icon-refresh-right"></i>
-    </button>
+    <div class="bar-left">
+       <button class="nav-btn btn-back" @click="goBack">
+          <i class="el-icon el-icon-back"></i>
+       </button>
+      <button class="nav-btn btn-refresh" @click="refresh" title="刷新">
+        <i class="el-icon el-icon-refresh-right"></i>
+      </button>
+    </div>  
     <div class="bar-title">{{ user.userType == 2 ? "商家版" : "系统端" }}</div>
     <div class="window-controls">
       <button class="control-btn minimize" @click="minimize">−</button>
@@ -44,26 +46,13 @@ export default {
         window.history.length > 1;
     },
     goBack() {
-      console.log("goBack");
       if (this.canGoBack) {
          this.$router.back();
-        // 或者用 Electron API：window.electronAPI?.goBack()
       }
     },
     refresh() {
-      console.log("刷新");
-      // ElementUI 加载中提示
-      const loading = this.$loading({
-        lock: true,
-        text: "刷新中...",
-        spinner: "el-icon-loading",
-        background: "rgba(255, 255, 255, 0.7)",
-      });
-
       setTimeout(() => {
         location.reload();
-        // 或者 Electron 方式：window.location.reload();
-        loading.close();
       }, 300);
     },
     minimize() {
@@ -95,7 +84,6 @@ export default {
   right: 0;
   z-index: 9999; /* 确保在最上层 */
 }
-
 .bar-title {
   width: 180px;
   font-size: 14px;
@@ -109,12 +97,13 @@ export default {
 }
 
 .control-btn {
-  width: 45px;
-  height: 32px;
-  border: none; /* 去掉边框 */
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 6px;
   background: transparent; /* 背景透明 */
-  color: white;
-  font-size: 16px;
+  color: #FFFFFF;
+  font-size: 18px;
   cursor: pointer;
   outline: none; /* 去掉聚焦边框 */
   display: flex;
@@ -124,21 +113,20 @@ export default {
 }
 
 .control-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: hsl(0deg 0% 100% / 50%);
 }
 
 .bar-left {
   display: flex;
   align-items: center;
-  gap: 8px;
   padding: 0 12px;
   -webkit-app-region: no-drag; /* 关键：让按钮可点击 */
 }
 
 /* 导航按钮基础样式 - 与右侧 control-btn 协调 */
 .nav-btn {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border: none;
   border-radius: 6px;
   background: transparent;
@@ -149,38 +137,13 @@ export default {
   align-items: center;
   justify-content: center;
   transition: all 0.25s ease;
-  outline: none;
-}
-
-/* 深色标题栏适配（如果你整体是深色） */
-.bar-left .nav-btn {
-  color: #dcdcdc;
+  outline: none; /* 去掉聚焦边框 */
 }
 
 /* 悬浮效果 */
 .nav-btn:hover:not(:disabled):not(.is-disabled) {
-  background: rgba(0, 0, 0, 0.05);
-  color: #409eff; /* ElementUI 主题蓝 */
-}
-
-/* 深色模式悬浮 */
-.dark-mode .nav-btn:hover:not(:disabled):not(.is-disabled) {
-  background: rgba(255, 255, 255, 0.1);
-  color: #409eff;
-}
-
-/* 点击反馈 */
-.nav-btn:active:not(:disabled):not(.is-disabled) {
-  transform: scale(0.9);
-}
-
-/* 禁用状态（无法返回时） */
-.nav-btn.is-disabled,
-.nav-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-  pointer-events: none;
-  color: #909399;
+  color: #FFFFFF; /* ElementUI 主题蓝 */
+  background: #f5f5f5ad;
 }
 
 /* 刷新按钮旋转动画 */
@@ -191,7 +154,6 @@ export default {
 
 /* 确保图标居中 */
 .nav-btn i {
-  font-weight: bold;
   font-size: 18px;
 }
 </style>

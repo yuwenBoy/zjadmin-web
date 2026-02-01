@@ -114,7 +114,7 @@ service.interceptors.response.use(
       if (code === 401) {
         // 如果刷新的过期时间小于当前时间，刷新token再请求一次获取新token
         if (getRTExp() <= Date.now()) {
-          this.$msg.confirm(
+          Message.confirm(
             "登录状态已过期，您可以继续留在该页面，或者重新登录？",
             {
               ok: () => {
