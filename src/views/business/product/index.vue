@@ -131,28 +131,27 @@
                                 </div>
                                 <div class="create-product">
                                     <el-dropdown class="custom-dropdown" split-button type="primary" @command="createProductCommand">
-                                      <span class="el-dropdown-link">快速录菜</span>
-                                    <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item command="1">
-                                            手动录菜
-                                            <br />
-                                            <small class="grey-text">定制特色商品，突出商品卖点</small>
-                                        </el-dropdown-item>
-                                        <el-dropdown-item command="2">新建套餐
-                                            <br />
-                                            <small class="grey-text">搭配单品为套餐，顾客可快速下单</small>
-                                        </el-dropdown-item>
-                                        <el-dropdown-item command="3">复制新建
-                                            <br />
-                                            <small class="grey-text">复制店内商品，稍加修改即可发布</small>
-                                        </el-dropdown-item>
-                                    </el-dropdown-menu>
+                                        <span class="el-dropdown-link" style="vertical-align:bottom">快速录菜</span>
+                                        <el-dropdown-menu slot="dropdown">
+                                            <el-dropdown-item command="1">
+                                                手动录菜
+                                                <div><small class="grey-text">定制特色商品，突出商品卖点</small></div>
+                                            </el-dropdown-item>
+                                            <el-dropdown-item command="2">
+                                                新建套餐
+                                                <div><small class="grey-text">搭配单品为套餐，顾客可快速下单</small></div>
+                                            </el-dropdown-item>
+                                            <el-dropdown-item command="3">
+                                                复制新建
+                                                <div><small class="grey-text">复制店内商品，稍加修改即可发布</small></div>
+                                            </el-dropdown-item>
+                                        </el-dropdown-menu>
                                     </el-dropdown>
                                 </div>
                             </div>
                             <el-table ref="table" v-if="productList.length>0" :data="productList" highlight-current-row @selection-change="changeTable">
                                 <el-table-column v-if="isActiveIndex==-1" type="selection" align="center" width="45" />
-                                <el-table-column v-if="groupItem" :label="isActiveIndex==-1 && groupItem.name ? `${groupItem.name} (${groupItem.product_count})`:''" width="300px">
+                                <el-table-column v-if="groupItem" :label="isActiveIndex==-1 && groupItem.name ? `${groupItem.name} (${groupItem.product_count})`:''">
                                     <template slot-scope="scope">
                                         <div style="display:flex;align-items:center;justify-content:start !important;">
                                                 <div style="position:relative;">
@@ -168,7 +167,7 @@
                                         </div>
                                     </template>
                                 </el-table-column>
-                                <el-table-column width="300">
+                                <el-table-column width="200">
                                     <template slot-scope="scope">
                                         <div style="color:#333;font-size:14px;">¥{{scope.row.specs.length>1 && scope.row.specs.some(t=>t.price!=t.price)? (Math.min(...scope.row.specs.map(t=>parseFloat(t.price))) +'~'+Math.max(...scope.row.specs.map(t=>parseFloat(t.price)))):scope.row.specs[0].price}}</div>
                                         <div style="color:#999;font-size:12px;" v-if="scope.row.specs.length==1">
@@ -182,13 +181,13 @@
                                         </div>
                                     </template>
                                 </el-table-column>
-                                <el-table-column width="300">
+                                <el-table-column width="150">
                                     <template slot-scope="scope">
                                         <div style="color:#333;font-size:14px;">库存{{Math.max(...scope.row.specs.map(t=>t.stock))}}</div>
                                     </template>
                                 </el-table-column>
                                 <!--   编辑与删除 -->
-                                <el-table-column  align="left">
+                                <el-table-column width="120" align="left">
                                     <template slot-scope="scope">
                                         <el-button style="margin-bottom: 15px;" v-if="scope.row.isActive==1" @click="updateIsActive([...scope.row],2)">下架</el-button>
                                         <el-button type="primary" plain style="margin-bottom: 15px;" v-if="scope.row.isActive==2" @click="updateIsActive([...scope.row],1)">上架</el-button>
@@ -200,10 +199,9 @@
                             </el-table>
                             <div v-else class="no-product">
                                 <div class="empty">
-                                    <!-- <img src="@/assets/images/noData.png" /> -->
                                 </div>
-                                <div class="text" style="color:#999;text-align:center;font-size:14px;">
-                                    <p>暂无商品</p>
+                                <div class="text">
+                                    <p>改分组下无商品</p>
                                 </div>
                             </div>
                     </div>
@@ -231,7 +229,6 @@ const defaultForm = {
     name: "",
     sort: 99,
     description: "",
-    businessId:"",
   };
 export default {
   components: { OPTOperation,addGroupMenu,MyDialog,ProductSpec,productProperties },
@@ -285,12 +282,11 @@ export default {
       // 表格刷新之后
       [CRUD.HOOK.afterRefresh](crud, form) {
         this.productGroupList = crud.data;
-            this.groupItem = crud.data[this.groupSelectedIndex];
-            this.productListByGroupId(this.groupItem,this.crud.query.isActive);
-        console.log(this.groupItem) 
+        this.groupItem = crud.data[this.groupSelectedIndex];
+        this.productListByGroupId(this.groupItem,this.crud.query.isActive);
      },
-      // 保存分组之后
-      [CRUD.HOOK.afterToAdd](crud, form) {
+     // 保存分组之后
+     [CRUD.HOOK.afterToAdd](crud, form) {
          this.groupSelectedIndex = crud.data.length;
      },
     async productListByGroupId(params,isActive){
@@ -307,7 +303,6 @@ export default {
         if(response.success){
             this.productList =response.result.content;
         }
-        console.log(response);
     },
     async productCountList(){
         let data = await getStatistics();
@@ -328,14 +323,12 @@ export default {
         })
     },
     itemInActiveClick(item,index){
-        console.log('切换产品状态')
         this.isActiveIndex = item.isActive;
         this.groupSelectedIndex = 0;
         this.crud.query.isActive = item.isActive;
         this.crud.toQuery();
     },
     groupItemClick(index,dataItem){
-        console.log('切换菜单')
         this.groupSelectedIndex = index;
         this.groupItem = dataItem;
         this.crud.query.groupId = this.groupItem.id;
@@ -613,6 +606,9 @@ export default {
 .custom-dropdown .el-dropdown-link {
   font-size: 14px; /* 修改为你需要的大小 */
 }
+.custom-dropdown button:first-child{
+    vertical-align: bottom;
+}
 
 .product-active-item.checked::after {
   opacity: 1; /* 选中状态下显示伪元素 */
@@ -710,12 +706,20 @@ s.group-list .group-item .el-icon-edit {
     align-items: center;
     flex-direction: column;
     justify-content: center;
+    position: relative;
 }
 .product-options .table .no-product .empty{
     background: url('~@/assets/images/noData.png') no-repeat center center;
     width:360px;
     height: 360px;
-    background-size: 60%
+    background-size: 40%
+}
+.product-options .table .no-product .text{
+    position:absolute;
+    bottom: 80px;
+    color:#333;
+    text-align:center;
+    font-size:14px;
 }
 .el-alert__icon.is-big{font-size: 16px;}
 .el-alert.is-light .el-alert__closebtn{display: none;}

@@ -66,7 +66,6 @@
     },
     methods: {
       updateFileList(newVal) {
-        console.log("newVal",newVal)
        if(newVal){
         if (newVal instanceof Array) {
           this.fileList = newVal.map((item, index) => ({

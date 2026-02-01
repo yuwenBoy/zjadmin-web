@@ -138,7 +138,6 @@ export default {
             this.$router.push({ path: this.redirect || '/' })
             this.$store.dispatch('chat/initSocket');
           }).catch(error => {
-            console.log(error);
             msg.alert('账号密码错误，请重新登录','error');
             this.loading = false
             // this.getCode()

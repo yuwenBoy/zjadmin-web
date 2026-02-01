@@ -146,7 +146,6 @@ export default {
     },
     //上传失败回调
     cropUploadFail(status, field) {
-      console.log("-------- upload fail --------");
     },
   }
 };

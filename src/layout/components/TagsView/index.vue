@@ -28,7 +28,7 @@
 <script>
 import ScrollPane from './ScrollPane'
 import path from 'path'
-
+import { mapGetters } from 'vuex'
 export default {
   components: { ScrollPane },
   data() {
@@ -42,8 +42,17 @@ export default {
   },
   computed: {
     visitedViews() {
-      return this.$store.state.tagsView.visitedViews
+      return this.$store.state.tagsView.visitedViews.filter(view=>{
+        const userType = this.user.userType
+        if(userType == 1){
+          return view.name!== "BDashboard"
+        }
+        else if(userType == 2){
+          return view.name!== 'Dashboard'
+        }
+      })
     },
+    ...mapGetters(["user"]),
     routes() {
       return this.$store.state.permission.routers
     }

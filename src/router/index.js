@@ -50,67 +50,12 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-
-// 系统后台首页
-const systemHomeRouter = {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children:[{
-        path: 'dashboard',
-        component: (resolve) => require(['@/views/system/home'], resolve),
-        name: 'dashboard',
-        meta: { title: '首页', icon: 'index', affix: true, noCache: true }
-      }]
-}
-
-// 商家端后台首页
-const businessHomeRouter = {
-    path: '/',
-    component: Layout,
-    redirect: '/BDashboard',
-    children: [{
-      path: 'BDashboard',
-      component: (resolve) => require(['@/views/business/home'], resolve),
-      name: 'BDashboard',
-      meta: { title: '首页', icon: 'index', affix: true, noCache: true }
-    }]
-}
-
-
-// 门店端后台首页
-const StoreHomeRouter = {
-    path: '/',
-    component: Layout,
-    redirect: '/Sdashboard',
-    children: [{
-      path: 'Sdashboard',
-      component: (resolve) => require(['@/views/business/storeHome'], resolve),
-      name: 'Sdashboard',
-      meta: { title: '首页', icon: 'index', affix: true, noCache: true }
-    }]
-}
-
-
+// 加载菜单
 export const loadMenus = (next, to) => {
   getModuleAll().then(res => {
     const asyncRouter = filterAsyncRouter(res.result)
-
     asyncRouter.push({ path: '*', redirect: '/404', hidden: true });
-
-    console.log('loadMenus',store.getters.user.userType)
-    
     store.dispatch('GenerateRoutes', asyncRouter).then(() => { // 存储路由
-        // 商家后台首页
-    if(store.getters.user.userType==2){
-        asyncRouter.unshift(businessHomeRouter);
-    } else if(store.getters.user.userType==3){
-        // 门店后台首页
-        asyncRouter.unshift(StoreHomeRouter);
-    }else{
-         // 系统管理后台首页
-        asyncRouter.unshift(systemHomeRouter);
-    }
       router.addRoutes(asyncRouter) // 动态添加可访问路由表
       next({ ...to, replace: true })
     })

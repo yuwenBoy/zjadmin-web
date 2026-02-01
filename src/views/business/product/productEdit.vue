@@ -71,7 +71,7 @@
                     <el-row :gutter="24">
                         <el-col :span="2">
                             <div class="desc-text">
-                                <label class="cusomte-label" style="padding-left:20px;">描述</label>
+                                <label class="cusomte-label">描述</label>
                             </div>
                         </el-col>
                         <el-col :span="12">
@@ -100,7 +100,7 @@
                         <el-row :gutter="24" class="stockInfo">
                         <el-col :span="3">
                                 <div class="desc-text">
-                                    <label style="font-size:14px;padding-left:10px;color: #333;">
+                                    <label style="font-size:14px;color: #333;">
                                         <span style="color: red;">*</span>库存打包费
                                     </label>
                                 </div>
@@ -341,7 +341,7 @@ async created(){
          this.newProductDynamic = result.newProductDynamic;
          this.handerCategory(this.form.categories);
     }
-    this.form.groupId = parseInt(this.$route.query.groupId);
+    this.form.groupId = this.$route.query.groupId
   },
   methods: {
     updateTitle() {
@@ -610,7 +610,7 @@ async created(){
      }
    
     .cusomte-label{
-        font-size:14px;padding-left:10px;color: #333;
+        font-size:14px;color: #333;
     }
      .attr-item-list{
         padding-top: 20px;

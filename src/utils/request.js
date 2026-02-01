@@ -14,7 +14,7 @@ var loading,
 function startLoading() {
   loading = Loading.service({
     lock: true,
-    text: "数据加载中……",
+    text: "数据加载中，请稍等",
     spinner: "el-icon-loading",
     background: "rgba(0, 0, 0, 0.7)"
   });
@@ -27,7 +27,7 @@ function endLoading() {
 
 // 创建axios实例
 const service = axios.create({
-  baseURL:BASE_API,// process.env.VUE_APP_BASEURL,
+  baseURL: BASE_API,// process.env.VUE_APP_BASEURL,
   timeout: Config.timeout // 请求超时时间
 });
 
@@ -37,28 +37,39 @@ service.interceptors.request.use(
     // 获取 Token
     let token;
     if (window.electronAPI) {
-        const config = await window.electronAPI.getAppConfig()
-        console.log(config)
-        token = config.token // Electron
+      const config = await window.electronAPI.getAppConfig()
+      console.log(config)
+      token = config.token // Electron
     } else {
-        token = getToken() // 浏览器
+      token = getToken() // 浏览器
     }
     if (token) {
       config.headers["Authorization"] = getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
     }
     config.headers["Content-Type"] = "application/json";
     let storeId = null
-    if(store.getters.user.userType == 2 && store.getters.user.business && store.getters.user.business.store){
-        storeId = store.getters.user.business.store.find(item=>item.isDefault).id  
+    if (store.getters.user.userType == 2 && store.getters.user.business && store.getters.user.business.store) {
+      storeId = store.getters.user.business.store.find(item => item.isDefault).id
     }
     if (storeId) {
-        if (config.method === 'get') {
-              config.params = { ...config.params, storeId };
-        } else {
-             config.data = { ...config.data, storeId };
+      if (config.method === 'get') {
+        const params = config.params || {};
+        if(config.params){
+          config.params['storeId'] = storeId
         }
-        config.headers["X-Store-Id"] = storeId;
-   }
+        config.params = params;
+      } else {
+        if(typeof config.data === 'string'){
+          config.data = JSON.parse(config.data)
+        }
+        const data = config.data || {};
+        if(config.data){
+          config.data['storeId'] = storeId
+        }
+        config.data = data;
+      }
+      config.headers["X-Store-Id"] = storeId;
+    }
     startLoading();
     return config;
   },
@@ -96,6 +107,9 @@ service.interceptors.response.use(
         return Promise.reject(error);
       }
     }
+    finally {
+      endLoading()
+    }
     if (code) {
       if (code === 401) {
         // 如果刷新的过期时间小于当前时间，刷新token再请求一次获取新token
@@ -117,7 +131,7 @@ service.interceptors.response.use(
             const res = await request({
               url: "/auth/updateToken",
               method: "post",
-              data: { id: user.id, username: user.username,business_id:user.business_id,userType:user.userType }
+              data: { id: user.id, username: user.username, business_id: user.business_id, userType: user.userType }
             });
             if (res.code === 0) {
               const data = res.result;

@@ -1,6 +1,6 @@
 import { login, getUserInfo, logout } from '@/api/system/user'
 import { getToken, setToken, removeToken } from '@/utils/storage'
-
+import router from '@/router/routers'
 const user = {
     state: {
         token: getToken(),
@@ -32,24 +32,24 @@ const user = {
             return new Promise((resolve, reject) => {
                 login(userInfo).then(async res => {
                        let data = res.result;
+                       let userType = data.user.userType;
                          if(window.electronAPI){
                             // ✅ 保存 Token 到主进程
                             window.electronAPI.setToken(data.accessToken)
-
                             const config = await window.electronAPI.getAppConfig()
                             console.log('✅ [Login.vue] 重新获取配置确认:', config.token ? 'Token 存在' : 'Token 仍为空')
                          }
                         setToken(data.accessToken,data.refreshToken)
+                        if(userType==2){
+                            router.push('/BDashboard');
+                        }else{
+                             router.push('/');
+                        }
                         commit('SET_TOKEN',data.accessToken)
                         setUserInfo(data, commit)
                         // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
                         commit('SET_LOAD_MENUS', true);
-
-                        console.log('登录成功后，data数据',data);
-                        // 立即设置 tagsView 状态
-                        console.log('user.userType',data.user.userType);
-                        commit('settings/CHANGE_SETTING', { key: 'tagsView', value: data.user.userType==1?true:false });
-                        console.log('TagsView state:', this.state.settings.tagsView);
+                        commit('settings/CHANGE_SETTING', { key: 'tagsView', value: userType==1?true:false });
                         resolve();
                 }).catch(error => {
                     reject(error)

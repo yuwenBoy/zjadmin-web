@@ -23,7 +23,6 @@ import request from "@/utils/request";
     });
   }
 
-
   /***
    * 获取全部品类
    * 
@@ -35,7 +34,6 @@ import request from "@/utils/request";
         params
       });
   }
-
   export default {
     add,
     edit,

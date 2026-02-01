@@ -7,7 +7,7 @@
         </div>
         <div class="content">
             <!-- 给用户merchant(userId=191)发私信 -->
-            <ChatWindow chatType="private" :chatId="191" />
+            <ChatWindow chatType="private" :chatId="199" />
         </div>
       </div>
       <div class="box-shadow right">

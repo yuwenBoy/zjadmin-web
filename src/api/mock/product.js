@@ -147,10 +147,7 @@ class ProductData {
           }]
           return option;
     } 
-    
 }
-
-
 export default {
     ProductData: new ProductData(),
 }
