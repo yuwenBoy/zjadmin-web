@@ -121,6 +121,15 @@ export const getUserInfo = params => {
   });
 };
 
+// 获取商家用户列表
+export const getBussinessUserList = params => {
+  return request({
+    url: "/user/getBussinessUserList",
+    method: "get",
+    data: params
+  });
+};
+
 // 退出登录
 export const logout = params => {
   return request({ url: "auth/logout", method: "get", data: params });

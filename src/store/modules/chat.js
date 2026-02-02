@@ -148,11 +148,12 @@ const actions = {
   },
 
   // 发送私聊消息
-  sendPrivateMessage({commit, state }, { receiverId, content }) {
-    console.log("发送私聊消息", receiverId, content);
+  sendPrivateMessage({commit, state }, { receiverId, content,targetId }) {
+    console.log("发送私聊消息", receiverId, content,targetId);
     state.socket.emit("private_message", {
       receiverId,
-      content
+      content,
+      targetId,
     });
     // 暂时用时间戳作为临时ID
     const tempId = `temp_${Date.now()}`;

@@ -47,6 +47,10 @@ export default {
       type: Number,
       required: true,
     },
+    targetId: {
+      type: Number,
+      required: false,
+    },
   },
   data() {
     return {
@@ -99,6 +103,7 @@ export default {
 
       if (this.chatType === 'private') {
         payload.receiverId = this.chatId;
+        payload.targetId = this.targetId;
         await this.$store.dispatch('chat/sendPrivateMessage', payload);
       } else {
         payload.groupId = this.chatId;
@@ -127,7 +132,7 @@ export default {
         case 3:
           return '发送失败';       // 已读（蓝色双勾）
         default:
-          return '发送中';        // 发送中
+          return '未读';        // 未读
       }
     },
     
