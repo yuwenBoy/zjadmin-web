@@ -12,7 +12,7 @@
       >
         <div class="message-time">{{ formatChatTimestamp(Date.parse(msg.createdAt)) }}</div>
         <div :class="msg.senderId === user.id? 'sender-box' : 'receiver-box'" style="display:flex">
-            <el-avatar :size="40"></el-avatar>
+            <el-avatar :src="msg.senderAvatar" :size="40"></el-avatar>
             <div class="userinfo">
                  <span class="sender cname">{{ msg.senderId === user.id? '我' : msg.senderUsername }}（{{ msg.senderId }}）</span>
                  <div class="message-content">{{ msg.content }}</div>
@@ -35,7 +35,6 @@
 <script>
 import { mapState,mapGetters } from 'vuex';
 import { formatChatTimestamp } from '@/utils'
-
 export default {
   name: 'ChatWindow',
   props: {
@@ -55,7 +54,6 @@ export default {
   data() {
     return {
       newMessage: '',
-      
     };
   },
   computed: {
@@ -109,12 +107,8 @@ export default {
         payload.groupId = this.chatId;
         await this.$store.dispatch('chat/sendGroupMessage', payload);
       }
-
       this.newMessage = '';
     },
-    // formatChatTimestamp(timestamp) {
-    //   return new Date(timestamp).toLocaleTimeString();
-    // },
     formatChatTimestamp,
     scrollToBottom() {
       const el = this.$refs.messageList;
@@ -165,6 +159,7 @@ export default {
   flex: 1;
   overflow-y: auto;
   padding: 10px;
+  max-height:300px;
 }
 .message {
   margin-bottom: 10px;

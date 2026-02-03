@@ -4,6 +4,7 @@ import io from "socket.io-client";
 import { getToken } from "@/utils/storage";
 import axios from "axios";
 import { BASE_API } from '@/config/api.js';
+import Config from "@/settings";
 Vue.use(Vuex);
 
 const state = {
@@ -27,6 +28,7 @@ const mutations = {
     state.messages = []; // 切换会话时清空消息
   },
   ADD_MESSAGE(state, message) {
+    message.senderAvatar = Config.baseImgUrl + message.senderAvatar;
     state.messages.push(message);
   },
   SET_MESSAGES(state, messages) {
