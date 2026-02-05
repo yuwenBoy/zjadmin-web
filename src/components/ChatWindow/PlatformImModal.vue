@@ -20,7 +20,7 @@
               v-for="(merchant, index) in filteredContactList"
               :key="index"
               class="merchant-item"
-              :class="{ active: currentMerchant && currentMerchant.id === merchant.id }"
+              :class="{ active: currentContact && currentContact.id === merchant.id }"
               @click="selectMerchant(merchant)"
             >
               <el-badge :value="merchant.unread_count" :hidden="!merchant.unread_count || parseInt(merchant.unread_count) === 0" class="badge">
@@ -38,15 +38,15 @@
         <!-- 右侧聊天窗口 -->
         <div class="chat-window">
           <!-- 聊天头部 -->
-          <div class="chat-header" v-if="currentMerchant">
-            <span class="merchant-name">{{ currentMerchant.name }}{{ currentMerchant.user_type}}</span>
+          <div class="chat-header" v-if="currentContact">
+            <span class="merchant-name">{{ currentContact.name }}{{ currentContact.user_type}}</span>
             <div class="header-actions">
               <el-button type="text" icon="el-icon-phone">语音</el-button>
               <el-button type="text" icon="el-icon-video-camera">视频</el-button>
             </div>
           </div>
           <!-- 消息列表 -->
-           <ChatWindow v-if="currentMerchant" :key="currentMerchant.id" ref="messageList" chatType="private" :chatId="parseInt(currentMerchant.id)" :targetId="parseInt(currentMerchant.id)" :targetType="parseInt(currentMerchant.user_type)" />
+           <ChatWindow v-if="currentContact" :key="currentContact.id" ref="messageList" @sent="handleSentMessage" chatType="private" :chatId="parseInt(currentContact.id)" :targetId="parseInt(currentContact.id)" :targetType="parseInt(currentContact.user_type)" />
         </div>
       </div>  
     </el-dialog>
@@ -65,7 +65,7 @@ export default {
     return {
       dialogVisible: false,
       searchKeyword: '',
-      currentMerchant: null,
+      currentContact: null,
       inputMessage: '',
       contactList: [
         // {
@@ -106,25 +106,33 @@ export default {
   },
   watch: {
     dialogVisible(val) {
-      console.log('监听')
       if (val && this.contactList.length > 0) {
         this.selectMerchant(this.contactList[0]);
       }
     }
   },
+  mounted() {
+    // // 初始消息更新
+    //  const message = {
+    //       targetId: 19,
+    //       lastMessage: '你好，我是平台客服，有什么可以帮助您？',
+    //       lastTime: new Date().toISOString()
+    //     };
+    // this.$store.dispatch('chat/updateMessage',message);
+  },
   methods: {
     formatChatTimestamp,
     openDialog() {
       this.dialogVisible = true;
-      this.getBussinessUserList();
+      this.loadContacts();
     },
-    async getBussinessUserList(){
+    async loadContacts(){
       const data = await getChatContactList();
       this.contactList = data.result
-      this.currentMerchant = this.contactList[0];
+      this.currentContact = this.contactList[0];
     },
     selectMerchant(merchant) {
-      this.currentMerchant = merchant;
+      this.currentContact = merchant;
       // 清空未读数
       merchant.unread_count = 0;
       this.$nextTick(() => {
@@ -136,7 +144,25 @@ export default {
       if (messageList) {
         messageList.scrollTop = messageList.scrollHeight;
       }
-    }
+    },
+    // 发送成功后，本地更新左侧列表
+    handleSentMessage(message) {
+      console.log(message)
+      // ✅ 找到当前会话，立即更新最后一条消息和时间
+      const contact = this.contactList.find(c => c.id === this.currentContact.id);
+      if (contact) {
+        contact.last_message = message.lastMessage;
+        contact.last_time = message.lastTime;
+        contact.unread_count = 0; // ✅ 清空未读
+      }
+      
+      // ✅ 重新排序：把当前会话置顶
+      this.contactList.sort((a, b) => {
+        if (a.id === this.currentContact.id) return -1;
+        if (b.id === this.currentContact.id) return 1;
+        return 0;
+      });
+    },
   }
 };
 </script>

@@ -107,9 +107,17 @@ export default {
         payload.targetId = this.targetId;
         payload.targetType = this.targetType;
         await this.$store.dispatch('chat/sendPrivateMessage', payload);
+        const message = {
+          targetId: this.targetId,
+          lastMessage: this.newMessage,
+          lastTime: new Date().toISOString()
+        };
+        await this.$store.dispatch('chat/updateMessage',message);
+        this.$emit('sent', message);
       } else {
         payload.groupId = this.chatId;
-        await this.$store.dispatch('chat/sendGroupMessage', payload);
+        
+        await this.$store.dispatch('chat/sendGroupMessage', {});
       }
       this.newMessage = '';
     },

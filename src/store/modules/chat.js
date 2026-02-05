@@ -14,6 +14,7 @@ const state = {
   isConnected: false,
   id: null, // 当前用户ID
   messageStatus: {}, // ✅ 存储消息状态 { messageId: 'sent' }
+  contactsList:[], // 联系人列表
 };
 
 const mutations = {
@@ -52,7 +53,14 @@ const mutations = {
       ...state.messageStatus,
       [messageId]: status,
     };
-  },
+  }, 
+  UPDATE_CONTACT_LAST_MSG(state, { contactId, lastMessage, lastTime }) {
+    const contact = state.contactsList.find(c => c.id === contactId)
+    if (contact) {
+      contact.last_message = lastMessage;
+      contact.last_time = lastTime;
+    }
+  }
 };
 
 const actions = {
@@ -173,6 +181,17 @@ const actions = {
       content
     });
   },
+
+  // 更新消息
+updateMessage({state, commit }, { targetId, lastMessage, lastTime }) {
+  // ✅ 异步通知后端（不影响前端响应）
+  state.socket.emit('message_update', messsage=>{
+   // ✅ 直接本地更新，不等待后端（假设后端一定会成功）
+   commit('UPDATE_CONTACT_LAST_MSG', {...messsage})
+   console.log('🚀 本地更新消息状态',messsage)
+   return Promise.resolve({ targetId, lastMessage, lastTime })
+  })
+},
 
   // 加载历史消息
   async loadHistory({ commit, rootState }, { type, id, page = 1 }) {
