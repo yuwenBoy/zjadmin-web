@@ -41,13 +41,15 @@
         <div slot="reference" class="store-status"><span class="span-line off-line"></span> 门店已下线</div>
         </el-popover> 
         <el-divider direction="vertical"></el-divider>
-        <i class="el-icon-bell right-icon"></i>
+        <i class="el-icon-bell right-icon" @click="chatClick"></i>
         <i class="el-icon-question right-icon"></i>
     </div>
 </template>
   
   <script>
   export default {
+    components: {
+    },
     data() {
       return {
         storeList:[],
@@ -68,7 +70,9 @@
      
     },
     methods: {
-    
+        chatClick(){
+            this.$emit('chatClick')
+        },
     }
   }
   </script>

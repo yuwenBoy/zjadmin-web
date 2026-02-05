@@ -50,6 +50,10 @@ export default {
       type: Number,
       required: false,
     },
+    targetType: {
+      type: Number,
+      required: false,
+    },
   },
   data() {
     return {
@@ -94,7 +98,6 @@ export default {
   methods: {
     async sendMessage() {
       if (!this.newMessage.trim()) return;
-
       const payload = {
         content: this.newMessage,
       };
@@ -102,6 +105,7 @@ export default {
       if (this.chatType === 'private') {
         payload.receiverId = this.chatId;
         payload.targetId = this.targetId;
+        payload.targetType = this.targetType;
         await this.$store.dispatch('chat/sendPrivateMessage', payload);
       } else {
         payload.groupId = this.chatId;

@@ -42,9 +42,6 @@ export default {
     if(this.userInfo.userType == 2){
         this.title ='JXXQZ商家端'; 
         this.leftLogo = this.businessLogo;
-    }else if(this.userInfo.userType == 3){
-        this.leftLogo = this.storeLogo;
-        this.title ='JXXQZ门店端'; 
     }else{
         this.leftLogo = this.logo;
     }

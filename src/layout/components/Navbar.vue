@@ -8,15 +8,14 @@
     />
 
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
-
-   
+    <platform-im-modal ref="platformChat"></platform-im-modal>
     <div class="right-menu">   
       <template v-if="device !== 'mobile'">
         <!-- <router-link to="/dataDnalyse" target="_blank" class="data">
           数据监控
         </router-link> -->
         <!-- <search id="header-search" class="right-menu-item" /> -->
-        <store-menu id="business-store-container" class="business-store-container" v-if="user.userType==2"></store-menu>  
+        <store-menu id="business-store-container" class="business-store-container" @chatClick="openChat" v-if="user.userType==2"></store-menu>  
    
         <el-tooltip content="全屏缩放" effect="dark" placement="bottom">
           <screenfull id="screenfull" class="right-menu-item hover-effect" />
@@ -58,6 +57,7 @@ import Search from "@/components/HeaderSearch";
 import Avatar from "@/assets/images/avatar.png";
 import Config from "@/settings";
 import { getFileName } from "@/utils/index";
+import PlatformImModal from "@/components/ChatWindow/PlatformImModal.vue";
 export default {  
   name: "Navbar",  
   components: {
@@ -66,17 +66,24 @@ export default {
     Hamburger,
     Screenfull,
     Search,
+    PlatformImModal,
   },
   data() {
     return {
       Avatar: Avatar,
-      dialogVisible: false,
       fileName: null,
+      chatVisible: false,
     };
   },
   mounted() {
-    this.fileName = Config.baseImgUrl + getFileName(this.user.avatar);
-
+    this.fileName = this.user.avatar &&  Config.baseImgUrl + getFileName(this.user.avatar);
+    // Electron 特有：监听来自其他窗口的“打开客服”事件
+        if (window.require) {
+        const { ipcRenderer } = window.require('electron')
+        ipcRenderer.on('open-platform-chat', () => {
+            this.openChat()
+        })
+        }
   },
   computed: {
     ...mapGetters(["sidebar", "device", "user", "baseApi"]),
@@ -112,10 +119,17 @@ export default {
         }
       });
     },
+    // 打开聊天窗口
+   async openChat() {
+        this.chatVisible = true
+       await this.$refs.platformChat.openDialog()
+    }
   },  
   watch: {
     user(oldVal, newVal) {  
-      this.fileName = "/" + newVal.avatar.split("\\")[3];
+        if(newVal.avatar){
+           this.fileName = "/" + newVal.avatar.split("\\")[3]
+        }
     },
     deep: true, // 深度监听
     immediate: true, // 第一次改变就执行

@@ -121,10 +121,10 @@ export const getUserInfo = params => {
   });
 };
 
-// 获取商家用户列表
-export const getBussinessUserList = params => {
+// 获取chat联系人列表
+export const getChatContactList = params => {
   return request({
-    url: "/user/getBussinessUserList",
+    url: "/user/getChatContactList",
     method: "get",
     data: params
   });

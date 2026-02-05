@@ -130,7 +130,7 @@ export default {
     ...mapGetters(["user"]),
   },
   mounted() {
-    this.fileName = Config.baseImgUrl +  getFileName(this.user.avatar);
+    this.fileName = this.user.avatar ? (Config.baseImgUrl +  getFileName(this.user.avatar)):'';
   },
   methods: {
     toggleShow() {
