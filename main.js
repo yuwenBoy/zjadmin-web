@@ -133,13 +133,13 @@ app.whenReady().then(() => {
       {
         label: '返回',
         click: () => {
-          mainWindow.webContents.send('nav-action', 'back');
+          mainWindow.webContents.send('nav-action', 'back')
         }
       },
       {
         label: '前进',
         click: () => {
-          mainWindow.webContents.send('nav-action', 'forward');
+          mainWindow.webContents.send('nav-action', 'forward')
         }
       },
       { label: '刷新',

@@ -121,6 +121,15 @@ export const getUserInfo = params => {
   });
 };
 
+// 获取消息历史记录
+export const getMessageHistory = params => {
+  return request({
+    url: "/messages/MessageHistory",
+    method: "post",
+    data: params
+  });
+};
+
 // 获取chat联系人列表
 export const getChatContactList = params => {
   return request({
@@ -143,5 +152,8 @@ export default {
   edit,
   del,
   UpdateUserDisabled,
-  updateUserPwd
+  updateUserPwd,
+  getMessageHistory,
+  getChatContactList,
+  
 };

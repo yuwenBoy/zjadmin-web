@@ -2,8 +2,7 @@
   <div>
     <!-- 触发按钮 -->
     <el-button type="primary" @click="openChat">打开客服消息</el-button>
-    <platform-im-modal ref="platformChat"></platform-im-modal>    
-
+    <chat-window ref="platformChat" />
    <!-- 给用户merchant(userId=191)发私信 -->
     <!-- <ChatWindow chatType="private" :chatId="199" :targetId="4"/> -->
     <!-- 聊天弹窗 -->
@@ -11,10 +10,10 @@
 </template>
 
 <script>
-import PlatformImModal from "@/components/ChatWindow/PlatformImModal.vue";
+import ChatWindow from "@/components/ChatWindow/index.vue";
 export default {
   components: {
-    PlatformImModal
+    ChatWindow
   },
   data() {
     return {

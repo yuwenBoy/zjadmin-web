@@ -310,7 +310,6 @@ computed: {
             if(this.form.dynamicAttributeList && this.form.dynamicAttributeList.length>0){
                 // 详情属性验证
                 this.form.dynamicAttributeList.forEach((item, index) => {
-                    debugger
                     // 根据 attributeType 设置验证规则
                     let triggerType = 'blur';
                     if (parseInt(item.attributeType) === 2 || parseInt(item.attributeType) === 4) {

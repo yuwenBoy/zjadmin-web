@@ -2,8 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import io from "socket.io-client";
 import { getToken } from "@/utils/storage";
-import axios from "axios";
-import { BASE_API } from '@/config/api.js';
+import { getMessageHistory,getChatContactList } from '@/api/system/user'
 import Config from "@/settings";
 Vue.use(Vuex);
 
@@ -14,7 +13,8 @@ const state = {
   isConnected: false,
   id: null, // 当前用户ID
   messageStatus: {}, // ✅ 存储消息状态 { messageId: 'sent' }
-  contactsList:[], // 联系人列表
+  contactList:[], // 左侧联系人列表
+  currentContact:{}, // 当前联系人
 };
 
 const mutations = {
@@ -54,18 +54,35 @@ const mutations = {
       [messageId]: status,
     };
   }, 
-  UPDATE_CONTACT_LAST_MSG(state, { contactId, lastMessage, lastTime }) {
-    const contact = state.contactsList.find(c => c.id === contactId)
+
+  SET_CONTACT_LIST(state, contactList) {
+    state.contactList = contactList;
+  },
+  SET_CURRENT_CONTACT(state, contact){
+    state.currentContact = contact;
+  },
+
+  UPDATE_CONTACT_LAST_MSG(state, { contactId, lastMessage, lastTime,isIncoming = false }) {
+    // ✅ 类型安全：统一转成数字
+    const targetId = Number(contactId);
+    // ✅ 查找联系人（如果找不到，自动创建）
+    let contact = state.contactList.find(c => Number(c.id) === targetId);
     if (contact) {
       contact.last_message = lastMessage;
       contact.last_time = lastTime;
+    }
+     // ✅ 根据 isIncoming 更新未读数
+      if (isIncoming) {
+        contact.unread_count = (parseInt(contact.unread_count) || 0) + 1  // ✅ 收到消息：未读+1
+      } else {
+        contact.unread_count = 0  // ✅ 自己发的：未读清零
     }
   }
 };
 
 const actions = {
   // 登录后初始化 WebSocket 连接
-  initSocket({ commit, rootState, state }) {
+  initSocket({ commit, rootState, state,dispatch }) {
     state.id = rootState.user.user.id;
     let _token = getToken();
     if (!_token) {
@@ -102,6 +119,13 @@ const actions = {
     // 监听新消息
     socket.on("new_message", message => {
       console.log("📨 收到新消息:", message); // 调试用
+     // ✅ 转成左侧列表更新
+       commit('UPDATE_CONTACT_LAST_MSG', {
+            contactId: message.senderId,
+            lastMessage:message.content,
+            lastTime:message.createdAt,
+            isIncoming: true  // 关键：表示收到消息
+        })
       setTimeout(() => {
         socket.emit('mark_as_read', { messageIds: [message.id] });
         console.log('发送已读回执'); // ✅ 必须有
@@ -113,27 +137,6 @@ const actions = {
     }, 1000);
       commit("ADD_MESSAGE", message);
     });
-
-    // // ✅ 监听新消息（关键）
-    // socket.on('new_message', (message) => {
-    //   console.log('📨 收到新消息:', message);
-
-    //   // ✅ 只添加到当前会话的消息列表
-    //   if (state.currentChat) {
-    //     const belongsToCurrentChat =
-    //       (state.currentChat.type === 'private' &&
-    //        ((message.senderId === state.currentChat.id && message.receiverId === socket.data.userId) ||
-    //         (message.receiverId === state.currentChat.id && message.senderId === socket.data.userId))) ||
-    //       (state.currentChat.type === 'group' && message.groupId === state.currentChat.id);
-
-    //     if (belongsToCurrentChat) {
-    //       commit('ADD_MESSAGE', message);
-    //     }
-    //   }
-
-    //   // ✅ 更新未读计数（如果不在当前会话）
-    // //   dispatch('handleNewMessageNotification', message);
-    // });
 
     // ✅ 监听自己发送的消息确认
     socket.on("message_sent", message => {
@@ -193,34 +196,30 @@ updateMessage({state, commit }, { targetId, lastMessage, lastTime }) {
   })
 },
 
-  // 加载历史消息
-  async loadHistory({ commit, rootState }, { type, id, page = 1 }) {
-    let _token = getToken();
-    let url = "";
-    if (type === "private") {
-      url = `${BASE_API}/messages/private?userId=${id}&page=${page}`;
-    } else {
-      url = `${BASE_API}/messages/group?groupId=${id}&page=${page}`;
+// 获取联系人列表
+async loadContacts({ commit, state }) {
+    const response = await getChatContactList()
+    commit("SET_CONTACT_LIST", response.result);
+    if(response.result.length>0){
+        commit("SET_CURRENT_CONTACT", response.result[0]);
     }
+},
 
-    const response = await axios.get(url, {
-      headers: {
-        Authorization: _token
-      }
-    });
-
-    const messages = response.data.result; //await response.json();
-    // 按时间正序排列
+  // 加载历史消息
+async loadHistory({ commit }, { type, id, page = 1 }) {
+    const response = await getMessageHistory({ userId: id, page ,type});
+    const messages = response.result; //await response.json();
+      // 按时间正序排列
     messages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     commit("SET_MESSAGES", messages);
-  },
+},
   
   /**
    * ✅ 标记消息为已送达（发送方调用）
    */
-  markAsDelivered({ state }, messageIds) {
-    state.socket.emit('mark_as_delivered', { messageIds });
-  },
+markAsDelivered({ state }, messageIds) {
+   state.socket.emit('mark_as_delivered', { messageIds });
+},
 
   /**
    * ✅ 标记消息为已读（接收方调用）

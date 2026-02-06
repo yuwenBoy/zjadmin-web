@@ -8,7 +8,7 @@
     />
 
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
-    <platform-im-modal ref="platformChat"></platform-im-modal>
+    <chat-window ref="platformChat" />
     <div class="right-menu">   
       <template v-if="device !== 'mobile'">
         <!-- <router-link to="/dataDnalyse" target="_blank" class="data">
@@ -57,7 +57,7 @@ import Search from "@/components/HeaderSearch";
 import Avatar from "@/assets/images/avatar.png";
 import Config from "@/settings";
 import { getFileName } from "@/utils/index";
-import PlatformImModal from "@/components/ChatWindow/PlatformImModal.vue";
+import ChatWindow from "@/components/ChatWindow/index.vue";
 export default {  
   name: "Navbar",  
   components: {
@@ -66,7 +66,7 @@ export default {
     Hamburger,
     Screenfull,
     Search,
-    PlatformImModal,
+    ChatWindow,
   },
   data() {
     return {
