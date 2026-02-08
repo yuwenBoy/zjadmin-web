@@ -16,6 +16,30 @@ const state = {
   contactList:[], // 左侧联系人列表
   currentContact:{}, // 当前联系人
 };
+// 安全获取 ipcRenderer 的函数
+function getIpcRenderer() {
+  // 第1层：判断是否在 Electron 环境
+  if (typeof window === 'undefined') return null
+  
+  // 第2层：判断是否有 electronAPI（preload 注入）
+  if (window.electronAPI && window.electronAPI.ipcRenderer) {
+    console.log('以获取 ipcRenderer 方式')
+    return window.electronAPI.ipcRenderer
+  }
+  
+  // 第3层：判断是否有原生 require（旧方式）
+  if (window.require) {
+    try {
+      console.log('以获取 ipcRenderer 方式')
+      return window.require('electron').ipcRenderer
+    } catch (e) {
+      console.log('获取 ipcRenderer 失败', e)
+      return null
+    }
+  }
+  
+  return null
+}
 
 const mutations = {
   SET_SOCKET(state, socket) {
@@ -136,6 +160,11 @@ const actions = {
         // });
     }, 1000);
       commit("ADD_MESSAGE", message);
+      let ipcRenderer = getIpcRenderer()
+      if(ipcRenderer){
+          console.log('发送新消息通知')
+          window.electronAPI.notify('message')
+      }
     });
 
     // ✅ 监听自己发送的消息确认

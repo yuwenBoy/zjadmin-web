@@ -21,7 +21,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setToken: (token) => ipcRenderer.invoke('set-auth-token', token),
   removeToken: () => ipcRenderer.invoke('remove-auth-token'),
   // 异步获取配置
-  getAppConfig: () => ipcRenderer.invoke('get-auth-config')
+  getAppConfig: () => ipcRenderer.invoke('get-auth-config'),
+   // ✅ 关键：添加 ipcRenderer！
+  ipcRenderer: {
+    // send: (channel, data) => ipcRenderer.send(channel, data),
+    on: (channel, func) => ipcRenderer.on(channel, (event, ...args) => func(...args)),
+    invoke: (channel, data) => ipcRenderer.invoke(channel, data),
+    removeAllListeners: (channel) => ipcRenderer.removeAllListeners(channel)
+  },
+  // 统一通知接口
+  notify: (type = 'message') => {
+    ipcRenderer.send('notify', type)
+  }
 })
 
 // 右键菜单事件处理

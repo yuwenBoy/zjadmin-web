@@ -35,8 +35,23 @@ module.exports = {
       }
     }
   },
+  pluginOptions: {
+    electronBuilder: {
+      preload: path.join(__dirname, 'preload.js'),
+      mainProcessFile: 'main.js',
+      // 额外复制 preload 文件
+      // builderOptions: {
+      //   extraResources: [
+      //     {
+      //       from: 'preload.js',
+      //       to: 'preload.js'
+      //     }
+      //   ]
+      // }
+    }
+  },
   chainWebpack(config) {
-    config.plugins.delete('preload') // TODO: need test
+    // config.plugins.delete('preload') // TODO: need test
     config.plugins.delete('prefetch') // TODO: need test
     // config.entry('main').add('babel-polyfill')
     // set svg-sprite-loader

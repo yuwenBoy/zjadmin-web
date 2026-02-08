@@ -51,7 +51,7 @@ export default {
       if (messageList) {
           messageList.scrollTop = messageList.scrollHeight;
       }
-    },
+    }, 
     // 发送成功后，本地更新左侧列表
     handleSentMessage(message) {
       // ✅ 找到当前会话，立即更新最后一条消息和时间

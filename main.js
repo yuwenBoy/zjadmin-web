@@ -1,12 +1,31 @@
 /* eslint-disable indent */
-const { app, BrowserWindow, Menu, globalShortcut, ipcMain, dialog, Tray, nativeImage } = require('electron')
+const { app, BrowserWindow, Menu, globalShortcut, ipcMain, dialog, Tray, nativeImage,shell } = require('electron')
 const { autoUpdater } = require('electron-updater')
 const path = require('path')
 const Store = require('electron-store')
+const audioPlay = require('audio-play')
+const audioLoader = require('audio-loader')
 
 const store = new Store()
 let mainWindow
-let tray
+let tray = null
+let flashTimer = null
+let normalIcon = null
+const isDev = process.env.NODE_ENV === 'development'
+
+const staticPath = isDev 
+? path.join(process.cwd(), 'public')           // 开发：项目根目录/public
+: path.join(process.resourcesPath, 'public')   // 生产：安装目录/resources/public
+
+// ✅ 声音类型映射（以后在这里加）
+const soundMap = {
+  message: 'msg.mp3',           // 普通消息
+  newOrder: 'new-order.mp3',    // 新订单："您有新的订单"
+  orderTimeout: 'timeout.mp3',  // 订单超时："订单即将超时"
+  call: 'call.mp3',             // 语音来电
+  warning: 'warning.mp3',       // 系统警告
+  success: 'success.mp3'        // 操作成功
+}
 
 // 创建窗口
 function createWindow(url = null, options = {}) {
@@ -25,11 +44,12 @@ function createWindow(url = null, options = {}) {
   })
 
   // 加载页面
-  if (process.env.NODE_ENV === 'development') {
+  if (isDev) {
+        console.log('🚀 ）开发环境，加载本地页面')
         win.loadURL(url || 'http://localhost:3500')
         win.webContents.openDevTools()
   } else {
-    win.loadURL(url || `file://${path.join(__dirname, 'dist/index.html')}`)
+    win.loadURL(url || `file://${path.join(staticPath, 'dist/index.html')}`)
   }
 
   // 窗口关闭时隐藏
@@ -44,7 +64,7 @@ function createWindow(url = null, options = {}) {
 // 创建托盘
 function createTray() {
   try {
-    const iconPath = path.join(__dirname, 'src/assets/tray-icon.png')
+    const iconPath = path.join(staticPath, 'icons','tray-icon.png')
     const icon = nativeImage.createFromPath(iconPath)
     tray = new Tray(icon.resize({ width: 16, height: 16 }))
     tray.setToolTip('商家版')
@@ -65,12 +85,61 @@ function createTray() {
     ])
     tray.setContextMenu(contextMenu)
     tray.on('click', () => {
+      stopFlash()
       mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
     })
   } catch (error) {
     console.error('托盘创建失败:', error.message)
   }
 }
+
+const emptyIcon = nativeImage.createFromPath(
+  path.join(staticPath, 'icons','tray-icon.png')
+)
+
+// 开始闪烁
+function startFlash() {
+  if (flashTimer) return
+  let toggle = false
+  flashTimer = setInterval(() => {
+    tray.setImage(toggle ? emptyIcon : normalIcon)
+    toggle = !toggle
+  }, 500)
+}
+
+// 停止闪烁
+function stopFlash() {
+  if (!flashTimer) return
+  clearInterval(flashTimer)
+  flashTimer = null
+  tray.setImage(normalIcon)
+}
+
+// 播放声音
+async function playSound(type) {
+  try {
+    const fileName = soundMap[type] || 'msg.mp3'
+    const soundPath = path.join(staticPath, 'sounds', fileName)
+    
+    console.log('🎵 播放:', type, soundPath)
+    const buffer = await audioLoader(soundPath)
+    audioPlay(buffer, { start: 0, end: 3 }) // 最多3秒
+    
+  } catch (err) {
+    console.log('❌ 播放失败，用系统蜂鸣:', err.message)
+    shell.beep()
+  }
+}
+
+// 监听通知
+ipcMain.on('notify', (event, type) => {
+  // 1. 托盘闪烁
+  startFlash()
+  setTimeout(stopFlash, 3000)
+  
+  // 2. 播放对应声音
+  playSound(type)
+})
 
 // IPC 事件监听
 ipcMain.on('window-minimize', () => mainWindow.minimize())
@@ -86,7 +155,7 @@ ipcMain.on('open-devtools', (event) => {
 // Token 管理
 ipcMain.handle('get-auth-config', () => {
   return {
-    apiBase: process.env.NODE_ENV === 'development' ? 'http://localhost:9000' : 'https://your-api.com',
+    apiBase: isDev ? 'http://localhost:9000' : 'https://your-api.com',
     token: store.get('authToken') || ''
   }
 })
@@ -174,7 +243,7 @@ app.whenReady().then(() => {
   globalShortcut.register('F12', () => mainWindow.webContents.openDevTools())
   globalShortcut.register('F5', () => mainWindow.reload())
 
-  if (process.env.NODE_ENV !== 'development') {
+  if (!isDev) {
     autoUpdater.checkForUpdatesAndNotify()
   }
 
