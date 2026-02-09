@@ -38,7 +38,7 @@ module.exports = {
   pluginOptions: {
     electronBuilder: {
       preload: path.join(__dirname, 'preload.js'),
-      mainProcessFile: 'main.js',
+      mainProcessFile: 'main.js'
       // 额外复制 preload 文件
       // builderOptions: {
       //   extraResources: [

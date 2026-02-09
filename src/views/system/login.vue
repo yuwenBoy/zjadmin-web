@@ -1,5 +1,5 @@
 <template>
-  <div class="login" :style="{backgroundImage: 'url(' + require('../../assets/images/' + bgImages) + ')'}">
+  <div class="login" :style="{backgroundImage: 'url(' + bgImages+ ')'}">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left" label-width="0px" class="login-form">
       <h3 class="title">
         JXXQZ 后台管理系统
@@ -51,7 +51,6 @@ export default {
       captchaId: '',
       cookiePass: '',
       bgImages: '',
-      bgImgList: ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg', '11.jpg', '12.jpg'],
       loginForm: {
         username: 'admin', // admin
         password: 'jxxqz123', // 123456
@@ -88,7 +87,7 @@ export default {
   },
   methods: {
     getBgImages() {
-      this.bgImages = this.bgImgList[Math.floor(Math.random() * this.bgImgList.length)]
+      this.bgImages = `https://picsum.photos/1920/1080?random=${Math.floor(Math.random() * 100)}`
     },
     async getCode() {
       this.request = false

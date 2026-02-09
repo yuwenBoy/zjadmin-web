@@ -22,7 +22,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   removeToken: () => ipcRenderer.invoke('remove-auth-token'),
   // 异步获取配置
   getAppConfig: () => ipcRenderer.invoke('get-auth-config'),
-   // ✅ 关键：添加 ipcRenderer！
   ipcRenderer: {
     // send: (channel, data) => ipcRenderer.send(channel, data),
     on: (channel, func) => ipcRenderer.on(channel, (event, ...args) => func(...args)),

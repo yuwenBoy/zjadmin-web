@@ -161,6 +161,7 @@ const actions = {
     }, 1000);
       commit("ADD_MESSAGE", message);
       let ipcRenderer = getIpcRenderer()
+      console.log('ipcRenderer',ipcRenderer)
       if(ipcRenderer){
           console.log('发送新消息通知')
           window.electronAPI.notify('message')

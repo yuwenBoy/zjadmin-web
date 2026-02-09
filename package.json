@@ -65,8 +65,6 @@
   "dependencies": {
     "@riophae/vue-treeselect": "0.4.0",
     "@vue/babel-plugin-transform-vue-jsx": "^1.2.1",
-    "audio-loader": "^1.0.3",
-    "audio-play": "^2.3.1",
     "axios": "0.18.1",
     "bcryptjs": "^2.4.3",
     "clipboard": "2.0.4",
@@ -94,6 +92,7 @@
     "screenfull": "4.2.0",
     "socket.io-client": "^4.8.3",
     "sortablejs": "1.8.4",
+    "sound-play": "^1.1.0",
     "vue": "2.6.10",
     "vue-count-to": "1.0.13",
     "vue-cropper": "0.4.9",

@@ -162,14 +162,14 @@ export default {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: #f5f5f5;
+  background-color: #F5F7FC !important;
 }
 /* 聊天头部 */
 .chat-header {
-  height: 60px;
-  padding: 0 20px;
-  background-color: #fff;
-  border-bottom: 1px solid #e6e6e6;
+  height: 40px;
+  padding: 0 14px;
+  background-color: #F5F7FC !important;
+  border-bottom: 1px solid #e5e5e5;
   display: flex;
   justify-content: space-between;
   align-items: center;
