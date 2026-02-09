@@ -40,11 +40,7 @@ const user = {
                             console.log('✅ [Login.vue] 重新获取配置确认:', config.token ? 'Token 存在' : 'Token 仍为空')
                          }
                         setToken(data.accessToken,data.refreshToken)
-                        if(userType==2){
-                            router.push('/BDashboard');
-                        }else{
-                             router.push('/');
-                        }
+                        router.push('/');
                         commit('SET_TOKEN',data.accessToken)
                         setUserInfo(data, commit)
                         // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js

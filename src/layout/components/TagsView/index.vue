@@ -43,13 +43,7 @@ export default {
   computed: {
     visitedViews() {
       return this.$store.state.tagsView.visitedViews.filter(view=>{
-        const userType = this.user.userType
-        if(userType == 1){
-          return view.name!== "BDashboard"
-        }
-        else if(userType == 2){
-          return view.name!== 'Dashboard'
-        }
+             return view.name!== "BDashboard"
       })
     },
     ...mapGetters(["user"]),

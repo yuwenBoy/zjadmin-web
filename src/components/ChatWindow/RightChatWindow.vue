@@ -8,8 +8,14 @@
               <el-button type="text" icon="el-icon-video-camera">视频</el-button>
            </div>
      </div>
+    <div v-if="noMoreHistory" class="no-more-tip">
+           已加载全部历史消息
+    </div>
     <!-- 消息列表 -->
-    <div class="message-list" ref="messageList">
+    <div class="message-list" ref="messageList" @scroll="handleMessageScroll">
+      <div v-if="isLoadingMore" class="loading-tip">
+        加载更多消息...
+      </div>
       <div v-for="(msg,index) in messages"
         :key="index"
         class="message"
@@ -52,6 +58,12 @@ export default {
   data() {
     return {
       newMessage: '',
+      pageNum: 1,
+      pageSize: 19,
+      isLoadingMore: false,
+      noMoreHistory: false,
+      scrollDebounce:null,
+      isFirstLoad: true, // 标记是否是首次加载（控制滚动）
     };
   },
   computed: {
@@ -64,31 +76,77 @@ export default {
       type: this.chatType,
       id: this.currentContact.id,
     });
-    // 加载历史消息
-     this.$store.dispatch('chat/loadHistory', {
-      type: this.chatType,
-      id: this.currentContact.id,
+
+   // 首次加载+手动滚到底部
+    this.loadHistoryMessages(1).then(() => {
+      this.$nextTick(() => {
+        this.scrollToBottom();
+        this.isFirstLoad = false;
+        // 首次加载后手动标记已读（只执行一次）
+        this.autoMarkAsRead();
+      });
     });
-    console.log('在右侧组件看下，左侧的当前联系人信息是谁',this.currentContact)
     // 如果是群聊，加入房间
     if (this.chatType === 'group') {
       this.$store.state.chat.socket.emit('join_room', `group_${this.currentContact.id}`);
     }
-
-    this.autoMarkAsRead();
-    this.scrollToBottom();
-  },
-  watch: {
-    messages() {
-      this.$nextTick(() => {
-        this.scrollToBottom();
-        setTimeout(() => {
-            this.autoMarkAsRead(); 
-        }, 500);
-      });
-    },
   },
   methods: {
+    async loadHistoryMessages(pageNum) {
+      if (this.isLoadingMore || this.noMoreHistory) return;
+       const el = this.$refs.messageList;
+      this.lastScrollTop = el.scrollTop;
+        console.log('📝 加载前滚动位置：', this.lastScrollTop);
+      this.isLoadingMore = true; // 立即标记加载中，防止重复请求
+      try {
+        const count = await this.$store.dispatch('chat/loadHistory', {
+          type: this.chatType,
+          id: this.currentContact.id,
+          page:pageNum,
+          pageSize: this.pageSize,
+        });
+
+        console.log(`第${pageNum}页加载了${count}条消息`); // 调试日志
+        
+        // ✅ 核心：只要返回数量 < 页大小，就标记“无更多”（包括返回0的情况）
+        if (count < this.pageSize) {
+          this.noMoreHistory = true;
+        }
+
+        // // 滚动位置调整（保留）
+        // if (pageNum > 1) {
+        //   this.$nextTick(() => {
+        //     const el = this.$refs.messageList;
+        //     if (el) {
+        //       el.scrollTop = el.scrollHeight - el.clientHeight - 50;
+        //     }
+        //   });
+        // }
+      } catch (error) {
+        console.error('加载失败:', error);
+      } finally {
+        this.isLoadingMore = false; // 无论成功失败，都取消加载中
+      }
+    },
+    handleMessageScroll() {
+      // ✅ 清空原有防抖定时器
+      clearTimeout(this.scrollDebounce);
+      // ✅ 防抖时间改为500ms，避免快速滚动多次触发
+      this.scrollDebounce = setTimeout(() => {
+        const el = this.$refs.messageList;
+        if (!el) return;
+
+        // ✅ 只有“滚动到顶部（<10px）+ 非加载中 + 有更多数据”才触发
+        const isAtTop = el.scrollTop <= 10;
+        const canLoad = !this.isLoadingMore && !this.noMoreHistory;
+        
+        if (isAtTop && canLoad) {
+          this.pageNum++;
+          console.log(`准备加载第${this.pageNum}页`); // 调试日志
+          this.loadHistoryMessages(this.pageNum);
+        }
+      }, 500);
+    },
     async sendMessage() {
       if (!this.newMessage.trim()) return;
       const payload = {
@@ -145,11 +203,32 @@ export default {
     messages: {
       handler() {
         this.$nextTick(() => {
-          this.scrollToBottom();
+          // ✅ 只有「首次加载」或「非分页加载」（发送新消息）时，才滚到底部
+          if (this.isFirstLoad || !this.isLoadingMore) {
+            this.scrollToBottom();
+            this.isFirstLoad = false;
+          } else {
+            // ✅ 分页加载时：恢复到加载前的滚动位置 + 微调显示新加载的内容
+            const el = this.$refs.messageList;
+            if (el && this.lastScrollTop > 0) {
+              // 新加载的内容高度 = 新scrollHeight - 旧scrollHeight
+              const newContentHeight = el.scrollHeight - (el.scrollHeight - this.lastScrollTop - el.clientHeight);
+              // 恢复滚动位置 + 偏移新加载内容的高度（避免顶到最上面）
+              el.scrollTop = this.lastScrollTop + newContentHeight - 20;
+            }
+          }
         });
       },
       deep: true,
     },
+    //  currentContact: {
+    //     handler() {
+    //       this.page = 1;
+    //       this.noMoreHistory = false;
+    //       this.loadHistoryMessages(1);
+    //     },
+    //     deep: true
+    //  }
   },
 };
 </script>
@@ -270,5 +349,18 @@ button {
 }
 .message-status.read {
   color: #1890ff; /* 已读蓝色 */
+}
+
+.loading-tip {
+  text-align: center;
+  padding: 6px 0;
+  color: #999;
+  font-size: 12px;
+}
+.no-more-tip {
+  text-align: center;
+  padding: 6px 0;
+  color: #ccc;
+  font-size: 12px;
 }
 </style>

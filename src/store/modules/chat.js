@@ -94,14 +94,23 @@ const mutations = {
     if (contact) {
       contact.last_message = lastMessage;
       contact.last_time = lastTime;
-    }
-     // ✅ 根据 isIncoming 更新未读数
+       // ✅ 根据 isIncoming 更新未读数
       if (isIncoming) {
         contact.unread_count = (parseInt(contact.unread_count) || 0) + 1  // ✅ 收到消息：未读+1
       } else {
         contact.unread_count = 0  // ✅ 自己发的：未读清零
+      }
     }
-  }
+  },
+  APPEND_HISTORY_MESSAGES(state, newMessages) {
+    console.log('📜追加历史消息',newMessages) 
+    if (newMessages) {
+         state.messages = [...newMessages, ...state.messages];
+    }
+  },
+  RESET_MESSAGES(state) {
+    state.messages = [];
+  },
 };
 
 const actions = {
@@ -237,11 +246,18 @@ async loadContacts({ commit, state }) {
 
   // 加载历史消息
 async loadHistory({ commit }, { type, id, page = 1 }) {
+  if (page === 1) {
+      commit('RESET_MESSAGES');
+    }
     const response = await getMessageHistory({ userId: id, page ,type});
-    const messages = response.result; //await response.json();
+    const messages = response.result || []; //await response.json();
       // 按时间正序排列
     messages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-    commit("SET_MESSAGES", messages);
+    // ✅ 只有返回有数据时，才追加消息（空数组不处理）
+    if (messages.length > 0) {
+      commit('APPEND_HISTORY_MESSAGES', messages);
+    }
+    return messages;
 },
   
   /**

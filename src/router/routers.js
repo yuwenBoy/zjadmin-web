@@ -4,8 +4,8 @@ import Layout from '../layout/index'
 Vue.use(Router)
 export const constantRouterMap = [{
   path: '/login',
-  meta: { title: '登录', noCache: true },
-  component: (resolve) => require(['@/views/system/login'], resolve),
+  meta: { title: '登录选择', noCache: true },
+  component: (resolve) => require(['@/views/system/loginType'], resolve),
   hidden: true
 },
 {
@@ -13,6 +13,12 @@ export const constantRouterMap = [{
     meta: { title: '登录', noCache: true },
     component: (resolve) => require(['@/views/business/login'], resolve),
     hidden: true
+},
+{
+  path: '/adminLogin',
+  meta: { title: '登录', noCache: true },
+  component: (resolve) => require(['@/views/login'], resolve),
+  hidden: true
 },
 {
     path: '/merchantApplication',
@@ -30,17 +36,6 @@ export const constantRouterMap = [{
         name: 'dashboard',
         meta: { title: '系统首页', icon: 'index', affix: true, noCache: true }
       }]
-},
-{
-    path: '/',
-    component: Layout,
-    redirect: '/BDashboard',
-    children: [{
-      path: 'BDashboard',
-      component: (resolve) => require(['@/views/business/home'], resolve),
-      name: 'BDashboard',
-      meta: { title: '商家首页', icon: 'index', affix: true, noCache: true }
-    }]
 },
 {
   path: '/404',
