@@ -120,15 +120,15 @@
                   <div
                     v-if="!scope.row.avatar"
                     style="
-                      width: 32px;
-                      height: 32px;
+                      width: 36px;
+                      height: 36px;
                       border-radius: 50%;
-                      background: #0cded4;
-                      line-height: 32px;
+                      background: rgb(24, 144, 255);
+                      line-height: 36px;
                       text-align: center;
                       font-size: 12px;
                       color: #fff;
-                      border: 1px solid #0cded4;
+                      border: 1px solid rgb(24, 144, 255);
                     "
                   >
                     <span v-if="scope.row.cname.length > 2">{{
@@ -140,17 +140,16 @@
                     <span v-else>{{ scope.row.cname }}</span>
                   </div>
                   <el-image
-                    v-else
-                    style="
-                      width: 32px;
-                      height: 32px;
+                    v-else  style="
+                      width: 36px;
+                      height: 36px;
                       border-radius: 50%;
-                      line-height: 32px;
+                      line-height: 36px;
                       text-align: center;
                     "
-                    :src="'//localhost:8080/' + scope.row.avatar.split('\\')[3]"
+                    :src="scope.row.avatar"
                     :preview-src-list="[
-                      '//localhost:8080/' + scope.row.avatar.split('\\')[3],
+                     scope.row.avatar,
                     ]"
                   ></el-image>
                 </template>

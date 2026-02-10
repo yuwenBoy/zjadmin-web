@@ -1,18 +1,11 @@
 <template>
   <div class="chat-container">
     <!-- 圆形消息按钮（替换原有普通按钮） -->
-    <div 
-      class="chat-btn" 
-      @click="openChat"
-      :class="{ 'active': chatVisible }"
-    >
+    <div  class="chat-btn"  @click="openChat" :class="{ 'active': chatVisible }">
       消息
     </div>
-
     <!-- 聊天窗口组件 -->
     <chat-window ref="platformChat" />
-    <!-- 给用户merchant(userId=191)发私信 -->
-    <!-- <ChatWindow chatType="private" :chatId="199" :targetId="4"/> -->
   </div>
 </template>
 

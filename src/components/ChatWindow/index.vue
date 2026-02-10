@@ -23,6 +23,8 @@
         <LeftSidebar ref="leftSidebar" @selectContact="selectContact" />
         <!-- 右侧聊天窗口 -->
         <RightChatWindow v-if="currentContact && currentContact.id" :key="currentContact.id" ref="messageList" @sent="handleSentMessage" chatType="private" :chatId="parseInt(currentContact.id)" :targetId="parseInt(currentContact.id)" :targetType="parseInt(currentContact.user_type)" :name="currentContact.name" />
+        <!-- 右侧聊天窗口 -->
+        <div v-else class="no-contact">开启美好的一天</div>
       </div>  
     </el-dialog>
 </template>
@@ -125,5 +127,6 @@ export default {
   display: flex;
   height: calc(100% - 68px);
   overflow: hidden;
+  .no-contact{display: flex;justify-content: center;align-items: center;height: 100%;width: 100%;font-size: 16px;color: #999;}
 }
 </style>

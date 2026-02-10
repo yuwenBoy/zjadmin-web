@@ -74,7 +74,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   height: 42px;
-  background: #13ce66;
+  background: linear-gradient(90deg, #ff6b35 0%, #f7931e 100%);
   color: white;
   -webkit-app-region: drag; /* 整个标题栏可拖拽 */
   user-select: none; /* 禁止选中文本 */

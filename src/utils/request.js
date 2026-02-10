@@ -7,7 +7,7 @@ import { getToken, setToken, getRTExp, getRefreshToken } from "@/utils/storage";
 import Config from "@/settings";
 // 改成
 import { BASE_API } from '@/config/api.js';
-var loading,
+let loading,
   isRefreshing = false,
   retryReqs = [];
 // 全局loading加载开始
@@ -70,7 +70,9 @@ service.interceptors.request.use(
       }
       config.headers["X-Store-Id"] = storeId;
     }
-    startLoading();
+    if(config.showLoading === undefined || config.showLoading){
+          startLoading();
+    }
     return config;
   },
   error => {
