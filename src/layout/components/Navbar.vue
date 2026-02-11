@@ -28,7 +28,8 @@
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-            <img :src="fileName" class="user-avatar" />
+            <!-- <img :src="avatarUrl" class="user-avatar" /> -->
+            <user-avatar :src="user.avatar" class="user-avatar" />
             <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -54,10 +55,8 @@ import StoreMenu from "@/components/StoreMenu";
 import Hamburger from "@/components/Hamburger";
 import Screenfull from "@/components/Screenfull";
 import Search from "@/components/HeaderSearch";
-import Avatar from "@/assets/images/avatar.png";
-import Config from "@/settings";
-import { getFileName } from "@/utils/index";
 import ChatWindow from "@/components/ChatWindow/index.vue";
+import userAvatar from "@/components/System/user/userAvatar.vue";
 export default {  
   name: "Navbar",  
   components: {
@@ -67,17 +66,15 @@ export default {
     Screenfull,
     Search,
     ChatWindow,
+    userAvatar,
   },
   data() {
     return {
-      Avatar: Avatar,
-      fileName: null,
       chatVisible: false,
     };
   },
   mounted() {
-    this.fileName = this.user.avatar &&  Config.baseImgUrl + getFileName(this.user.avatar);
-    // Electron 特有：监听来自其他窗口的“打开客服”事件
+       // Electron 特有：监听来自其他窗口的“打开客服”事件
         if (window.require) {
         const { ipcRenderer } = window.require('electron')
         ipcRenderer.on('open-platform-chat', () => {

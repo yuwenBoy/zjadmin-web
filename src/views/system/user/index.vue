@@ -360,7 +360,6 @@ import OPTOperation from "@crud/OPT.operation";
 import pagination from "@crud/Pagination";
 import jForm from "./userEdit";
 import { mapGetters } from "vuex";
-import Avatar from "@/assets/images/avatar.png";
 import { getToken } from "@/utils/storage";
 import { excelDownload } from "@/utils";
 
@@ -387,7 +386,6 @@ export default {
       roleList: [],
       userId: 0,
       rolesIds: [],
-      Avatar: Avatar,
       deptEntity: [],
       // 用户导入参数
       upload: {

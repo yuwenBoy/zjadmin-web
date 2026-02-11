@@ -34,7 +34,7 @@
           :class="msg.senderId === user.id ? 'sender-box' : 'receiver-box'"
           style="display: flex"
         >
-          <el-avatar :src="msg.senderAvatar" :size="40"></el-avatar>
+          <user-avatar :src="msg.senderAvatar"></user-avatar>
           <div class="userinfo">
             <span class="sender cname"
               >{{ msg.senderId === user.id ? "我" : msg.senderUsername }}（{{
@@ -79,6 +79,7 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import { formatChatTimestamp } from "@/utils";
+import userAvatar from "@/components/System/user/userAvatar.vue";
 export default {
   name: "RightChatWindow",
   props: {
@@ -87,6 +88,7 @@ export default {
       required: true,
     },
   },
+  components:{userAvatar},
   data() {
     return {
       newMessage: "",
@@ -100,7 +102,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("chat", ["messages", "currentContact"]),
+    ...mapState("chat", ["messages", "currentContact","contactList"]),
     ...mapGetters(["user"]),
   },
   mounted() {
@@ -126,7 +128,7 @@ export default {
         `group_${this.currentContact.id}`
       );
     }
-    this.autoMarkAsRead();
+    // this.autoMarkAsRead();
   },
   methods: {
     async loadHistoryMessages(pageNum) {
@@ -212,7 +214,7 @@ export default {
           lastTime: new Date().toISOString(),
         };
         await this.$store.dispatch("chat/updateMessage", message);
-        this.$emit("sent", message);
+        this.handleSentMessage(message)
       } else {
         payload.groupId = this.currentContact.id;
 
@@ -241,8 +243,7 @@ export default {
       });
     },
     getMessageStatusText(message) {
-      const status =
-        this.$store.state.chat.messageStatus[message.id] || message.status;
+      const status = this.$store.state.chat.messageStatus[message.id] || message.status;
       switch (status) {
         case 1:
           return "已发送"; // 已发送（灰色）
@@ -254,7 +255,23 @@ export default {
           return "未读"; // 未读
       }
     },
-
+     // 发送成功后，本地更新左侧列表
+    handleSentMessage(message) {
+      // ✅ 找到当前会话，立即更新最后一条消息和时间
+      const contact = this.contactList.find(c => c.id === this.currentContact.id);
+      if (contact) {
+        contact.last_message = message.lastMessage;
+        contact.last_time = message.lastTime;
+        contact.unread_count = 0; // ✅ 清空未读
+      }
+      
+      // ✅ 重新排序：把当前会话置顶
+      this.contactList.sort((a, b) => {
+        if (a.id === this.currentContact.id) return -1;
+        if (b.id === this.currentContact.id) return 1;
+        return 0;
+      });
+    },
     // 自动标记已读
     autoMarkAsRead() {
       this.$store.dispatch("chat/autoMarkAsRead");
@@ -272,14 +289,6 @@ export default {
       },
       deep: true,
     },
-    //  currentContact: {
-    //     handler() {
-    //       this.page = 1;
-    //       this.noMoreHistory = false;
-    //       this.loadHistoryMessages(1);
-    //     },
-    //     deep: true
-    //  }
   },
 };
 </script>

@@ -2,33 +2,27 @@
 <template>
   <div class="sidebar">
     <div class="tabs-nav-wrap">
-      <!-- <el-input
-        placeholder="搜索联系人"
-        prefix-icon="el-icon-search"
-        size="small"
-        clearable
-        v-model="searchKeyword"
-      /> -->
-      <el-tabs v-model="imTabActive" @tab-click="handleImTabClick(item.name)">
+      <el-tabs v-model="imTabActive" @tab-click="handleImTabClick">
         <el-tab-pane :label="item.label" :name="item.name" :key="index" v-for="(item,index) in imTabsList">
-            <div class="contact-list">
+            <div class="contact-list" v-if="contactList.length>0">
                 <div v-for="(merchant, index) in contactList"
                     :key="index"
                     class="merchant-item"
                     :class="{ active: currentContact && currentContact.id === merchant.id }"
                     @click="selectContact(merchant)">
                     <el-badge :value="merchant.unread_count" :hidden="!merchant.unread_count || parseInt(merchant.unread_count) === 0" class="badge">
-                        <el-avatar :src="merchant.avatar" size="medium" />
-                    </el-badge>
+                        <user-avatar :src="merchant.avatar" />
+                    </el-badge> 
                     <div class="contact-info">
-                    <div class="merchant-name">{{ merchant.name }}</div>
-                    <div class="last-message">{{ merchant.last_message }}</div>
+                       <div class="merchant-name">{{ user.userType == 1? merchant.name : merchant.role_name +'-'+ merchant.name }}</div>
+                       <div class="last-message">{{ merchant.last_message }}</div>
                     </div>
                     <div class="last-time">
-                    {{ formatChatTimestamp(merchant.last_time) }}
+                    {{ merchant.last_time && formatChatTimestamp(merchant.last_time) }}
                     </div>
                 </div>
              </div>
+             <div v-else class="no-contact" style="margin-top:10px;font-size:14px;">暂无会话</div>
         </el-tab-pane>
      </el-tabs>
     </div>
@@ -36,33 +30,42 @@
 </template>
 <script>
 import { formatChatTimestamp } from "@/utils";
-import { mapState,mapActions } from 'vuex';
+import { mapState,mapGetters } from 'vuex';
+import userAvatar from "@/components/System/user/userAvatar.vue";
 export default {
   name: "LeftSidebar",
   data() {
     return {
-      searchKeyword: "",
       imTabActive: "NEEDED",
-      imTabsList: [{ label: "需回复", name: "NEEDED" }, { label: "顾客消息", name: "CUSTMSG" }, { label: "平台会话", name: "JXXQZSUPER" }],
+      imTabsList: [{ label: "需回复", name: "NEEDED" }, { label: "顾客消息", name: "CUSTMSG" }, { label: "平台会话", name: "ADMIN" }],
     };
   },
+  components:{userAvatar},
   computed: {
-     ...mapState('chat', ['currentContact', 'contactList'])
+     ...mapState('chat', ['currentContact', 'contactList']),
+      ...mapGetters(["user"]),
   },
   watch: {
   },
   async mounted() {
-      await this.loadContacts();
+      if(this.user.userType == 1){
+        this.imTabsList = [{ label: "需回复", name: "NEEDED" }, { label: "顾客消息", name: "CUSTMSG" }, { label: "商家消息", name: "BUSSINESS" }]
+      } 
+      await this.$store.dispatch("chat/loadContacts", {
+        type: this.imTabActive,
+      })
   },
   methods: {
     formatChatTimestamp,
-     ...mapActions('chat', ['loadContacts']),  
     // 选择联系人
     selectContact(contact) {
       this.$emit("selectContact", contact);
     },
-    handleImTabClick(name){
-        this.imTabActive = name;
+   async handleImTabClick(tab, event){
+        this.imTabActive = tab.name;
+        await this.$store.dispatch("chat/loadContacts", {
+        type: this.imTabActive,
+      })
     },
   },
 };

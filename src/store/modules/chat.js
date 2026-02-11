@@ -9,14 +9,13 @@ Vue.use(Vuex);
 const state = {
   socket: null,
   messages: [], // 当前会话消息
-  currentChat: null, // { type: 'private'|'group', id: number }
+  currentChat: null, // 当前会话对象
   isConnected: false,
   id: null, // 当前用户ID
   messageStatus: {}, // ✅ 存储消息状态 { messageId: 'sent' }
   contactList: [], // 左侧联系人列表
   currentContact: {} // 当前联系人
 };
-// 安全获取 ipcRenderer 的函数
 function getIpcRenderer() {
   // 第1层：判断是否在 Electron 环境
   if (typeof window === "undefined") return null;
@@ -37,7 +36,6 @@ function getIpcRenderer() {
       return null;
     }
   }
-
   return null;
 }
 
@@ -86,10 +84,7 @@ const mutations = {
     state.currentContact = contact;
   },
 
-  UPDATE_CONTACT_LAST_MSG(
-    state,
-    { contactId, lastMessage, lastTime, isIncoming = false }
-  ) {
+  UPDATE_CONTACT_LAST_MSG(state,{ contactId, lastMessage, lastTime, isIncoming = false }) {
     // ✅ 类型安全：统一转成数字
     const targetId = Number(contactId);
     // ✅ 查找联系人（如果找不到，自动创建）
@@ -99,7 +94,11 @@ const mutations = {
       contact.last_time = lastTime;
       // ✅ 根据 isIncoming 更新未读数
       if (isIncoming) {
-        contact.unread_count = (parseInt(contact.unread_count) || 0) + 1; // ✅ 收到消息：未读+1
+        // contact.unread_count = (parseInt(contact.unread_count) || 0) + 1; // ✅ 收到消息：未读+1
+        const isCurrentChat = state.currentContact && Number(state.currentContact.id) === parseInt(targetId);
+        if (!isCurrentChat) {
+            contact.unread_count = (parseInt(contact.unread_count) || 0) + 1;
+        }
       } else {
         contact.unread_count = 0; // ✅ 自己发的：未读清零
       }
@@ -162,29 +161,28 @@ const actions = {
         lastTime: message.createdAt,
         isIncoming: true // 关键：表示收到消息
       });
-      setTimeout(() => {
-        socket.emit("mark_as_read", { messageIds: [message.id] });
-        console.log("发送已读回执"); // ✅ 必须有
-        //  // ✅ 标记为已送达
-        // commit('SET_MESSAGE_STATUS', {
-        //     messageId: message.id,
-        //     status: 1
-        // });
-      }, 1000);
-      commit("ADD_MESSAGE", message);
-      let ipcRenderer = getIpcRenderer();
-      console.log("ipcRenderer", ipcRenderer);
-      if (ipcRenderer) {
-        console.log("发送新消息通知");
-        window.electronAPI.notify("message");
-      }
+       commit("ADD_MESSAGE", message);
+        // ✅ 关键：如果是当前会话，立即发送已读回执
+        const isCurrentChat = state.currentContact &&  Number(state.currentContact.id) === message.senderId;
+        if (isCurrentChat) {
+          setTimeout(()=>{
+              // 当前会话：立即标记已读
+            socket.emit("mark_as_read", { messageIds: [message.id] });
+            console.log("当前会话，自动发送已读回执:", message.id);
+          }, 1000)
+        }else{
+            let ipcRenderer = getIpcRenderer();
+            if (ipcRenderer) {
+                window.electronAPI.notify("message");
+            }
+        }
     });
 
     // ✅ 监听自己发送的消息确认
     socket.on("message_sent", message => {
       console.log("📤 消息发送确认:", message);
       if (state.currentChat) {
-        commit("ADD_MESSAGE", message);
+          commit("ADD_MESSAGE", message);
       }
     });
 
@@ -242,8 +240,8 @@ const actions = {
   },
 
   // 获取联系人列表
-  async loadContacts({ commit, state }) {
-    const response = await getChatContactList();
+  async loadContacts({ commit, state },{type}) {
+    const response = await getChatContactList({type});
     commit("SET_CONTACT_LIST", response.result);
     // if (response.result.length > 0) {
     //   commit("SET_CURRENT_CONTACT", response.result[0]);

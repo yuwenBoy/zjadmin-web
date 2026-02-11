@@ -14,7 +14,7 @@ export const getMessageHistory = params => {
 export const getChatContactList = params => {
   return request({
     url: "/user/getChatContactList",
-    method: "get",
+    method: "post",
     data: params
   });
 };

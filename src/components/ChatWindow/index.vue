@@ -20,9 +20,9 @@
       </slot>
       <div class="im-main-list">
         <!-- 左侧联系人列表 -->
-        <LeftSidebar ref="leftSidebar" @selectContact="selectContact" />
+        <LeftSidebar ref="leftSidebar" @selectContact="switchCurrentContact" />
         <!-- 右侧聊天窗口 -->
-        <RightChatWindow v-if="currentContact && currentContact.id" :key="currentContact.id" ref="messageList" @sent="handleSentMessage" chatType="private" :chatId="parseInt(currentContact.id)" :targetId="parseInt(currentContact.id)" :targetType="parseInt(currentContact.user_type)" :name="currentContact.name" />
+        <RightChatWindow v-if="currentContact && currentContact.id" :key="currentContact.id" ref="messageList" chatType="private" :chatId="parseInt(currentContact.id)" :targetId="parseInt(currentContact.id)" :targetType="parseInt(currentContact.user_type)" :name="currentContact.name" />
         <!-- 右侧聊天窗口 -->
         <div v-else class="no-contact">开启美好的一天</div>
       </div>  
@@ -32,7 +32,7 @@
 <script>
 import RightChatWindow from './RightChatWindow.vue';
 import LeftSidebar from './LeftSidebar.vue';
-import { mapState,mapActions } from 'vuex';
+import { mapState } from 'vuex';
 export default {
   components: {
     RightChatWindow,
@@ -44,49 +44,51 @@ export default {
     };
   },
   computed: {
-     ...mapState('chat', ['contactList', 'currentContact']),
+     ...mapState('chat', ['currentContact']),
   },
   watch: {
   },
   mounted() {
   },
   methods: {
-  ...mapActions('chat', ['loadContacts']),  
     // 打开弹窗
    async openDialog() {
       this.dialogVisible = true;
     },
-    // 选择联系人
-    selectContact(contact) {
+    // 关闭弹窗
+    closeDialog() {
+        this.dialogVisible = false;
+        this.$store.commit('chat/SET_CURRENT_CONTACT', {})
+        console.log('关闭弹窗');
+        // 看下currentContact里的数据
+        console.log('看下currentContact里的数据', this.$store.state.chat.currentContact);
+     },
+    // 切换当前聊天对象
+    switchCurrentContact(contact) {
       this.$store.commit('chat/SET_CURRENT_CONTACT', contact)
-      contact.unread_count = 0;
-      this.$nextTick(() => {
-        this.scrollToBottom();
-      });
-    },
-    // 滚动到底部
-    scrollToBottom() {
-      const messageList = this.$refs.messageList;
-      if (messageList) {
-          messageList.scrollTop = messageList.scrollHeight;
-      }
-    }, 
-    // 发送成功后，本地更新左侧列表
-    handleSentMessage(message) {
-      // ✅ 找到当前会话，立即更新最后一条消息和时间
-      const contact = this.contactList.find(c => c.id === this.currentContact.id);
-      if (contact) {
-        contact.last_message = message.lastMessage;
-        contact.last_time = message.lastTime;
-        contact.unread_count = 0; // ✅ 清空未读
-      }
-      
-      // ✅ 重新排序：把当前会话置顶
-      this.contactList.sort((a, b) => {
-        if (a.id === this.currentContact.id) return -1;
-        if (b.id === this.currentContact.id) return 1;
-        return 0;
-      });
+       // 2. 如果有未读消息，发送已读回执（关键！）
+      if (contact.unread_count > 0) {
+        // 获取该联系人的未读消息ID列表
+        const unreadMessages = this.$store.state.chat.messages.filter(m => m.senderId == contact.id && m.status == 0)
+        if (unreadMessages.length > 0) {
+        const messageIds = unreadMessages.map(m => m.id);
+        
+        // 发送已读回执到服务端
+        this.$store.state.chat.socket.emit('mark_as_read', { messageIds });
+             console.log('发送已读回执:', messageIds);
+        }
+        
+        // 3. 本地清零未读数
+        contact.unread_count = 0;
+        this.$store.commit('chat/markAsRead', contact.id);
+    }
+    
+    // 4. 滚动到底部（使用RightChatWindow的方法）
+    this.$nextTick(() => {
+        if (this.$refs.messageList && this.$refs.messageList.scrollToBottom) {
+        this.$refs.messageList.scrollToBottom(true); // 强制滚动
+        }
+    });
     },
   }
 };
@@ -127,6 +129,6 @@ export default {
   display: flex;
   height: calc(100% - 68px);
   overflow: hidden;
-  .no-contact{display: flex;justify-content: center;align-items: center;height: 100%;width: 100%;font-size: 16px;color: #999;}
 }
+.no-contact{display: flex;justify-content: center;align-items: center;height: 100%;width: 100%;font-size: 16px;color: #999;}
 </style>
