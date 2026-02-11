@@ -4,6 +4,7 @@ import io from "socket.io-client";
 import { getToken } from "@/utils/storage";
 import { getMessageHistory, getChatContactList } from "@/api/im";
 import Config from "@/settings";
+import Avatar from "@/assets/images/avatar.png";
 Vue.use(Vuex);
 
 const state = {
@@ -51,7 +52,7 @@ const mutations = {
     state.messages = []; // 切换会话时清空消息
   },
   ADD_MESSAGE(state, message) {
-    message.senderAvatar = Config.baseImgUrl + message.senderAvatar;
+    message.senderAvatar = message.senderAvatar ? Config.baseUrl + message.senderAvatar :Avatar;
     state.messages.push(message);
   },
   SET_MESSAGES(state, messages) {
@@ -83,29 +84,37 @@ const mutations = {
   SET_CURRENT_CONTACT(state, contact) {
     state.currentContact = contact;
   },
-
-  UPDATE_CONTACT_LAST_MSG(state,{ contactId, lastMessage, lastTime, isIncoming = false }) {
+  UPDATE_CONTACT_LAST_MSG(state,{ contactId, lastMessage, lastTime, isIncoming = false,senderName, senderAvatar }) {
     // ✅ 类型安全：统一转成数字
     const targetId = Number(contactId);
-    // ✅ 查找联系人（如果找不到，自动创建）
+      debugger
     let contact = state.contactList.find(c => Number(c.id) === targetId);
+    const isCurrentChat = state.currentContact && Number(state.currentContact.id) === parseInt(targetId);
+    // ✅ 查找联系人（如果找不到，自动创建）
     if (contact) {
       contact.last_message = lastMessage;
       contact.last_time = lastTime;
       // ✅ 根据 isIncoming 更新未读数
       if (isIncoming) {
-        // contact.unread_count = (parseInt(contact.unread_count) || 0) + 1; // ✅ 收到消息：未读+1
-        const isCurrentChat = state.currentContact && Number(state.currentContact.id) === parseInt(targetId);
         if (!isCurrentChat) {
             contact.unread_count = (parseInt(contact.unread_count) || 0) + 1;
         }
       } else {
         contact.unread_count = 0; // ✅ 自己发的：未读清零
       }
+    }else{
+        contact = {
+        id: targetId,
+        name: senderName || `用户${targetId}`,
+        avatar: senderAvatar || '',
+        last_message: lastMessage,
+        last_time: lastTime,
+        unread_count: (isIncoming && !isCurrentChat) ? 1 : 0
+      };
+      state.contactList.push(contact);
     }
   },
   APPEND_HISTORY_MESSAGES(state, newMessages) {
-    console.log("📜追加历史消息", newMessages);
     if (newMessages) {
       state.messages = [...newMessages, ...state.messages];
     }
@@ -159,7 +168,9 @@ const actions = {
         contactId: message.senderId,
         lastMessage: message.content,
         lastTime: message.createdAt,
-        isIncoming: true // 关键：表示收到消息
+        isIncoming: true, // 关键：表示收到消息
+        senderName: message.senderUsername,
+        senderAvatar: message.senderAvatar
       });
        commit("ADD_MESSAGE", message);
         // ✅ 关键：如果是当前会话，立即发送已读回执
@@ -181,6 +192,10 @@ const actions = {
     // ✅ 监听自己发送的消息确认
     socket.on("message_sent", message => {
       console.log("📤 消息发送确认:", message);
+      setTimeout(()=>{
+         socket.emit("mark_as_delivered", { messageIds: [message.id] });
+         console.log("自动发送已送达回执:", message.id);
+      }, 1000)
       if (state.currentChat) {
           commit("ADD_MESSAGE", message);
       }
@@ -233,6 +248,7 @@ const actions = {
     // ✅ 异步通知后端（不影响前端响应）
     state.socket.emit("message_update", messsage => {
       // ✅ 直接本地更新，不等待后端（假设后端一定会成功）
+      debugger
       commit("UPDATE_CONTACT_LAST_MSG", { ...messsage });
       console.log("🚀 本地更新消息状态", messsage);
       return Promise.resolve({ targetId, lastMessage, lastTime });
@@ -264,12 +280,12 @@ const actions = {
     return messages;
   },
 
-  /**
-   * ✅ 标记消息为已送达（发送方调用）
-   */
-  markAsDelivered({ state }, messageIds) {
-    state.socket.emit("mark_as_delivered", { messageIds });
-  },
+  // /**
+  //  * ✅ 标记消息为已送达（发送方调用）
+  //  */
+  // markAsDelivered({ state }, messageIds) {
+  //   state.socket.emit("mark_as_delivered", { messageIds });
+  // },
 
   /**
    * ✅ 标记消息为已读（接收方调用）

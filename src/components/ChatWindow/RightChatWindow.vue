@@ -246,7 +246,7 @@ export default {
       const status = this.$store.state.chat.messageStatus[message.id] || message.status;
       switch (status) {
         case 1:
-          return "已发送"; // 已发送（灰色）
+          return "已送达"; // 已送达
         case 2:
           return "已读"; // 已送达（灰色双勾）
         case 3:
@@ -262,7 +262,7 @@ export default {
       if (contact) {
         contact.last_message = message.lastMessage;
         contact.last_time = message.lastTime;
-        contact.unread_count = 0; // ✅ 清空未读
+        contact.unread_count = 0 ; // ✅ 清空未读
       }
       
       // ✅ 重新排序：把当前会话置顶

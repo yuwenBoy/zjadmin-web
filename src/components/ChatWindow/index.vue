@@ -14,13 +14,13 @@
                  </div> 
                 <div class="right-btn">
                     <i class="el-icon el-icon-setting"></i>
-                    <i class="el-icon el-icon-close" @click="dialogVisible=false"></i>
+                    <i class="el-icon el-icon-close" @click="closeDialog"></i>
                 </div>  
              </div> 
       </slot>
       <div class="im-main-list">
         <!-- 左侧联系人列表 -->
-        <LeftSidebar ref="leftSidebar" @selectContact="switchCurrentContact" />
+        <LeftSidebar ref="leftSidebar" @selectContact="selectContact" />
         <!-- 右侧聊天窗口 -->
         <RightChatWindow v-if="currentContact && currentContact.id" :key="currentContact.id" ref="messageList" chatType="private" :chatId="parseInt(currentContact.id)" :targetId="parseInt(currentContact.id)" :targetType="parseInt(currentContact.user_type)" :name="currentContact.name" />
         <!-- 右侧聊天窗口 -->
@@ -64,7 +64,8 @@ export default {
         console.log('看下currentContact里的数据', this.$store.state.chat.currentContact);
      },
     // 切换当前聊天对象
-    switchCurrentContact(contact) {
+    selectContact(contact) {
+      console.log('切换当前聊天对象', contact);
       this.$store.commit('chat/SET_CURRENT_CONTACT', contact)
        // 2. 如果有未读消息，发送已读回执（关键！）
       if (contact.unread_count > 0) {
@@ -86,9 +87,9 @@ export default {
     // 4. 滚动到底部（使用RightChatWindow的方法）
     this.$nextTick(() => {
         if (this.$refs.messageList && this.$refs.messageList.scrollToBottom) {
-        this.$refs.messageList.scrollToBottom(true); // 强制滚动
+          this.$refs.messageList.scrollToBottom(true); // 强制滚动
         }
-    });
+      });
     },
   }
 };
