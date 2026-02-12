@@ -354,12 +354,14 @@ export default {
   border-radius: 8px;
   max-width: 80%;
   line-height: 24px;
+  border-bottom-left-radius: 4px;
   display: inline-block;
 }
 .message-sent .message-content {
-  background: #1890ff;
-  color: white;
-  text-align: left;
+    margin-left: auto;
+    background: linear-gradient(135deg, #409EFF 0%, #1677FF 100%);
+    color: #FFFFFF;
+    border-bottom-right-radius: 4px;
 }
 .message .receiver-box,
 .sender-box {
