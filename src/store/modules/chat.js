@@ -52,7 +52,7 @@ const mutations = {
     state.messages = []; // 切换会话时清空消息
   },
   ADD_MESSAGE(state, message) {
-    message.senderAvatar = message.senderAvatar ? Config.baseUrl + message.senderAvatar :Avatar;
+    message.senderAvatar = message.senderAvatar ? Config.baseImgUrl + message.senderAvatar :Avatar;
     state.messages.push(message);
   },
   SET_MESSAGES(state, messages) {
@@ -106,7 +106,7 @@ const mutations = {
         contact = {
         id: targetId,
         name: senderName || `用户${targetId}`,
-        avatar: senderAvatar || '',
+        avatar: senderAvatar ? Config.baseImgUrl + senderAvatar : Avatar,
         last_message: lastMessage,
         last_time: lastTime,
         unread_count: (isIncoming && !isCurrentChat) ? 1 : 0
@@ -169,7 +169,7 @@ const actions = {
         lastMessage: message.content,
         lastTime: message.createdAt,
         isIncoming: true, // 关键：表示收到消息
-        senderName: message.senderUsername,
+        senderName: message.senderCname,
         senderAvatar: message.senderAvatar
       });
        commit("ADD_MESSAGE", message);

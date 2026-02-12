@@ -73,15 +73,12 @@ export default {
         const unreadMessages = this.$store.state.chat.messages.filter(m => m.senderId == contact.id && m.status == 0)
         if (unreadMessages.length > 0) {
         const messageIds = unreadMessages.map(m => m.id);
-        
+        // 3. 本地清零未读数
+        contact.unread_count = 0;
         // 发送已读回执到服务端
         this.$store.state.chat.socket.emit('mark_as_read', { messageIds });
              console.log('发送已读回执:', messageIds);
         }
-        
-        // 3. 本地清零未读数
-        contact.unread_count = 0;
-        this.$store.commit('chat/markAsRead', contact.id);
     }
     
     // 4. 滚动到底部（使用RightChatWindow的方法）

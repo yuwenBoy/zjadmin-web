@@ -14,7 +14,7 @@
                         <user-avatar :src="merchant.avatar" />
                     </el-badge> 
                     <div class="contact-info">
-                       <div class="merchant-name">{{ user.userType == 1? merchant.name : merchant.role_name +'-'+ merchant.name }}</div>
+                       <div class="merchant-name">{{ user.userType == 1? merchant.name : merchant.role_name ? (merchant.role_name  +'-'+ merchant.name): merchant.name }}</div>
                        <div class="last-message">{{ merchant.last_message }}</div>
                     </div>
                     <div class="last-time">
