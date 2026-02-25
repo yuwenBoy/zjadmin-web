@@ -18,9 +18,19 @@ import request from "@/utils/request";
   /**
    * 修改门店营业时间
    */
-  export function updateShopServingTime(){
+  export function updateShopServingTime(params){
     return request({
         url:'/hours/updateShopServingTime',
+        method:'post',
+        data:params,
+    })
+  }
+
+
+  // 查询门店营业时间
+  export function queryShopServingTime(params){
+    return request({
+        url:'/hours/queryShopServingTime',
         method:'post',
         data:params,
     })
@@ -54,4 +64,5 @@ import request from "@/utils/request";
     del,
     getStoreList,
     updateShopServingTime,
+    queryShopServingTime,
   };

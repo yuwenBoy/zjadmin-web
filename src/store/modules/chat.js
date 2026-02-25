@@ -87,7 +87,6 @@ const mutations = {
   UPDATE_CONTACT_LAST_MSG(state,{ contactId, lastMessage, lastTime, isIncoming = false,senderName, senderAvatar }) {
     // ✅ 类型安全：统一转成数字
     const targetId = Number(contactId);
-      debugger
     let contact = state.contactList.find(c => Number(c.id) === targetId);
     const isCurrentChat = state.currentContact && Number(state.currentContact.id) === parseInt(targetId);
     // ✅ 查找联系人（如果找不到，自动创建）
@@ -248,7 +247,6 @@ const actions = {
     // ✅ 异步通知后端（不影响前端响应）
     state.socket.emit("message_update", messsage => {
       // ✅ 直接本地更新，不等待后端（假设后端一定会成功）
-      debugger
       commit("UPDATE_CONTACT_LAST_MSG", { ...messsage });
       console.log("🚀 本地更新消息状态", messsage);
       return Promise.resolve({ targetId, lastMessage, lastTime });
