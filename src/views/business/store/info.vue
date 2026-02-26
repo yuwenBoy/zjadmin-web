@@ -1,17 +1,13 @@
 <template>
-  <el-row :gutter="24" style="margin-top: 15px; margin-left: 15px">
-    <el-col :span="14">
-      <el-tabs v-model="activeName" @tab-click="handleClick" style="background: #ffffff">
+      <div style="width:70%;margin:10px auto;">
+        <el-tabs v-model="activeName" @tab-click="handleClick" style="background: #ffffff">
         <el-tab-pane label="基本信息" name="first">
           <div class="storeInfo">
             <div class="storeWapper">
               <div class="storeWapper-Item">
                 <div class="text">门店头像</div>
                 <div class="describe">
-                  <el-image
-                    style="width: 45px; height: 45px"
-                    src="http://image.jxxqz.com:3001/f4585fd8169142ac8394d5540910acf5.jpeg"
-                  ></el-image>
+                  <el-image style="width: 45px; height: 45px" src="http://image.jxxqz.com:3001/f4585fd8169142ac8394d5540910acf5.jpeg"></el-image>
                 </div>
               </div>
               <div class="operation">上传</div>
@@ -80,35 +76,15 @@
             <div class="storeWapper">
               <div class="storeWapper-Item">
                 <div class="text">营业时间</div>
-                <div v-if="flexibleServingTimeStrList.length==0 && isEditBusinessTime">
-                  <el-form
-                    ref="form"
-                    :model="form"
-                    size="mini"
-                    label-width="70px"
-                  >
-                    <div
-                      class="hours-bg"
-                      v-for="(item, index) in form.normalServingTimeList"
-                      :key="index"
-                    >
+                <div v-if="isEditBusinessTime">
+                  <el-form ref="form" :model="form" size="mini" label-width="70px">
+                    <div class="hours-bg" v-for="(item, index) in form.normalServingTimeList" :key="index">
                       <el-form-item label="营业日" prop="storeName">
-                        <el-checkbox
-                          size="mini"
-                          v-for="ditem in weekList"
-                          v-model="item.weeks"
-                          :key="ditem.value"
-                          :label="ditem.name"
-                          :disabled="ditem.disabled"
-                          border
-                        >
-                        </el-checkbox>
+                            <el-checkbox-group  v-model="item.weeks">
+                                <el-checkbox size="mini" v-for="ditem in weekList" :key="ditem.value" :label="ditem.value" border>{{ ditem.name }}</el-checkbox>
+                            </el-checkbox-group>
                       </el-form-item>
-                      <el-form-item
-                        label="营业时段"
-                        v-for="(hItem, hindex) in item.buinessHours"
-                        :key="hindex"
-                      >
+                      <el-form-item label="营业时段" v-for="(hItem, hindex) in item.buinessHours" :key="hindex">
                         <el-time-picker
                           size="mini"
                           v-model="hItem.startTime"
@@ -128,27 +104,15 @@
                           value-format="HH:mm"
                         ></el-time-picker>
                         <el-link v-show="item.buinessHours.length > 1">
-                          <i
-                            class="el-icon-delete"
-                            @click="removeBuinessHours(index, hindex)"
-                          ></i
-                        ></el-link>
+                          <i class="el-icon-delete" @click="removeBuinessHours(index, hindex)"></i></el-link>
                       </el-form-item>
                       <el-link
                         style="padding-left: 65px"
                         :underline="false"
                         type="primary"
                         icon="el-icon-plus"
-                        v-show="
-                          item.buinessHours.length === maxBuinessHours
-                            ? false
-                            : true
-                        "
-                        @click="addBuinessHours(index)"
-                        >新增营业时段({{ item.buinessHours.length }}/{{
-                          maxBuinessHours
-                        }})</el-link
-                      >
+                        v-show="item.buinessHours.length === maxBuinessHours ? false : true"
+                        @click="addBuinessHours(index)">新增营业时段({{ item.buinessHours.length }}/{{maxBuinessHours}})</el-link>
                     </div>
                     <footer>
                       <div style="margin-bottom: 16px">
@@ -168,7 +132,7 @@
                 </div>
                 <div class="describe" v-else v-html="flexibleServingTimeStrList.toString().replaceAll(',',',<br />') || '未设置'"></div>
               </div>
-              <div class="operation" @click="editBusinessTime">
+              <div class="operation" v-if="!isEditBusinessTime" @click="editBusinessTime">
                 修改
               </div>
             </div>
@@ -191,8 +155,7 @@
         <el-tab-pane label="资质认证" name="third"> 123123131 </el-tab-pane>
         <el-tab-pane label="调控记录" name="fourth"> 123123313 </el-tab-pane>
       </el-tabs>
-    </el-col>
-  </el-row>
+      </div>
 </template>
   <script>
 import { updateShopServingTime,queryShopServingTime } from "@/api/business/store"; // 引入接口方法
@@ -206,19 +169,18 @@ export default {
       normalServingTimeListMax: 7, // 最大营业日7个工作日
       saveNormalServingTimeListDisabled: false, // 保存按钮是否禁用
       isShowAddNormalServingTimeList: true, // 是否显示新增营业日按钮
-      weekList: [
-        { value: 1, name: "周一" },
+      weekList:[ { value: 1, name: "周一" },
         { value: 2, name: "周二" },
         { value: 3, name: "周三" },
         { value: 4, name: "周四" },
         { value: 5, name: "周五" },
         { value: 6, name: "周六" },
-        { value: 7, name: "周日" },
-      ],
+        { value: 0, name: "周日" }], 
       form: {
         storeId: null,
         normalServingTimeList: [
-          { weeks: [], buinessHours: [{ startTime: "", endTime: "" }] },
+        { weeks: [
+       ], buinessHours: [{ startTime: "", endTime: "" }] },
         ],
       },
       flexibleServingTimeStrList:[],
@@ -228,11 +190,13 @@ export default {
     this.requestStore = this.$store.state.user.user.business.store.find(
       (t) => t.isDefault == 1
     );
-    console.log(this.requestStore);
+    this.activeName = this.$route.query.name || "first";
+    if(this.activeName === 'second'){
+       this.queryShopServingTime()
+    }
   },
   methods: {
     handleClick(tab, event) {
-      console.log(tab, event);
       if(tab.name === 'second'){
         this.queryShopServingTime()
       }
@@ -268,15 +232,15 @@ export default {
      */
     editBusinessTime() {
       this.isEditBusinessTime = true;
-      this.flexibleServingTimeStrList = []
     },
+    // 查询门店营业时间
     async queryShopServingTime(){
       const response = await queryShopServingTime()
-      if(response.result){
+      if(response.result.flexibleServingTimeStrList.length> 0 && response.result.normalServingTimeList.length > 0){
         this.flexibleServingTimeStrList = response.result.flexibleServingTimeStrList
         this.form.normalServingTimeList = response.result.normalServingTimeList
       }
-      this.isEditBusinessTime = true;
+      this.isEditBusinessTime = false
     },
     /***
      多个营业日限制不能重复选中
@@ -311,44 +275,45 @@ export default {
      * @param form
      */
     saveNormalServingTime(form) {
-      console.log(this.form);
-      debugger;
       this.$refs[form].validate((valid) => {
         if (valid) {
           updateShopServingTime(this.form)
-            .then((response) => {})
+            .then((response) => {
+                this.$msg.success("提交成功")
+                this.isEditBusinessTime = false
+                this.queryShopServingTime()
+            })
             .catch((error) => {
-              console.error("Error submitting form:", error);
-              this.$msg.error("操作失败，原因！" + error.msg);
-            });
+              console.error("Error submitting form:", error)
+              this.$msg.error("操作失败，原因！" + error.msg)
+            })
         }
-      });
+      })
     },
   },
   watch: {
-    normalServingTimeList: {
-      deep: true,
-      handler(newVal,oldVal) {
-        console.log("监听normalServingTimeList");
-        if (newVal.normalServingTimeList.length == 7) {
-          this.isShowAddNormalServingTimeList = false; // 不显示
-        } else {
-          this.isShowAddNormalServingTimeList = true; // 显示
-        }
-        newVal.normalServingTimeList.forEach((item) => {
-          if (item.weeks.length === 0 || item.buinessHours.filter((t) => !t.startTime || !t.endTime).length === 0) 
-          {
-            this.saveNormalServingTimeListDisabled = true;
-          } else {
-            this.saveNormalServingTimeListDisabled = false;
-            if (item.weeks.length === 7) {
-              this.isShowAddNormalServingTimeList = false; // 不显示
-            }
-          }
-        });
-        this.isDisabled();
-      },
-    },
+    // normalServingTimeList: {
+    //   deep: true,
+    //   handler(newVal,oldVal) {
+    //     if (newVal.normalServingTimeList.length == 7) {
+    //       this.isShowAddNormalServingTimeList = false; // 不显示
+    //     } else {
+    //       this.isShowAddNormalServingTimeList = true; // 显示
+    //     }
+    //     newVal.normalServingTimeList.forEach((item) => {
+    //       if (item.weeks.length === 0 || item.buinessHours.filter((t) => !t.startTime || !t.endTime).length === 0) 
+    //       {
+    //         this.saveNormalServingTimeListDisabled = true;
+    //       } else {
+    //         this.saveNormalServingTimeListDisabled = false;
+    //         if (item.weeks.length === 7) {
+    //           this.isShowAddNormalServingTimeList = false; // 不显示
+    //         }
+    //       }
+    //     });
+    //     this.isDisabled();
+    //   },
+    // },
   },
 };
 </script>

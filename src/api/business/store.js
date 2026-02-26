@@ -35,6 +35,16 @@ import request from "@/utils/request";
         data:params,
     })
   }
+
+  // 查询门店营业状态
+  export function queryShopStatusViewDetail(params){
+    return request({
+        url:'/hours/queryShopStatusViewDetail',
+        method:'post',
+        data:params,
+        showLoading:false,
+    })
+  }
   
   export function del(params) {
     return request({
