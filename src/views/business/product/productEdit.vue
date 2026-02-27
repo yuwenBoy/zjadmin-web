@@ -354,9 +354,10 @@ async created(){
     },
     /** 获取经营范围类目列表 */ 
    async getProductCategoryList(){
-       const {code,message,result,success} = await fetchMainProductCategories()
-       let data = this.handleTree(result,'id','parent_id')
-       this.productCategoryList = data
+       const {result} = await fetchMainProductCategories()
+       const that = this
+       let data = that.handleTree(result,'id','parent_id')
+       that.productCategoryList = data
     },
    // 标签点击事件处理函数
    handleTabClick(tab, event) {
