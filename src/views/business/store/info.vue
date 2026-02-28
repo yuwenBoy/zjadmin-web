@@ -17,7 +17,7 @@
                 <div class="text">门店名称</div>
                 <div class="describe">{{ requestStore.storeName }}</div>
               </div>
-              <div class="operation">申请修改</div>
+              <div class="operation" @click="modifyShopEdit">申请修改</div>
             </div>
             <div class="storeWapper">
               <div class="storeWapper-Item">
@@ -200,6 +200,9 @@ export default {
       if(tab.name === 'second'){
         this.queryShopServingTime()
       }
+    },
+    modifyShopEdit(){
+        this.$router.push({name:'modifyShopEdit'})
     },
 
     /***

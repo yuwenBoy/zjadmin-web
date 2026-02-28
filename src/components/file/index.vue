@@ -15,13 +15,15 @@
         multiple
         :file-list="fileList"
       >
-        <i v-for="file in [{}]" :key="file.uid || 'placeholder'" class="el-icon-plus pic-uploader-icon"></i>
-        <div v-for="(file, index) in fileList" :key="file.uid" class="pic-list-item">
+        <div v-for="(file, index) in fileList" :key="file.uid" class="pic-list-item" :style="{width:css['width'],height:css['height']}">
            <div slot="tip"  v-if="index===0" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           <img :src="file.url" class="pic" />
           <span class="el-icon-close" @click="handleRemove(file)"></span>
         </div>
-        <p class="maxUploadCount">添加图片{{ fileList.length || 0 }}/{{ maxUploadCount }}</p>
+        <div> 
+            <i v-for="file in [{}]" :key="file.uid || 'placeholder'" class="el-icon-plus pic-uploader-icon"></i>
+            <p class="maxUploadCount">添加图片{{ fileList.length || 0 }}/{{ maxUploadCount }}</p>
+        </div>
       </el-upload>
       <el-dialog :visible.sync="dialogVisible">
         <img width="100%" :src="dialogImageUrl" alt="" />
@@ -44,6 +46,10 @@
         default: 1,
         type: Number,
       },
+      css:{
+        type:Object,
+        default: () => ({width:'178px',height:'178px'}),
+      }
     },
     data() {
       return {
@@ -63,6 +69,9 @@
       value(newVal) {
         this.updateFileList(newVal);
       },
+    },
+    mounted(){
+        console.log(1234)   
     },
     methods: {
       updateFileList(newVal) {
@@ -143,6 +152,11 @@
       height: 178px;
       margin-right: 10px;
       margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      
   
       .pic {
         width: 100%;
