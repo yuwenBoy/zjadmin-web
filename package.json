@@ -63,6 +63,7 @@
     "url": "https://github.com/elunez/eladmin/issues"
   },
   "dependencies": {
+    "@amap/amap-jsapi-loader": "^1.0.1",
     "@riophae/vue-treeselect": "0.4.0",
     "@vue/babel-plugin-transform-vue-jsx": "^1.2.1",
     "axios": "0.18.1",

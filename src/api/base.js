@@ -1,7 +1,4 @@
 import request from "@/utils/request";
-
-import axios from 'axios';
-
 // // 使用你的API密钥和城市名称调用函数
 // const apiKey = 'YOUR_API_KEY';
 // const city = 'London';
@@ -60,6 +57,14 @@ export const getTableData = (url, params) => {
     data: params
   });
 }; 
+
+export const chinaRegions = ()=>{
+    return request({
+       url: "auth/chinaRegions",
+       method: "get",
+    })
+}
+
 // // 上传用户头像
 // export const uploadAvatar = (params) => {
 //     return request({

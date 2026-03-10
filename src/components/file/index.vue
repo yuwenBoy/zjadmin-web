@@ -1,201 +1,337 @@
 <template>
-    <div>
-      <el-upload
-        class="pic-uploader-component"
-        :action="imagesUploadApi"
-        :headers="headers"
-        list-type="picture-card"
-        :on-preview="handlePictureCardPreview"
-        :on-remove="handleRemove"
-        :on-success="handleUploadSuccess"
-        :before-upload="beforeAvatarUpload"
-        :limit="parseInt(maxUploadCount)"
-        :on-exceed="handleExceed"
-        :auto-upload="true"
-        multiple
-        :file-list="fileList"
-      >
-        <div v-for="(file, index) in fileList" :key="file.uid" class="pic-list-item" :style="{width:css['width'],height:css['height']}">
-           <div slot="tip"  v-if="index===0" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-          <img :src="file.url" class="pic" />
-          <span class="el-icon-close" @click="handleRemove(file)"></span>
+  <div>
+    <el-upload
+      class="pic-uploader-component"
+      :style="uploadStyle"
+      :action="imagesUploadApi"
+      :headers="headers"
+      :list-type="listType"
+      :on-preview="handlePictureCardPreview"
+      :on-remove="handleRemove"
+      :on-success="handleUploadSuccess"
+      :before-upload="beforeAvatarUpload"
+      :limit="parseInt(maxUploadCount)"
+      :on-exceed="handleExceed"
+      :auto-upload="true"
+      :show-file-list="false"
+      multiple
+      :file-list="fileList">
+      
+      <!-- 提示文字 -->
+      <!-- <div slot="tip" class="el-upload__tip">
+        只能上传jpg/png文件，且不超过2MB
+      </div> -->
+      
+      <!-- 自定义文件列表（当使用非 picture-card 时） -->
+      <template v-if="listType !== 'picture-card'">
+        <div 
+          v-for="(file, index) in fileList" 
+          :key="file.uid" 
+          class="pic-list-item"
+          :style="itemStyle">
+          <img :src="file.url" class="pic" :class="{ 'main-pic': index === 0 }" />
+          <span class="el-icon-close" @click.stop="handleRemove(file)"></span>
+          <!-- <span v-if="index === 0" class="main-tag">主图</span> -->
         </div>
-        <div> 
-            <i v-for="file in [{}]" :key="file.uid || 'placeholder'" class="el-icon-plus pic-uploader-icon"></i>
-            <p class="maxUploadCount">添加图片{{ fileList.length || 0 }}/{{ maxUploadCount }}</p>
-        </div>
-      </el-upload>
-      <el-dialog :visible.sync="dialogVisible">
-        <img width="100%" :src="dialogImageUrl" alt="" />
-      </el-dialog>
-    </div>
-  </template>
-  
-  <script>
-  import { getToken } from "@/utils/storage";
-  import { mapGetters } from "vuex";
-  import { getFileName } from "@/utils/index";
-  
-  export default {
-    props: {
-      value: {
-        type: [String, Array],
-        default: () => [],
+      </template>
+      
+      <!-- 上传按钮 -->
+      <div class="upload-trigger" :style="triggerStyle" v-if="fileList.length < maxUploadCount">
+        <i class="el-icon-plus pic-uploader-icon"></i>
+        <p class="upload-text">
+          {{ maxUploadCount > 1 ? `添加图片 ${fileList.length}/${maxUploadCount}` : '上传图片' }}
+        </p>
+      </div>
+    </el-upload>
+    
+    <!-- 预览弹窗 -->
+    <el-dialog :visible.sync="dialogVisible" append-to-body>
+      <img width="100%" :src="dialogImageUrl" alt=""/>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import { getToken } from "@/utils/storage";
+import { mapGetters } from "vuex";
+import { getFileName } from "@/utils/index";
+
+export default {
+  name: 'PicUploader',
+  props: {
+    value: {
+      type: [String, Array],
+      default: () => [],
+    },
+    maxUploadCount: {
+      default: 1,
+      type: Number,
+    },
+    // 自定义宽高
+    css: {
+      type: Object,
+      default: () => ({ width: '178px', height: '178px' }),
+    },
+    // 是否使用 picture-card 模式
+    usePictureCard: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      resourcesUrl: "http://image.jxxqz.com:3001/",
+      headers: {
+        Authorization: getToken(),
       },
-      maxUploadCount: {
-        default: 1,
-        type: Number,
-      },
-      css:{
-        type:Object,
-        default: () => ({width:'178px',height:'178px'}),
+      fileList: [],
+      dialogImageUrl: "",
+      dialogVisible: false,
+    };
+  },
+  computed: {
+    ...mapGetters(["imagesUploadApi"]),
+    
+    // 计算 list-type
+    listType() {
+      return this.usePictureCard ? 'picture-card' : 'text'
+    },
+    
+    // 上传组件整体样式
+    uploadStyle() {
+      return {
+        '--upload-width': this.css.width || '178px',
+        '--upload-height': this.css.height || '178px',
       }
     },
-    data() {
+    
+    // 列表项样式
+    itemStyle() {
       return {
-        resourcesUrl: "http://image.jxxqz.com:3001/", // 设置图片资源的前缀域名
-        headers: {
-          Authorization: getToken(),
-        },
-        fileList: [],
-        dialogImageUrl: "",
-        dialogVisible: false,
-      };
+        width: this.css.width || '178px',
+        height: this.css.height || '178px',
+      }
     },
-    computed: {
-      ...mapGetters(["imagesUploadApi"]),
-    },
-    watch: {
-      value(newVal) {
+    
+    // 上传按钮样式
+    triggerStyle() {
+      return {
+        width: this.css.width || '178px',
+        height: this.css.height || '178px',
+      }
+    }
+  },
+  watch: {
+    value: {
+      handler(newVal) {
         this.updateFileList(newVal);
       },
+      immediate: true
     },
-    mounted(){
-        console.log(1234)   
-    },
-    methods: {
-      updateFileList(newVal) {
-       if(newVal){
-        if (newVal instanceof Array) {
-          this.fileList = newVal.map((item, index) => ({
-            uid: `uid-${index}`, // 确保每个文件有唯一的uid
-            name: item.name || getFileName(item.location),
-            url:item.location,
-            response: { result: [{ location: item.location }] },
-          }));
-        } else if (typeof newVal === "string") {
-          this.fileList =newVal.split(',').map((item, index) => (
-            {
-              uid: "uid-"+index,
-              name: getFileName(item),
-              url:item,
-              response: { result: [{ location: item }] },
-            }
-          ))
-        } else {
-          this.fileList = [];
-        }
-       }
-      },
-      handleUploadSuccess(response, file, fileList) {
-        const newFile = {
-          uid: file.uid,
-          name: file.name,
-          url: this.resourcesUrl + getFileName(file.response.result[0].location),
-          response: file.response,
-        };
-        this.fileList.push(newFile);
-        this.$emit("input", this.fileList.map(t => ({ name: t.name, location: t.url })));
-      },
-      beforeAvatarUpload(file) {
-        const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isLt2M) {
-          this.$message.error("上传图片大小不能超过 2MB!");
-        }
-        return isLt2M;
-      },
-      handleRemove(file, fileList) {
-        const index = this.fileList.findIndex(f => f.uid === file.uid);
-        this.fileList.splice(index, 1);
-        this.$emit("input", this.fileList.map(f => ({ name: f.name, location: f.response.result[0].location })));
-      },
-      handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url;
-        this.dialogVisible = true;
-      },
-      handleExceed(files, fileList) {
-        this.$message.warning(`当前限制选择 ${this.maxUploadCount} 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-      },
-    },
-    mounted() {
-      this.updateFileList(this.value);
-    },
-  };
-  </script>
-  
-  <style lang="scss">
-  .pic-uploader-component .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  
-    .pic-uploader-icon {
-      font-size: 28px;
-      color: #8c939d;
-    }
-  
-    .pic-list-item {
-      position: relative;
-      width: 178px;
-      height: 178px;
-      margin-right: 10px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
+  },
+  methods: {
+    updateFileList(newVal) {
+      if (!newVal) {
+        this.fileList = [];
+        return;
+      }
       
-  
-      .pic {
-        width: 100%;
-        height: 100%;
-        display: block;
-        border: 2px solid transparent; // 默认无边框
+      if (Array.isArray(newVal)) {
+        this.fileList = newVal.map((item, index) => ({
+          uid: item.uid || `uid-${index}-${Date.now()}`,
+          name: item.name || getFileName(item.location || item.url),
+          url: item.location || item.url,
+          response: item.response || { result: [{ location: item.location || item.url }] },
+        }));
+      } else if (typeof newVal === 'string') {
+        this.fileList = newVal.split(',').filter(Boolean).map((item, index) => ({
+          uid: `uid-${index}-${Date.now()}`,
+          name: getFileName(item),
+          url: item.startsWith('http') ? item : this.resourcesUrl + item,
+          response: { result: [{ location: item }] },
+        }));
+      } else {
+        this.fileList = [];
       }
-  
-      .main-pic {
-        border: 2px solid #409eff; // 主图样式
+    },
+    
+    handleUploadSuccess(response, file, fileList) {
+      debugger
+      const location = response.result[0].location || file.url;
+      const newFile = {
+        uid: file.uid,
+        name: file.name,
+        url: location.startsWith('http') ? location : this.resourcesUrl + getFileName(location),
+        response: response,
+      };
+      this.fileList.push(newFile);
+      this.emitChange();
+    },
+    
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      
+      if (!isJPG) {
+        this.$message.error('只能上传 JPG/PNG 格式的图片!');
+        return false;
       }
-  
-      .el-icon-close {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 20px;
-        height: 20px;
-        cursor: pointer;
-        color: red;
-        line-height: 20px;
-        text-align: center;
-        font-size: 18px;
-        background: rgba(255, 255, 255, 0.7);
-        border-radius: 50%;
+      if (!isLt2M) {
+        this.$message.error('上传图片大小不能超过 2MB!');
+        return false;
+      }
+      return true;
+    },
+    
+    handleRemove(file) {
+      const index = this.fileList.findIndex(f => f.uid === file.uid);
+      if (index > -1) {
+        this.fileList.splice(index, 1);
+        this.emitChange();
+      }
+    },
+    
+    emitChange() {
+      const result = this.fileList.map(f => ({
+        name: f.name,
+        location: f.url
+      }));
+      this.$emit('input', result);
+      this.$emit('change', result);
+    },
+    
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    
+    handleExceed(files, fileList) {
+      this.$message.warning(`最多只能上传 ${this.maxUploadCount} 张图片`);
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.pic-uploader-component {
+  ::v-deep {
+    // 覆盖 el-upload 的默认样式
+    .el-upload-list {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    
+    .el-upload-list__item,
+    .el-upload--picture-card {
+      width: var(--upload-width, 178px);
+      height: var(--upload-height, 178px);
+      line-height: var(--upload-height, 178px);
+    }
+    
+    // 隐藏默认的 picture-card 样式（当使用自定义时）
+    .el-upload-list--picture-card {
+      .el-upload-list__item {
+        border: none;
+        margin: 0 10px 10px 0;
       }
     }
+  }
+}
+
+// 自定义列表项
+.pic-list-item {
+  position: relative;
+  margin: 0 10px 10px 0;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #d9d9d9;
+  display: inline-block;
+  vertical-align: top;
   
-    .maxUploadCount {
-      color: #8c939d;
-      position: absolute;
-      left: 30%;
-      top: 10px;
-      font-size: 12px;
+  .pic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border: 2px solid transparent;
+    box-sizing: border-box;
+    
+    &.main-pic {
+      border-color: #409eff;
     }
   }
   
-  .pic-uploader-component .el-upload:hover {
+  .el-icon-close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    
+    &:hover {
+      background: #f56c6c;
+    }
+  }
+  
+  &:hover .el-icon-close {
+    opacity: 1;
+  }
+  
+  .main-tag {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #409eff;
+    color: #fff;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 0 0 6px 0;
+  }
+}
+
+// 上传按钮
+.upload-trigger {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  background: #fbfdff;
+  vertical-align: top;
+  margin-bottom: 10px;
+  
+  &:hover {
     border-color: #409eff;
   }
-  </style>
   
+  .pic-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    margin-bottom: 8px;
+  }
+  
+  .upload-text {
+    color: #8c939d;
+    font-size: 12px;
+    margin: 0;
+  }
+}
+
+.el-upload__tip {
+  margin-top: 8px;
+  color: #606266;
+  font-size: 12px;
+}
+</style>
