@@ -169,7 +169,7 @@ service.interceptors.response.use(
       } else if (code === 403) {
         router.push({ path: "/401" });
       } else {
-        const errorMsg = error.response.result.message;
+        const errorMsg = response.data.message;
         if (errorMsg !== undefined) {
           Notification.error({
             title: errorMsg,

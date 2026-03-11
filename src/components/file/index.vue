@@ -156,7 +156,6 @@ export default {
     },
     
     handleUploadSuccess(response, file, fileList) {
-      debugger
       const location = response.result[0].location || file.url;
       const newFile = {
         uid: file.uid,
@@ -196,8 +195,8 @@ export default {
         name: f.name,
         location: f.url
       }));
-      this.$emit('input', result);
-      this.$emit('change', result);
+      this.$emit('input', result.map(r=>r.location).toString());
+      this.$emit('change',  result.map(r=>r.location).toString());
     },
     
     handlePictureCardPreview(file) {

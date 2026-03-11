@@ -47,10 +47,7 @@
                 >
                 <a href="#" class="label-link">查看示例图</a>
               </template>
-              <pic-upload
-                v-model="form.doorPhoto"
-                :css="{ width: '460px', height: '312px' }"
-              />
+              <pic-upload v-model="form.doorPhoto" :css="{ width: '460px', height: '312px' }" />
             </el-form-item>
             <el-form-item prop="envPhoto">
               <template slot="label">
@@ -116,6 +113,7 @@
                   v-model="form.licenseInfo.license_valid_date"
                   type="date"
                   placeholder="请选择日期"
+                  value-format="yyyy-MM-dd"
                 >
                 </el-date-picker>
                 <el-button
@@ -203,6 +201,7 @@
                 <el-date-picker
                   v-model="form.permitInfo.permit_expireDate"
                   type="date"
+                  value-format="yyyy-MM-dd"
                   placeholder="请选择日期"
                 >
                 </el-date-picker>
@@ -268,12 +267,12 @@
         </div>
         <div class="modify-shop-card" style="padding-top: 0px">
           <el-form-item label="地图定位" style="width: 100%">
-            <!-- <map-selector
+            <map-selector
               ref="mapSelectorRef"
               :initial-center="initialCenter"
               :textAddress="textAddress"
               @confirm="handleMapConfirm"
-            ></map-selector> -->
+            ></map-selector>
           </el-form-item>
         </div>
       </div>
@@ -294,32 +293,36 @@
 import picUpload from "@/components/file";
 import { chinaRegions } from "@/api/base";
 import MapSelector from "@/components/MapSeletor";
+import { updateStoreAndSubmitAudit } from "@/api/business/store";
 export default {
   components: { picUpload, MapSelector },
   data() {
     return {
+      storeId:null, // 门店ID  
       form: {
         storeName: "",
+        doorPhoto:"", // 门脸照
+        envPhoto: "", // 环境照
         licenseInfo: {
           license_type: 1,
-          license_pic: "", // 营业执照图片
+          license_pic: '', // 营业执照图片
           license_no: "", // 注册号
           company_name: "", // 公司名称
           legal_person: "", // 法人
           license_plan: "", // 经营场所
-          license_valid_date: "", // 营业执照有效期
+          license_valid_date: '', // 营业执照有效期
           is_long_term: 0, // 长期营业执照
         },
         permitInfo: {
           permit_type: 1,
-          permit_pic: "", //许可证图片
+          permit_pic:'', //许可证图片
           permit_no: "", // 许可证号
           permit_name:'', // 单位名称
           permit_legalPerson:'', // 法人
           permit_address:'', // 经营场所
           permit_mainBusiness:'', // 主营业态
           permit_scope:'', // 经营项目
-          permit_expireDate: "", // 许可证有效期
+          permit_expireDate: '', // 许可证有效期
           is_rang_date:0, // 长期许可证
         },
 
@@ -432,6 +435,8 @@ export default {
     },
   },
   mounted() {
+    this.storeId = this.$route.params.storeId
+    console.log(this.storeId)
     chinaRegions().then((res) => {
       console.log(res);
       this.cascaderData = res.result.provinceList.map((province) => ({
@@ -501,12 +506,31 @@ export default {
         this.$message.warning("地图定位位置与所选区域不一致，请重新选择");
       }
     },
+    // 修改并提交审核
     submitForm() {
+      console.log(this.form)
       this.$refs.form.validate((valid) => {
-        console.log(this.form)
         if (valid) {
-          this.$message.success("修改成功");
-          this.$router.replace("info");
+            console.log(this.form)
+            let requestInfo = {
+                storeId: this.storeId,
+                storeName: this.form.storeName,
+                doorPhoto: this.form.doorPhoto,
+                envPhoto: this.form.envPhoto,
+                districtCode: this.form.district_code[this.form.district_code.length - 1],
+                detailAddress: this.form.detail_address,
+                latitude: this.form.latitude,
+                longitude: this.form.longitude,
+                licenseInfo: this.form.licenseInfo,
+                permitInfo: this.form.permitInfo,
+            }
+            console.log(requestInfo)
+            updateStoreAndSubmitAudit(requestInfo).then((res) => {
+               console.log(res)
+               this.$message.success("修改成功");
+              this.$router.replace("info");
+            })
+        
         } else {
           this.$message.error("请检查输入项");
         }

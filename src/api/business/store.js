@@ -45,6 +45,15 @@ import request from "@/utils/request";
         showLoading:false,
     })
   }
+
+// 修改门店信息并提交审核
+export function updateStoreAndSubmitAudit(data) {
+  return request({
+    url: `/store/updateAndSubmitAudit`,
+    method: 'post',
+    data,
+  });
+}
   
   export function del(params) {
     return request({

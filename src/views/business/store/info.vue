@@ -202,7 +202,7 @@ export default {
       }
     },
     modifyShopEdit(){
-        this.$router.push({name:'modifyShopEdit'})
+        this.$router.push({name:'modifyShopEdit',params:{storeId:this.requestStore.id}})
     },
 
     /***
