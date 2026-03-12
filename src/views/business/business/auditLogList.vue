@@ -26,6 +26,24 @@
             <OPTOperation />
           </el-form>
         </div>
+        <!-- 批量操作按钮 -->
+<div style="margin-bottom:10px; text-align:right;">
+  <el-button 
+    type="primary" 
+    icon="el-icon-check" 
+    :disabled="crud.selections.length === 0"
+  >
+    批量通过
+  </el-button>
+  <el-button 
+    type="danger" 
+    icon="el-icon-close" 
+    :disabled="crud.selections.length === 0"
+    style="margin-left:10px;"
+  >
+    批量驳回
+  </el-button>
+</div>
        <div class="tab-container" style="margin-bottom:0">
           <el-tabs v-model="activeStatus" @tab-click="handleTabChange" style="margin-bottom:0">
             <el-tab-pane
@@ -42,6 +60,7 @@
           ref="table"
           :data="crud.data"
           row-key="id"
+          @selection-change="crud.selectionChangeHandler"
         >
           <el-table-column
             type="selection"
@@ -52,9 +71,9 @@
           <el-table-column prop="id" label="审核ID" align="center" width="80" />
           <el-table-column label="目标类型" prop="targetType" align="center">
             <template slot-scope="scope">
-              <span v-if="scope.row.targetType === 1">商家</span>
-              <span v-if="scope.row.targetType === 2">门店修改</span>
-              <span v-if="scope.row.targetType === 3">订单</span>
+              <el-tag type="success" v-if="scope.row.targetType === 1">商家</el-tag>
+              <el-tag v-if="scope.row.targetType === 2">门店修改</el-tag>
+              <el-tag type="danger" v-if="scope.row.targetType === 3">订单</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="目标对象" prop="targetId" align="center">
@@ -118,34 +137,9 @@
             width="180"
           />
           <!-- 编辑与删除 -->
-          <el-table-column label="操作" width="150px" align="center">
+          <el-table-column label="操作" width="80px" align="center">
             <template slot-scope="scope">
-              <!-- 仅待审核显示审核按钮 -->
-              <el-link
-                v-if="scope.row.status === 'pending'"
-                type="warning"
-                :underline="false"
-                @click="
-                  $router.push({
-                    name: 'businessAuditEdit',
-                    query: { ...scope.row },
-                  })
-                "
-                >审核</el-link
-              >
-              <!-- 查看详情按钮始终显示 -->
-              <el-link
-                type="info"
-                :underline="false"
-                style="margin-left: 10px"
-                @click="
-                  $router.push({
-                    name: 'businessAuditEdit',
-                    query: { options: 1, ...scope.row },
-                  })
-                "
-                >查看详情</el-link
-              >
+                <el-button size="mini" type="text" @click="$router.push({ name: 'auditLogDetail', query: {id: scope.row.id} })">详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -171,7 +165,7 @@ export default {
   cruds() {
     return CRUD({
       title: "",
-      url: "/business/auditLogList",
+      url: "/auditLog/list",
       sort: "sort",
     });
   },

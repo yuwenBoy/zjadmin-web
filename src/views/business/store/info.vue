@@ -17,7 +17,12 @@
                 <div class="text">门店名称</div>
                 <div class="describe">{{ requestStore.storeName }}</div>
               </div>
-              <div class="operation" @click="modifyShopEdit">申请修改</div>
+              <div class="operation" @click="modifyShopEdit">
+                <span style="color:#ff6200" v-if="requestStore.status ===1">审核中</span>
+                <span style="color:#333" v-else-if="requestStore.status ===2">审核通过</span>
+                <span style="color:#ff1a38" v-else-if="requestStore.status ===3">审核驳回</span>
+                <span v-else>申请修改</span>
+              </div>
             </div>
             <div class="storeWapper">
               <div class="storeWapper-Item">
@@ -31,7 +36,12 @@
                 <div class="text">门店地址</div>
                 <div class="describe">{{ requestStore.address }}</div>
               </div>
-              <div class="operation">申请修改</div>
+              <div class="operation">
+                <span style="color:#ff6200" v-if="requestStore.status ===1">审核中</span>
+                <span style="color:#333" v-else-if="requestStore.status ===2">审核通过</span>
+                <span style="color:#ff1a38" v-else-if="requestStore.status ===3">审核驳回</span>
+                <span v-else>申请修改</span>
+              </div>
             </div>
             <div class="storeWapper">
               <div class="storeWapper-Item">
@@ -202,7 +212,7 @@ export default {
       }
     },
     modifyShopEdit(){
-        this.$router.push({name:'modifyShopEdit',params:{storeId:this.requestStore.id}})
+        this.$router.push({name:'modifyShopEdit',query:{storeId:this.requestStore.id,status:this.requestStore.status }})
     },
 
     /***

@@ -5,10 +5,15 @@
       ><span style="padding-left: 10px">修改基础信息 </span>
     </div>
     <el-alert
-      title="修改须知：每个月仅允许修改10次，请谨慎修改（本月还可修改10次）"
-      type="warning"
-      show-icon
-    ></el-alert>
+      style="margin: 0 20px; width: 97%"
+      :title="headerTitle"
+      :closable="false"
+      :type="
+        storeStatus == 1 ? 'warning' : storeStatus === 2 ? 'success' : 'error'
+      "
+      :description="headerTitleSub"
+    >
+    </el-alert>
     <el-form
       ref="form"
       size="medium"
@@ -16,6 +21,7 @@
       style="margin-top: 15px; padding: 0 15px"
       :model="form"
       :rules="rules"
+      v-if="storeStatus == 0"
     >
       <div class="form-container">
         <div class="main-title">基础信息</div>
@@ -47,7 +53,10 @@
                 >
                 <a href="#" class="label-link">查看示例图</a>
               </template>
-              <pic-upload v-model="form.doorPhoto" :css="{ width: '460px', height: '312px' }" />
+              <pic-upload
+                v-model="form.doorPhoto"
+                :css="{ width: '460px', height: '312px' }"
+              />
             </el-form-item>
             <el-form-item prop="envPhoto">
               <template slot="label">
@@ -108,7 +117,10 @@
                   placeholder="请填写经营场所"
                 ></el-input>
               </el-form-item>
-              <el-form-item label="营业期限" prop="licenseInfo.license_valid_date">
+              <el-form-item
+                label="营业期限"
+                prop="licenseInfo.license_valid_date"
+              >
                 <el-date-picker
                   v-model="form.licenseInfo.license_valid_date"
                   type="date"
@@ -173,31 +185,37 @@
                   placeholder="请填写单位名称"
                 ></el-input>
               </el-form-item>
-              <el-form-item label="法定代表人" prop="permitInfo.permit_legalPerson">
+              <el-form-item
+                label="法定代表人"
+                prop="permitInfo.permit_legalPerson"
+              >
                 <el-input
                   v-model="form.permitInfo.permit_legalPerson"
                   placeholder="请填写法定代表人"
                 ></el-input>
               </el-form-item>
-               <el-form-item label="经营场所" prop="permitInfo.permit_address">
+              <el-form-item label="经营场所" prop="permitInfo.permit_address">
                 <el-input
                   v-model="form.permitInfo.permit_address"
                   placeholder="请填写经营场所"
                 ></el-input>
               </el-form-item>
-               <el-form-item label="主体业态" prop="permitInfo.permit_mainBusiness">
+              <el-form-item
+                label="主体业态"
+                prop="permitInfo.permit_mainBusiness"
+              >
                 <el-input
                   v-model="form.permitInfo.permit_mainBusiness"
                   placeholder="请填写主体业态"
                 ></el-input>
               </el-form-item>
-                  <el-form-item label="经营项目" prop="permitInfo.permit_scope">
+              <el-form-item label="经营项目" prop="permitInfo.permit_scope">
                 <el-input
                   v-model="form.permitInfo.permit_scope"
                   placeholder="请填写经营项目"
                 ></el-input>
               </el-form-item>
-               <el-form-item label="有效期" prop="permitInfo.permit_expireDate">
+              <el-form-item label="有效期" prop="permitInfo.permit_expireDate">
                 <el-date-picker
                   v-model="form.permitInfo.permit_expireDate"
                   type="date"
@@ -277,11 +295,52 @@
         </div>
       </div>
     </el-form>
+    <div v-if="storeStatus == 1">
+      <div class="shop-state-contrainer">
+        <div class="main-title">基本信息</div>
+        <div class="modify-shop-card">
+          <div class="data-item">
+            <div class="data-title">门店图</div>
+            <div class="data-content"></div>
+          </div>
+          <div class="data-item">
+            <div class="data-title">牌匾名</div>
+            <div class="data-content">123</div>
+          </div>
+          <div class="data-item">
+            <div class="data-title">店内环境图</div>
+            <div class="data-content"></div>
+          </div>
+        </div>
+      </div>
+      <div class="shop-state-contrainer">
+        <div class="main-title">资质信息</div>
+        <div class="modify-shop-card">
+          <div class="data-item">
+            <div class="data-title">开店类型</div>
+            <div class="data-content">普通建店</div>
+          </div>
+        </div>
+        <div class="main-title">主体资质</div>
+        <div class="modify-shop-card">
+          <div class="data-item">
+            <div class="data-title">证件类型</div>
+            <div class="data-content">营业执照</div>
+          </div>
+          <div class="data-item">
+            <div class="data-title">资质照片</div>
+            <div class="data-content">营业执照</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="shop-modify-footer">
       <el-button plain size="medium" @click="goBack">取消</el-button>
       <el-button
         type="primary"
         size="medium"
+        v-if="storeStatus == 0 || storeStatus == 2"
         :autofocus="true"
         @click="submitForm('form')"
         >修改并提交审核</el-button
@@ -298,32 +357,35 @@ export default {
   components: { picUpload, MapSelector },
   data() {
     return {
-      storeId:null, // 门店ID  
+      storeId: null, // 门店ID
+      storeStatus: null, // 门店状态
+      headerTitle: null,
+      headerTitleSub: null, // 获取状态栏标题
       form: {
         storeName: "",
-        doorPhoto:"", // 门脸照
+        doorPhoto: "", // 门脸照
         envPhoto: "", // 环境照
         licenseInfo: {
           license_type: 1,
-          license_pic: '', // 营业执照图片
+          license_pic: "", // 营业执照图片
           license_no: "", // 注册号
           company_name: "", // 公司名称
           legal_person: "", // 法人
           license_plan: "", // 经营场所
-          license_valid_date: '', // 营业执照有效期
+          license_valid_date: "", // 营业执照有效期
           is_long_term: 0, // 长期营业执照
         },
         permitInfo: {
           permit_type: 1,
-          permit_pic:'', //许可证图片
+          permit_pic: "", //许可证图片
           permit_no: "", // 许可证号
-          permit_name:'', // 单位名称
-          permit_legalPerson:'', // 法人
-          permit_address:'', // 经营场所
-          permit_mainBusiness:'', // 主营业态
-          permit_scope:'', // 经营项目
-          permit_expireDate: '', // 许可证有效期
-          is_rang_date:0, // 长期许可证
+          permit_name: "", // 单位名称
+          permit_legalPerson: "", // 法人
+          permit_address: "", // 经营场所
+          permit_mainBusiness: "", // 主营业态
+          permit_scope: "", // 经营项目
+          permit_expireDate: "", // 许可证有效期
+          is_rang_date: 0, // 长期许可证
         },
 
         district_code: null, // 区县编码
@@ -410,16 +472,34 @@ export default {
           permit_pic: [
             { required: true, message: "证照照片不能为空", trigger: "blur" },
           ],
-          permit_name:[{ required: true, message: "请输入单位名称", trigger: "blur" }],
-          permit_legalPerson:[{ required: true, message: "请输入法人姓名", trigger: "blur" }],
-          permit_address:[{ required: true, message: "请输入经营场所", trigger: "blur" }],
-          permit_mainBusiness:[{ required: true, message: "请输入主营业态", trigger: "blur" }],
-          permit_scope:[{ required: true, message: "请输入经营项目", trigger: "blur" }],
+          permit_name: [
+            { required: true, message: "请输入单位名称", trigger: "blur" },
+          ],
+          permit_legalPerson: [
+            { required: true, message: "请输入法人姓名", trigger: "blur" },
+          ],
+          permit_address: [
+            { required: true, message: "请输入经营场所", trigger: "blur" },
+          ],
+          permit_mainBusiness: [
+            { required: true, message: "请输入主营业态", trigger: "blur" },
+          ],
+          permit_scope: [
+            { required: true, message: "请输入经营项目", trigger: "blur" },
+          ],
           permit_no: [
             { required: true, message: "请输入许可证编号", trigger: "blur" },
           ],
-          permit_expireDate:this.form.permitInfo.is_rang_date == 1 ?  [{ required: false, message: "", trigger: "blur" }
-          ]:[{ required: true, message: "请输入许可证有效期", trigger: "blur" }],
+          permit_expireDate:
+            this.form.permitInfo.is_rang_date == 1
+              ? [{ required: false, message: "", trigger: "blur" }]
+              : [
+                  {
+                    required: true,
+                    message: "请输入许可证有效期",
+                    trigger: "blur",
+                  },
+                ],
         },
         district_code: [
           { required: true, message: "请选择所在地区", trigger: "change" },
@@ -435,54 +515,73 @@ export default {
     },
   },
   mounted() {
-    this.storeId = this.$route.params.storeId
-    console.log(this.storeId)
-    chinaRegions().then((res) => {
-      console.log(res);
-      this.cascaderData = res.result.provinceList.map((province) => ({
-        value: province.districtCode,
-        label: province.fullName,
-        children: (province.directCityList || []).map((city) => {
-          const children = [];
-          // 2. 添加下属县/县级市（lowerCityList）
-          if (city.lowerCityList && city.lowerCityList.length > 0) {
-            city.lowerCityList.forEach((county) => {
-              children.push({
-                value: county.districtCode,
-                label: county.fullName, // 或 fullName
-                latitude: county.latitude,
-                longitude: county.longitude,
-              });
-            });
-          }
-          // 1. 添加市辖区（districtList）
-          if (city.districtList && city.districtList.length > 0) {
-            city.districtList.forEach((district) => {
-              children.push({
-                value: district.districtCode,
-                label: district.name,
-                latitude: district.latitude,
-                longitude: district.longitude,
-              });
-            });
-          }
-
-          return {
-            value: city.districtCode,
-            label: city.fullName,
-            children: children.length > 0 ? children : undefined,
-          };
-        }),
-      }));
-    });
+    this.storeId = this.$route.query.storeId;
+    this.storeStatus = this.$route.query.status;
+    this.getStateHeaderTtitle();
+    this.initChinaAddress();
   },
   methods: {
+    initChinaAddress() {
+      chinaRegions().then((res) => {
+        this.cascaderData = res.result.provinceList.map((province) => ({
+          value: province.districtCode,
+          label: province.fullName,
+          children: (province.directCityList || []).map((city) => {
+            const children = [];
+            // 2. 添加下属县/县级市（lowerCityList）
+            if (city.lowerCityList && city.lowerCityList.length > 0) {
+              city.lowerCityList.forEach((county) => {
+                children.push({
+                  value: county.districtCode,
+                  label: county.fullName, // 或 fullName
+                  latitude: county.latitude,
+                  longitude: county.longitude,
+                });
+              });
+            }
+            // 1. 添加市辖区（districtList）
+            if (city.districtList && city.districtList.length > 0) {
+              city.districtList.forEach((district) => {
+                children.push({
+                  value: district.districtCode,
+                  label: district.name,
+                  latitude: district.latitude,
+                  longitude: district.longitude,
+                });
+              });
+            }
+
+            return {
+              value: city.districtCode,
+              label: city.fullName,
+              children: children.length > 0 ? children : undefined,
+            };
+          }),
+        }));
+      });
+    },
+    getStateHeaderTtitle() {
+      if (this.storeStatus == 0) {
+        this.headerTitle = "修改须知";
+        this.headerTitleSub =
+          "门店名称、门店地址、门店照片、门店环境照片、门店营业执照、门店许可证等信息";
+      } else if (this.storeStatus == 1) {
+        this.headerTitle = "修改审核中";
+        this.headerTitleSub = "门店信息正在审核中，请耐心等待";
+      } else if (this.storeStatus == 2) {
+        this.headerTitle = "修改审核通过";
+        this.headerTitleSub = "门店信息审核通过，请继续完善门店信息";
+      } else if (this.storeStatus == 3) {
+        this.headerTitle = "修改审核驳回";
+        this.headerTitleSub = "门店信息审核未通过，请修改后重新提交";
+      }
+    },
     handleClick() {
-        this.form.licenseInfo.is_long_term =
+      this.form.licenseInfo.is_long_term =
         this.form.licenseInfo.is_long_term === 0 ? 1 : 0;
     },
-    permitHanderClick(){
-        this.form.permitInfo.is_rang_date =
+    permitHanderClick() {
+      this.form.permitInfo.is_rang_date =
         this.form.permitInfo.is_rang_date === 0 ? 1 : 0;
     },
     handlerChange(val, selectData) {
@@ -508,36 +607,36 @@ export default {
     },
     // 修改并提交审核
     submitForm() {
-      console.log(this.form)
+      console.log(this.form);
       this.$refs.form.validate((valid) => {
         if (valid) {
-            console.log(this.form)
-            let requestInfo = {
-                storeId: this.storeId,
-                storeName: this.form.storeName,
-                doorPhoto: this.form.doorPhoto,
-                envPhoto: this.form.envPhoto,
-                districtCode: this.form.district_code[this.form.district_code.length - 1],
-                detailAddress: this.form.detail_address,
-                latitude: this.form.latitude,
-                longitude: this.form.longitude,
-                licenseInfo: this.form.licenseInfo,
-                permitInfo: this.form.permitInfo,
-            }
-            console.log(requestInfo)
-            updateStoreAndSubmitAudit(requestInfo).then((res) => {
-               console.log(res)
-               this.$message.success("修改成功");
-              this.$router.replace("info");
-            })
-        
+          console.log(this.form);
+          let requestInfo = {
+            storeId: this.storeId,
+            storeName: this.form.storeName,
+            doorPhoto: this.form.doorPhoto,
+            envPhoto: this.form.envPhoto,
+            districtCode:
+              this.form.district_code[this.form.district_code.length - 1],
+            detailAddress: this.form.detail_address,
+            latitude: this.form.latitude,
+            longitude: this.form.longitude,
+            licenseInfo: this.form.licenseInfo,
+            permitInfo: this.form.permitInfo,
+          };
+          console.log(requestInfo);
+          updateStoreAndSubmitAudit(requestInfo).then((res) => {
+            console.log(res);
+            this.$message.success("修改成功");
+            this.$router.replace("info");
+          });
         } else {
           this.$message.error("请检查输入项");
         }
       });
     },
     goBack() {
-      this.$router.replace("info");
+      this.$router.go(-1);
     },
   },
 };
@@ -625,6 +724,33 @@ export default {
       }
     }
   }
+
+  .shop-state-contrainer {
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 8px;
+    margin-bottom: 56px;
+    min-width: 1098px;
+    margin: 20px;
+    position: relative;
+    z-index: 100;
+    .modify-shop-card {
+      padding: 20px;
+      .data-item {
+        margin-bottom: 25px;
+        display: flex;
+        align-content: center;
+        .data-title {
+          min-width: 120px;
+          text-align: right;
+        }
+        .data-content {
+          padding-left: 20px;
+        }
+      }
+    }
+  }
+
   .shop-modify-footer {
     background: #fff;
     bottom: 0;
