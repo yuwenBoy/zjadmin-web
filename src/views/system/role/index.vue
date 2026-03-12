@@ -89,7 +89,7 @@
                     <el-table-column
                       prop="create_time"
                       label="创建时间"
-                      width="145"
+                      width="160"
                     />
                     <el-table-column
                       prop="remark"

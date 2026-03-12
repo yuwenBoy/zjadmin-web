@@ -78,7 +78,7 @@
               align="center"
               :reserve-selection="true"
             />
-            <el-table-column prop="id" label="分类ID" align="center" width="80" />
+            <el-table-column prop="id" label="分类ID" align="center" width="120" />
             <el-table-column
               :show-overflow-tooltip="true"
               label="分类名称"
@@ -86,8 +86,8 @@
               align="center"
             />
             <el-table-column label="排序" prop="sort" width="130" align="center" />
-            <el-table-column prop="createdAt" label="创建时间" width="145" /> 
-            <el-table-column prop="updatedAt" label="最后更新时间" width="145" /> 
+            <el-table-column prop="createdAt" label="创建时间" width="160" /> 
+            <el-table-column prop="updatedAt" label="最后更新时间" width="160" /> 
             <!--   编辑与删除   -->
             <el-table-column label="操作" width="100px" align="left">
               <template slot-scope="scope">

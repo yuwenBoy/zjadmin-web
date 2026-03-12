@@ -39,7 +39,7 @@
               <el-table-column
                 prop="create_time"
                 label="创建时间"
-                width="135"
+                width="160"
                 align="center"
               />
               <!--   编辑与删除   -->

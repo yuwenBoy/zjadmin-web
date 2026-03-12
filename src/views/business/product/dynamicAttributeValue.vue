@@ -64,7 +64,7 @@
                     <el-table-column
                       prop="createdAt"
                       label="创建时间"
-                      width="145"
+                      width="160"
                     />
                     <!--   编辑与删除   -->
                     <el-table-column label="操作" align="left" width="150">

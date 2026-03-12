@@ -66,11 +66,11 @@
               width="80"
               align="center"
             />
-            <el-table-column prop="createdAt" label="创建时间" width="145" />
+            <el-table-column prop="createdAt" label="创建时间" width="160" />
             <el-table-column
               prop="updatedAt"
               label="最后更新时间"
-              width="165"
+              width="160"
             />
             <!--   编辑与删除   -->
             <el-table-column label="操作" width="100px" align="left">

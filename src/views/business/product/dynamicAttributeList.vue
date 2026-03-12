@@ -52,7 +52,7 @@
                                 <span v-else> - </span>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="createdAt" label="创建时间" width="145" />
+                        <el-table-column prop="createdAt" label="创建时间" width="160" />
                         <!--   编辑与删除   -->
                         <el-table-column label="操作" align="left" :width="relevanceRequest.categoryId ? 80:300">
                             <template slot-scope="scope">

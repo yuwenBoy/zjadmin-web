@@ -1,62 +1,62 @@
 <template>
   <div id="app">
     <div class="load_box"></div>
-     <TitleBar v-if="isElectron" />
-      <div :class="isElectron ? 'main-content':'web-content'">
-        <router-view />
-      </div>
+    <TitleBar v-if="isElectron" />
+    <div :class="isElectron ? 'main-content' : 'web-content'">
+      <router-view />
+    </div>
   </div>
 </template>
 <script>
-import TitleBar from '@/components/electron/TitleBar/index.vue'
+import TitleBar from "@/components/electron/TitleBar/index.vue";
 export default {
-  name: 'App',
+  name: "App",
   components: { TitleBar },
   computed: {
     isElectron() {
       return window.electronAPI && window.electronAPI.isElectron;
-    }
+    },
   },
-  async mounted(){
+  async mounted() {
     // 延迟检测，确保 preload 注入完成
-  setTimeout(() => {
-    console.log('检测 window.electronAPI:', window.electronAPI);
-    
-    if (window.electronAPI && window.electronAPI.isElectron) {
-      console.log('🎉 成功运行在 Electron 桌面端！');
-       window.electronAPI.onNavAction((action) => {
-        if (action === 'back') {
-          this.handleBack();
-        } else if (action === 'forward') {
-          this.handleForward();
-        }
-      });
-    } else {
-      console.log('⚠️ 当前运行在浏览器环境');
-    }
-  }, 500); // 延迟 500ms
+    setTimeout(() => {
+      console.log("检测 window.electronAPI:", window.electronAPI);
+
+      if (window.electronAPI && window.electronAPI.isElectron) {
+        console.log("🎉 成功运行在 Electron 桌面端！");
+        window.electronAPI.onNavAction((action) => {
+          if (action === "back") {
+            this.handleBack();
+          } else if (action === "forward") {
+            this.handleForward();
+          }
+        });
+      } else {
+        console.log("⚠️ 当前运行在浏览器环境");
+      }
+    }, 500); // 延迟 500ms
   },
   methods: {
     exitApp() {
-       // 调用 electronAPI 退出
+      // 调用 electronAPI 退出
       if (window.electronAPI && window.electronAPI.quitApp) {
-           window.electronAPI.quitApp()
+        window.electronAPI.quitApp();
       }
     },
     handleBack() {
       // 判断边界：不能返回登录页或空页面
-      if (this.$route.path === '/login' || window.history.length <= 1) {
+      if (this.$route.path === "/login" || window.history.length <= 1) {
         return;
       }
       this.$router.back();
     },
     handleForward() {
       this.$router.forward();
-    }
- }
-}
+    },
+  },
+};
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 #app {
   background: #f5f5f5;
   .load_box {
@@ -70,21 +70,29 @@ export default {
 }
 /* table */
 .el-table {
-    color: #353535;
-    font-size: 12px;
+  color: #606266;
+  font-size: 14px;
 }
-.el-table td, .el-table th {
-  padding:5px 0;
+.el-table td,
+.el-table th {
+  padding: 5px 0;
 }
 .el-table thead {
-  font-size: 12px;
+  word-break: break-word;
+  color: #515a6e;
+  font-size: 13px;
+}
+.el-table th.el-table__cell{
   padding: 5px 0;
-  background-color: #ebeef5 !important;
-  color: #333;
+  height: 40px !important;
+  background-color: #f8f8f9 !important;
+
 }
-.el-table thead tr{background: none;
+.el-table thead tr {
+  background: none;
 }
-.el-table th{ background: none;
+.el-table th {
+  background: none;
 }
 /* 弹出框 */
 .el-dialog__title {
@@ -99,11 +107,11 @@ export default {
 }
 /* 为标题栏留出空间 */
 .main-content {
-  padding-top: 42px;  /* 与 TitleBar 高度一致 */
+  padding-top: 42px; /* 与 TitleBar 高度一致 */
   height: 100%;
   overflow: auto;
 }
-.web-content{
+.web-content {
   height: 100%;
   overflow: auto;
 }

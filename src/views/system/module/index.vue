@@ -137,7 +137,7 @@
           <el-table-column
             prop="create_time"
             label="创建时间"
-            width="135"
+            width="160"
             align="center"
           />
           <el-table-column label="操作" width="100px" align="left">

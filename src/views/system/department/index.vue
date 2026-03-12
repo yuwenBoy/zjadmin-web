@@ -97,7 +97,7 @@
           />
           <el-table-column label="分类" prop="typeName" width="80" />
           <el-table-column label="排序" prop="sort" width="80" />
-          <el-table-column prop="create_time" label="创建时间" width="145" />
+          <el-table-column prop="create_time" label="创建时间" width="160" />
           <!--   编辑与删除   -->
           <el-table-column label="操作" width="100px" align="left">
             <template slot-scope="scope">

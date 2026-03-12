@@ -2,18 +2,7 @@
   <div class="app-container">
     <div class="head-container">
       <div class="content-box box-shadow">
-        <!-- 新增：状态Tab筛选栏 -->
-        <div class="tab-container" style="margin-bottom:0">
-          <el-tabs v-model="activeStatus" @tab-click="handleTabChange" style="margin-bottom:0">
-            <el-tab-pane
-              :label="item.label"
-              :name="item.value"
-              v-for="(item, index) in statusList"
-              :key="index"
-            >
-            </el-tab-pane>
-          </el-tabs>
-        </div>
+      
         <div class="text item">
           <el-form inline :model="crud.query">
             <el-form-item label="目标类型">
@@ -36,6 +25,17 @@
             </el-form-item>
             <OPTOperation />
           </el-form>
+        </div>
+       <div class="tab-container" style="margin-bottom:0">
+          <el-tabs v-model="activeStatus" @tab-click="handleTabChange" style="margin-bottom:0">
+            <el-tab-pane
+              :label="item.label"
+              :name="item.value"
+              v-for="(item, index) in statusList"
+              :key="index"
+            >
+            </el-tab-pane>
+          </el-tabs>
         </div>
         <el-table
           v-if="refreshTable"
@@ -74,7 +74,7 @@
           <el-table-column
             prop="createdAt"
             label="提交时间"
-            width="145"
+            width="180"
             align="center"
           />
           <el-table-column
@@ -106,7 +106,7 @@
           <el-table-column
             prop="auditAt"
             label="审核时间"
-            width="145"
+            width="180"
             align="center"
           />
           <!-- 修正：驳回原因字段 -->
