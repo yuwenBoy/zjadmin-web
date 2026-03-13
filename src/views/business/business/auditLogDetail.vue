@@ -28,10 +28,10 @@
           <span class="label">门店ID：</span>
           <span class="value">{{ getVal(auditData, 'store.id') || '-' }}</span>
         </div>
-        <div class="info-item">
+        <!-- <div class="info-item">
           <span class="label">业务线：</span>
           <span class="value">淘宝闪购</span>
-        </div>
+        </div> -->
       </div>
     </div>
 

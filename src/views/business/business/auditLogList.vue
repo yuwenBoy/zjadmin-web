@@ -2,24 +2,59 @@
   <div class="app-container">
     <div class="head-container">
       <div class="content-box box-shadow">
-      
         <div class="text item">
           <el-form inline :model="crud.query">
             <el-form-item label="目标类型">
-              <el-select v-model="crud.query.targetType"  placeholder="请选择目标类型">
-                 <el-option v-for="item in [ { label: '商家信息', value: 1 },{ label: '门店修改', value: 2 },{ label: '骑士信息', value: 3 }]" :key="item.value" :label="item.label" :value="item.value">
+              <el-select
+                v-model="crud.query.targetType"
+                placeholder="请选择目标类型"
+              >
+                <el-option
+                  v-for="item in [
+                    { label: '商家信息', value: 1 },
+                    { label: '门店修改', value: 2 },
+                    { label: '骑士信息', value: 3 },
+                  ]"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
                 </el-option>
               </el-select>
             </el-form-item>
-             <el-form-item label="申请人">
-              <el-select v-model="crud.query.applicantId"  placeholder="请选择申请人">
-                 <el-option v-for="item in [ { label: '商家信息', value: 1 },{ label: '门店修改', value: 2 },{ label: '骑士信息', value: 3 }]" :key="item.value" :label="item.label" :value="item.value">
+            <el-form-item label="申请人">
+              <el-select
+                v-model="crud.query.applicantId"
+                placeholder="请选择申请人"
+              >
+                <el-option
+                  v-for="item in [
+                    { label: '商家信息', value: 1 },
+                    { label: '门店修改', value: 2 },
+                    { label: '骑士信息', value: 3 },
+                  ]"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
                 </el-option>
               </el-select>
             </el-form-item>
-             <el-form-item label="审核人">
-              <el-select v-model="crud.query.operatorId"  placeholder="请选择审核人">
-                 <el-option v-for="item in [ { label: '商家信息', value: 1 },{ label: '门店修改', value: 2 },{ label: '骑士信息', value: 3 }]" :key="item.value" :label="item.label" :value="item.value">
+            <el-form-item label="审核人">
+              <el-select
+                v-model="crud.query.operatorId"
+                placeholder="请选择审核人"
+              >
+                <el-option
+                  v-for="item in [
+                    { label: '商家信息', value: 1 },
+                    { label: '门店修改', value: 2 },
+                    { label: '骑士信息', value: 3 },
+                  ]"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
                 </el-option>
               </el-select>
             </el-form-item>
@@ -27,25 +62,29 @@
           </el-form>
         </div>
         <!-- 批量操作按钮 -->
-<div style="margin-bottom:10px; text-align:right;">
-  <el-button 
-    type="primary" 
-    icon="el-icon-check" 
-    :disabled="crud.selections.length === 0"
-  >
-    批量通过
-  </el-button>
-  <el-button 
-    type="danger" 
-    icon="el-icon-close" 
-    :disabled="crud.selections.length === 0"
-    style="margin-left:10px;"
-  >
-    批量驳回
-  </el-button>
-</div>
-       <div class="tab-container" style="margin-bottom:0">
-          <el-tabs v-model="activeStatus" @tab-click="handleTabChange" style="margin-bottom:0">
+        <div style="margin-bottom: 10px; text-align: right">
+          <el-button
+            type="primary"
+            icon="el-icon-check"
+            :disabled="crud.selections.length === 0"
+          >
+            批量通过
+          </el-button>
+          <el-button
+            type="danger"
+            icon="el-icon-close"
+            :disabled="crud.selections.length === 0"
+            style="margin-left: 10px"
+          >
+            批量驳回
+          </el-button>
+        </div>
+        <div class="tab-container" style="margin-bottom: 0">
+          <el-tabs
+            v-model="activeStatus"
+            @tab-click="handleTabChange"
+            style="margin-bottom: 0"
+          >
             <el-tab-pane
               :label="item.label"
               :name="item.value"
@@ -71,9 +110,13 @@
           <el-table-column prop="id" label="审核ID" align="center" width="80" />
           <el-table-column label="目标类型" prop="targetType" align="center">
             <template slot-scope="scope">
-              <el-tag type="success" v-if="scope.row.targetType === 1">商家</el-tag>
+              <el-tag type="success" v-if="scope.row.targetType === 1"
+                >商家</el-tag
+              >
               <el-tag v-if="scope.row.targetType === 2">门店修改</el-tag>
-              <el-tag type="danger" v-if="scope.row.targetType === 3">订单</el-tag>
+              <el-tag type="danger" v-if="scope.row.targetType === 3"
+                >订单</el-tag
+              >
             </template>
           </el-table-column>
           <el-table-column label="目标对象" prop="targetId" align="center">
@@ -135,11 +178,25 @@
             align="center"
             show-overflow-tooltip
             width="180"
-          />
+          >
+            <template slot-scope="scope">
+              {{ parseRejectReason(scope.row.reason)}}
+            </template>
+          </el-table-column>
           <!-- 编辑与删除 -->
           <el-table-column label="操作" width="80px" align="center">
             <template slot-scope="scope">
-                <el-button size="mini" type="text" @click="$router.push({ name: 'auditLogDetail', query: {id: scope.row.id} })">详情</el-button>
+              <el-button
+                size="mini"
+                type="text"
+                @click="
+                  $router.push({
+                    name: 'auditLogDetail',
+                    query: { id: scope.row.id },
+                  })
+                "
+                >详情</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -213,6 +270,46 @@ export default {
     // 新增：Tab切换事件
     handleTabChange() {
       this.loadAuditList();
+    },
+    /**
+     * 通用解析不固定key的驳回原因
+     * @param {string} reasonJson - JSON字符串
+     * @param {boolean} isGroup - 是否分组展示（默认false：合并展示）
+     * @returns {string|Object} 展示文本 / 分组对象
+     */
+    parseRejectReason(reasonJson, isGroup = false) {
+      if (!reasonJson) return isGroup ? {} : "无驳回原因";
+
+      try {
+        const reasonObj = JSON.parse(reasonJson);
+        const groupResult = {};
+        const allReasons = [];
+
+        // 遍历所有未知key
+        Object.keys(reasonObj).forEach((fieldKey) => {
+          const reasonList = reasonObj[fieldKey];
+          if (Array.isArray(reasonList) && reasonList.length > 0) {
+            const fieldReasons = reasonList
+              .map((item) => item.reason || item.riskReason || item.riskName)
+              .filter(Boolean); // 过滤空值
+
+            if (fieldReasons.length > 0) {
+              groupResult[fieldKey] = fieldReasons;
+              allReasons.push(...fieldReasons);
+            }
+          }
+        });
+
+        // 分组/合并返回
+        if (isGroup) {
+          return groupResult;
+        } else {
+          return allReasons.length > 0 ? allReasons.join("；") : "无驳回原因";
+        }
+      } catch (e) {
+        console.error("解析驳回原因失败：", e);
+        return isGroup ? { error: "解析失败" } : "驳回原因解析失败";
+      }
     },
   },
   // 监听搜索框变化，支持回车搜索

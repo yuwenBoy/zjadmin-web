@@ -83,7 +83,6 @@ export default {
     // 监听地址详情变化，更新“文”标记位置
     textAddress: {
       handler(newVal) {
-        debugger
         if (newVal && this.geocoder) {
           this.geocodeAddress(newVal)
         }

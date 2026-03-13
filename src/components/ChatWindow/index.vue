@@ -66,7 +66,6 @@ export default {
     // 切换当前聊天对象
     selectContact(contact) {
       console.log('切换当前聊天对象', contact);
-      debugger
       this.$store.commit('chat/SET_CURRENT_CONTACT', contact)
        // 2. 如果有未读消息，发送已读回执（关键！）
       if (contact.unread_count > 0) {

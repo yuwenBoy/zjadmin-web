@@ -21,7 +21,7 @@
       style="margin-top: 15px; padding: 0 15px"
       :model="form"
       :rules="rules"
-      v-if="storeStatus == 0"
+      v-if="storeStatus == 0 || storeStatus == 6"
     >
       <div class="form-container">
         <div class="main-title">基础信息</div>
@@ -340,7 +340,7 @@
       <el-button
         type="primary"
         size="medium"
-        v-if="storeStatus == 0 || storeStatus == 2"
+        v-if="storeStatus == 0 || storeStatus == 6"
         :autofocus="true"
         @click="submitForm('form')"
         >修改并提交审核</el-button
@@ -352,7 +352,7 @@
 import picUpload from "@/components/file";
 import { chinaRegions } from "@/api/base";
 import MapSelector from "@/components/MapSeletor";
-import { updateStoreAndSubmitAudit } from "@/api/business/store";
+import { detail, updateStoreAndSubmitAudit } from "@/api/business/store";
 export default {
   components: { picUpload, MapSelector },
   data() {
@@ -421,6 +421,7 @@ export default {
       initialCenter: [116.46, 39.92],
       showMap: true,
       textAddress: "",
+      rejectReason: null, // 驳回原因
     };
   },
   computed: {
@@ -517,10 +518,33 @@ export default {
   mounted() {
     this.storeId = this.$route.query.storeId;
     this.storeStatus = this.$route.query.status;
-    this.getStateHeaderTtitle();
+    this.getShopInfo();
     this.initChinaAddress();
   },
   methods: {
+    // 获取门店信息
+    getShopInfo() {
+      detail({ storeId: this.storeId }).then((res) => {
+        let data = res.result.afterData;
+        this.form = data;
+        this.form.storeName = data.store.storeName;
+        this.form.doorPhoto = data.store.doorPhoto;
+        this.form.envPhoto = data.store.envPhoto;
+        this.form.district_code = data.store.district_code;
+        this.form.detail_address = data.store.detail_address;
+        this.form.latitude = data.store.latitude;
+        this.form.longitude = data.store.longitude;
+        this.rejectReason = JSON.parse(res.result.reason);
+        this.getStateHeaderTtitle();
+        this.$refs.mapSelectorRef.regeoCode(
+          this.form.longitude,
+          this.form.latitude
+        );
+        this.handlerAddress();
+      });
+    },
+
+    // 获取三级地址
     initChinaAddress() {
       chinaRegions().then((res) => {
         this.cascaderData = res.result.provinceList.map((province) => ({
@@ -571,9 +595,11 @@ export default {
       } else if (this.storeStatus == 2) {
         this.headerTitle = "修改审核通过";
         this.headerTitleSub = "门店信息审核通过，请继续完善门店信息";
-      } else if (this.storeStatus == 3) {
+      } else if (this.storeStatus == 6) {
         this.headerTitle = "修改审核驳回";
-        this.headerTitleSub = "门店信息审核未通过，请修改后重新提交";
+        this.headerTitleSub = `有${
+          Object.values(this.rejectReason)[0].length
+        }项问题，请即时处理下方驳回内容`; //"门店信息审核未通过，请修改后重新提交";
       }
     },
     handleClick() {
@@ -599,7 +625,6 @@ export default {
       this.form.longitude = addressInfo.lng;
       this.form.detail_address = addressInfo.name;
       this.showMap = false;
-
       // 如果地图返回的adcode和级联选中的不一致，提示用户
       if (addressInfo.adcode !== this.form.district_code) {
         this.$message.warning("地图定位位置与所选区域不一致，请重新选择");
@@ -607,17 +632,18 @@ export default {
     },
     // 修改并提交审核
     submitForm() {
-      console.log(this.form);
       this.$refs.form.validate((valid) => {
         if (valid) {
-          console.log(this.form);
+          let districtCode = this.form.district_code;
+          if (typeof districtCode !== "number") {
+            districtCode = districtCode[districtCode.length - 1];
+          }
           let requestInfo = {
             storeId: this.storeId,
             storeName: this.form.storeName,
             doorPhoto: this.form.doorPhoto,
             envPhoto: this.form.envPhoto,
-            districtCode:
-              this.form.district_code[this.form.district_code.length - 1],
+            districtCode: districtCode,
             detailAddress: this.form.detail_address,
             latitude: this.form.latitude,
             longitude: this.form.longitude,
@@ -626,7 +652,6 @@ export default {
           };
           console.log(requestInfo);
           updateStoreAndSubmitAudit(requestInfo).then((res) => {
-            console.log(res);
             this.$message.success("修改成功");
             this.$router.replace("info");
           });

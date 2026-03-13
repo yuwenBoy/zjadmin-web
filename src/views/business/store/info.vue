@@ -18,10 +18,7 @@
                 <div class="describe">{{ requestStore.storeName }}</div>
               </div>
               <div class="operation" @click="modifyShopEdit">
-                <span style="color:#ff6200" v-if="requestStore.status ===1">审核中</span>
-                <span style="color:#333" v-else-if="requestStore.status ===2">审核通过</span>
-                <span style="color:#ff1a38" v-else-if="requestStore.status ===3">审核驳回</span>
-                <span v-else>申请修改</span>
+                <span v-html="getBtnText()"></span>
               </div>
             </div>
             <div class="storeWapper">
@@ -37,10 +34,7 @@
                 <div class="describe">{{ requestStore.address }}</div>
               </div>
               <div class="operation">
-                <span style="color:#ff6200" v-if="requestStore.status ===1">审核中</span>
-                <span style="color:#333" v-else-if="requestStore.status ===2">审核通过</span>
-                <span style="color:#ff1a38" v-else-if="requestStore.status ===3">审核驳回</span>
-                <span v-else>申请修改</span>
+                <span v-html="getBtnText()"></span>
               </div>
             </div>
             <div class="storeWapper">
@@ -48,7 +42,9 @@
                 <div class="text">门店品类</div>
                 <div class="describe"></div>
               </div>
-              <div class="operation">申请修改</div>
+              <div class="operation">
+                  <span v-html="getBtnText()"></span>
+              </div>
             </div>
             <div class="storeWapper">
               <div class="storeWapper-Item">
@@ -214,7 +210,13 @@ export default {
     modifyShopEdit(){
         this.$router.push({name:'modifyShopEdit',query:{storeId:this.requestStore.id,status:this.requestStore.status }})
     },
-
+    getBtnText(){
+        let _status = this.requestStore.status
+        if(_status === 0) return '申请修改'
+        else if(_status === 1) return '<span style="color:#333">审核中</span>'
+        else if(_status === 2) return '<span style="color:#333">审核通过</span>'
+        else if(_status === 6) return '<span style="color:#ff1a38">审核驳回</span>'
+    },
     /***
      *新增营业日
      */
