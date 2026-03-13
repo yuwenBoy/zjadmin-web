@@ -567,7 +567,7 @@ export default {
 
     // 返回列表
     goBack() {
-      this.$router.push({ name: 'AuditList' });
+      this.$router.go(-1);
     },
 
     // 审核通过
