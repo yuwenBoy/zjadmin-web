@@ -625,8 +625,9 @@ export default {
       this.form.longitude = addressInfo.lng;
       this.form.detail_address = addressInfo.name;
       this.showMap = false;
+      console.log(addressInfo)
       // 如果地图返回的adcode和级联选中的不一致，提示用户
-      if (addressInfo.adcode !== this.form.district_code) {
+      if (addressInfo.address !== this.form.detail_address) {
         this.$message.warning("地图定位位置与所选区域不一致，请重新选择");
       }
     },

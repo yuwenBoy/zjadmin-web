@@ -207,7 +207,7 @@ export default {
 
       this.dashLine = new this.AMap.Polyline({
         path: [p1, p2],
-        strokeColor: '#FF5000',
+        strokeColor: '#333',
         strokeWeight: 2,
         strokeOpacity: 1,
         strokeStyle: 'dashed',

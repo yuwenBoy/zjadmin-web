@@ -160,7 +160,7 @@
                 label="账号"
                 align="center"
               />
-              <el-table-column prop="cname" label="姓名" align="center" />
+              <el-table-column prop="cname" label="姓名" align="center" width="100"/>
               <el-table-column
                 prop="sex"
                 label="性别"

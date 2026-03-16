@@ -28,7 +28,7 @@
             <el-table-column prop="id" label="门店ID" align="center" width="80" />
             <el-table-column prop="storeName" label="门店名称" align="center" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="contactInfo" label="门店联系方式" align="center" show-overflow-tooltip>
+            <el-table-column prop="contactInfo" label="门店联系方式" width="150" align="center" show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="latitude" label="门店经度" align="center" show-overflow-tooltip>
             </el-table-column>
@@ -41,9 +41,9 @@
                 <span>{{ $enum.storeStatus[scope.row.status] }}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="createdAt" width="145" label="创建时间" align="center">
+            <el-table-column prop="createdAt" width="160" label="创建时间" align="center">
             </el-table-column>
-            <el-table-column prop="updatedAt" width="145" label="更新时间" align="center">
+            <el-table-column prop="updatedAt" width="160" label="更新时间" align="center">
             </el-table-column>
             <el-table-column label="操作" align="left" width="170">
               <template slot-scope="scope">

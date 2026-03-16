@@ -63,7 +63,6 @@ export function del(params) {
 }
 
 export function detail(data) {
-    debugger
   return request({
     url: "/store/getShopInfo",
     method: "post",

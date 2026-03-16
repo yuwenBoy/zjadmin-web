@@ -119,7 +119,7 @@
               >
             </template>
           </el-table-column>
-          <el-table-column label="目标对象" prop="targetId" align="center">
+          <el-table-column label="目标对象" prop="targetId" align="center" width="120">
             <template slot-scope="scope">
               <span v-if="scope.row.targetType === 1">商家</span>
               <span v-if="scope.row.targetType === 2">
