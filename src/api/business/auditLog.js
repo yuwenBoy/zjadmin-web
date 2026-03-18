@@ -19,7 +19,7 @@ export function auditReject(data) {
 }
 
 // 批量通过
-export function batchAuditPass(data) {
+export function auditPass(data) {
   return request({
     url: '/auditLog/batchPass',
     method: 'post',

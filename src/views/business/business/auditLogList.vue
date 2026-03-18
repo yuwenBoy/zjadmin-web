@@ -180,7 +180,7 @@
             width="180"
           >
             <template slot-scope="scope">
-              {{ parseRejectReason(scope.row.reason)}}
+              {{scope.row.status==1 ? scope.row.reason : parseRejectReason(scope.row.reason)}}
             </template>
           </el-table-column>
           <!-- 编辑与删除 -->
