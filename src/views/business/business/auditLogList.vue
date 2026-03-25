@@ -115,17 +115,17 @@
               >
               <el-tag v-if="scope.row.targetType === 2">门店修改</el-tag>
               <el-tag type="danger" v-if="scope.row.targetType === 3"
-                >订单</el-tag
+                >修改门店头像</el-tag
               >
             </template>
           </el-table-column>
-          <el-table-column label="目标对象" prop="targetId" align="center" width="120">
+          <el-table-column label="目标对象" prop="targetId" align="center" width="120" :show-overflow-tooltip="true">
             <template slot-scope="scope">
               <span v-if="scope.row.targetType === 1">商家</span>
               <span v-if="scope.row.targetType === 2">
                 {{ scope.row.store.id }} - {{ scope.row.store.storeName }}
               </span>
-              <span v-if="scope.row.targetType === 3">订单</span>
+              <span v-if="scope.row.targetType === 3">修改门店头像</span>
             </template>
           </el-table-column>
           <el-table-column

@@ -82,7 +82,7 @@ export default {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 9999; /* 确保在最上层 */
+  z-index: 1000; /* 确保在最上层 */
 }
 .bar-title {
   width: 180px;

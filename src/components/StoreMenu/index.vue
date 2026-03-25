@@ -40,7 +40,10 @@
         </div>
 
         <!-- 状态提示区 -->
-        <div class="store-down-online-desc">
+        <div class="store-down-online-desc"  :style="{
+              color: showMainStatus.statusRemarkColor || '#fff',
+              backgroundColor: showMainStatus.statusBgColor || '#999',
+            }">
           <div class="flex">
             <div class="tipsLeft">
               <img src= />
@@ -48,10 +51,9 @@
             </div>
           </div>
         </div>
-
         <!-- 今日营业状态（使用计算属性isTodayOpen） -->
         <div class="flex now-store-status">
-           <span class="text-no-job" v-if="isTodayOpen">
+           <span class="text-no-job" v-if="isTodayOpen" style="width:82%">
                 今日营业时间
               <div style="color: #999; font-size: 12px" v-html="shopStatusClickDetail.flexibleServingTimeStrList.toString()"></div>
            </span>
@@ -110,7 +112,7 @@
 </template>
   
 <script>
-import { queryShopStatusViewDetail } from "@/api/business/store"; 
+import { queryShopStatusViewDetail,onlineShop,closeShopDelay,closeShopImmediate,offlineShop } from "@/api/business/store"; 
 
 // 门店状态枚举（与后端对齐）
 const StoreStatusEnum = {
@@ -224,19 +226,19 @@ export default {
         let apiRes;
         switch (code) {
           case 1: // 立即上线/恢复营业
-            // apiRes = await onlineShop({ storeId: this.storeInfo.id });
+            apiRes = await onlineShop({ storeId: this.storeInfo.id });
             this.$message.success(operationTitle + '成功');
             break;
           case 2: // 5分钟后关店
-            // apiRes = await closeShopDelay({ storeId: this.storeInfo.id, delay: 5 });
+            apiRes = await closeShopDelay({ storeId: this.storeInfo.id, delay: 5 });
             this.$message.success('已设置5分钟后关店');
             break;
           case 3: // 立即关店
-            // apiRes = await closeShopImmediate({ storeId: this.storeInfo.id });
+            apiRes = await closeShopImmediate({ storeId: this.storeInfo.id });
             this.$message.success('门店已立即关店');
             break;
           case 4: // 门店下线
-            // apiRes = await offlineShop({ storeId: this.storeInfo.id });
+            apiRes = await offlineShop({ storeId: this.storeInfo.id });
             this.$message.success('门店已下线');
             break;
           default:

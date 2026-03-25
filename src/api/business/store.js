@@ -54,6 +54,15 @@ export function updateStoreAndSubmitAudit(data) {
   });
 }
 
+// 修改门店头像申请
+export function modifyShopAvatar(data) {
+  return request({
+    url: `/store/modifyShopAvatar`,
+    method: "post",
+    data
+  });
+}
+
 export function del(params) {
   return request({
     url: "/store/delete",
@@ -81,6 +90,63 @@ export function getStoreList(params) {
     params
   });
 }
+
+
+/**
+ * 门店上线
+ * case 1
+ * @param {*} data 
+ * @returns 
+ */
+export function onlineShop(data){
+    return request({
+        url: `/store/online`,
+        method: "post",
+        data
+    });
+}
+
+/**
+ * 5分钟后关店
+ * case 2
+ * @param {*} data 
+ * @returns 
+ */
+export function closeShopDelay(data){
+ return request({
+        url: `/store/close-delay`,
+        method: "post",
+        data
+    });
+}
+
+/**
+ * 立即关店
+ * case 3
+ * @param {*} data 
+ */
+export function closeShopImmediate(data){
+return request({
+        url: `/store/close-immediate`,
+        method: "post",
+        data
+    });
+}
+
+/**
+ * 门店下线
+ * case 4
+ * @param {*} data 
+ * @returns 
+ */
+export function offlineShop(data){
+    return request({
+        url: `/store/offline`,
+        method: "post",
+        data
+    });
+}
+
 
 export default {
   add,

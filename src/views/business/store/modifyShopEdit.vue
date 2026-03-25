@@ -534,7 +534,7 @@ export default {
         this.form.detail_address = data.store.detail_address;
         this.form.latitude = data.store.latitude;
         this.form.longitude = data.store.longitude;
-        this.rejectReason = JSON.parse(res.result.reason);
+        this.rejectReason = res.result.reason !='门店通过审核' ? JSON.parse(res.result.reason):'';
         this.getStateHeaderTtitle();
         this.$refs.mapSelectorRef.regeoCode(
           this.form.longitude,
@@ -587,8 +587,7 @@ export default {
     getStateHeaderTtitle() {
       if (this.storeStatus == 0) {
         this.headerTitle = "修改须知";
-        this.headerTitleSub =
-          "门店名称、门店地址、门店照片、门店环境照片、门店营业执照、门店许可证等信息";
+        this.headerTitleSub ="门店名称、门店地址、门店照片、门店环境照片、门店营业执照、门店许可证等信息";
       } else if (this.storeStatus == 1) {
         this.headerTitle = "修改审核中";
         this.headerTitleSub = "门店信息正在审核中，请耐心等待";

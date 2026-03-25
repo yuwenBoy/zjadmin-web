@@ -154,17 +154,13 @@ ipcMain.handle('get-auth-config', () => {
 // 登录成功后设置 Token
 ipcMain.handle('set-auth-token', async(event, token) => {
   try {
-    console.log('📥 [main.js] 收到 set-auth-token:', token ? token.substring(0, 10) + '...' : '空')
     // 存储 Token
     store.set('authToken', token)
     // 立即验证（确保写入成功）
     const savedToken = store.get('authToken')
     const success = savedToken === token
-    console.log('✅ [main.js] Token 存储验证:', success ? '成功' : '失败')
-    console.log('📁 [main.js] 当前 Store 文件内容:', JSON.stringify(store.store, null, 2))
     return { success, token: savedToken }
   } catch (error) {
-    console.error('❌ [main.js] Token 存储失败:', error)
     return { success: false, error: error.message }
   }
 })

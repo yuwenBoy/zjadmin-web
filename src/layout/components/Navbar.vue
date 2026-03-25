@@ -17,9 +17,9 @@
         <!-- <search id="header-search" class="right-menu-item" /> -->
         <store-menu id="business-store-container" class="business-store-container" v-if="user.userType==2"></store-menu>  
    
-        <el-tooltip content="全屏缩放" effect="dark" placement="bottom">
+        <!-- <el-tooltip content="全屏缩放" effect="dark" placement="bottom">
           <screenfull id="screenfull" class="right-menu-item hover-effect" />
-        </el-tooltip>
+        </el-tooltip> -->
 
         <el-tooltip content="布局设置" effect="dark" placement="bottom">
           <!-- <size-select id="size-select" class="right-menu-item hover-effect" /> -->
@@ -29,8 +29,9 @@
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
             <!-- <img :src="avatarUrl" class="user-avatar" /> -->
-            <user-avatar :src="user.avatar" class="user-avatar" />
-            <i class="el-icon-caret-bottom" />
+            <!-- <user-avatar :src="user.avatar" class="user-avatar" />
+            <i class="el-icon-caret-bottom" /> -->
+        账号:{{user.username}}
         </div>
         <el-dropdown-menu slot="dropdown">
           <span style="display: block" @click="show = true">  
@@ -185,7 +186,7 @@ background: #FFFFFF;
     }
 
     .avatar-container {
-      margin-right: 30px;
+      margin-right: 5px;
 
       .avatar-wrapper {
         margin-top: 5px;
