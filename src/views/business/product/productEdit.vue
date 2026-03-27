@@ -494,13 +494,13 @@ async created(){
     submitForm(form,submitType) {
           this.$refs[form].validate((valid) =>   {
           if (valid) {
-            console.log(this.form)
-            if(this.form.imageUrl instanceof Array){
-                this.form.imageUrl = this.form.imageUrl.map(t=>t.location);
-            }
-            else{
-                this.form.imageUrl = this.form.imageUrl.split(',');
-            }
+            // if(this.form.imageUrl instanceof Array){
+            //     this.form.imageUrl = this.form.imageUrl.map(t=>t.location);
+            // }
+            // else{
+            //     this.form.imageUrl = this.form.imageUrl.split(',');
+            // }
+             this.form.imageUrl = this.form.imageUrl.split(',');
             create(this.form).then(response => {
                 if(submitType==2){
                     // 发布并继续新建

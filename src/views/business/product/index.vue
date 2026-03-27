@@ -155,8 +155,7 @@
                                     <template slot-scope="scope">
                                         <div style="display:flex;align-items:center;justify-content:start !important;">
                                                 <div style="position:relative;">
-                                                    <el-image     fit="cover"
-                                                    referrerpolicy="no-referrer" style="width: 72px;height: 72px;border-radius: 10px;line-height: 72px;flex-wrap:nowrap;" :src="scope.row.imageUrl.split(',').length>0?scope.row.imageUrl.split(',')[0]:scope.row.imageUrl.split(',')" :preview-src-list="[scope.row.imageUrl.split(',')]">
+                                                    <el-image fit="cover" referrerpolicy="no-referrer" style="width: 72px;height: 72px;border-radius: 10px;line-height: 72px;flex-wrap:nowrap;" :src="scope.row.imageUrl.split(',').length>0?scope.row.imageUrl.split(',')[0]:scope.row.imageUrl.split(',')" :preview-src-list="[scope.row.imageUrl.split(',')]">
                                                     </el-image>
                                                     <span v-show="scope.row.isActive==2" style="background-color: rgba(0, 0, 0, 0.5);bottom: 0px;color: rgb(255, 255, 255);font-size: 12px;height: 20px;left: 0px; position: absolute;text-align: center;width: 100%;">已下架</span>
                                                 </div>

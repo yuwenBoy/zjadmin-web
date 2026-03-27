@@ -38,7 +38,6 @@ service.interceptors.request.use(
     let token;
     if (window.electronAPI) {
       const config = await window.electronAPI.getAppConfig()
-      console.log(config)
       token = config.token // Electron
     } else {
       token = getToken() // 浏览器
