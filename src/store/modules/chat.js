@@ -52,7 +52,9 @@ const mutations = {
     state.messages = []; // 切换会话时清空消息
   },
   ADD_MESSAGE(state, message) {
-    message.senderAvatar = message.senderAvatar ? Config.baseImgUrl + message.senderAvatar :Avatar;
+    message.senderAvatar = message.senderAvatar
+      ? Config.baseImgUrl + message.senderAvatar
+      : Avatar;
     state.messages.push(message);
   },
   SET_MESSAGES(state, messages) {
@@ -84,11 +86,23 @@ const mutations = {
   SET_CURRENT_CONTACT(state, contact) {
     state.currentContact = contact;
   },
-  UPDATE_CONTACT_LAST_MSG(state,{ contactId, lastMessage, lastTime, isIncoming = false,senderName, senderAvatar }) {
+  UPDATE_CONTACT_LAST_MSG(
+    state,
+    {
+      contactId,
+      lastMessage,
+      lastTime,
+      isIncoming = false,
+      senderName,
+      senderAvatar
+    }
+  ) {
     // ✅ 类型安全：统一转成数字
     const targetId = Number(contactId);
     let contact = state.contactList.find(c => Number(c.id) === targetId);
-    const isCurrentChat = state.currentContact && Number(state.currentContact.id) === parseInt(targetId);
+    const isCurrentChat =
+      state.currentContact &&
+      Number(state.currentContact.id) === parseInt(targetId);
     // ✅ 查找联系人（如果找不到，自动创建）
     if (contact) {
       contact.last_message = lastMessage;
@@ -96,19 +110,19 @@ const mutations = {
       // ✅ 根据 isIncoming 更新未读数
       if (isIncoming) {
         if (!isCurrentChat) {
-            contact.unread_count = (parseInt(contact.unread_count) || 0) + 1;
+          contact.unread_count = (parseInt(contact.unread_count) || 0) + 1;
         }
       } else {
         contact.unread_count = 0; // ✅ 自己发的：未读清零
       }
-    }else{
-        contact = {
+    } else {
+      contact = {
         id: targetId,
         name: senderName || `用户${targetId}`,
         avatar: senderAvatar ? Config.baseImgUrl + senderAvatar : Avatar,
         last_message: lastMessage,
         last_time: lastTime,
-        unread_count: (isIncoming && !isCurrentChat) ? 1 : 0
+        unread_count: isIncoming && !isCurrentChat ? 1 : 0
       };
       state.contactList.push(contact);
     }
@@ -171,32 +185,46 @@ const actions = {
         senderName: message.senderCname,
         senderAvatar: message.senderAvatar
       });
-       commit("ADD_MESSAGE", message);
-        // ✅ 关键：如果是当前会话，立即发送已读回执
-        const isCurrentChat = state.currentContact &&  Number(state.currentContact.id) === message.senderId;
-        if (isCurrentChat) {
-          setTimeout(()=>{
-              // 当前会话：立即标记已读
-            socket.emit("mark_as_read", { messageIds: [message.id] });
-            console.log("当前会话，自动发送已读回执:", message.id);
-          }, 1000)
-        }else{
-            let ipcRenderer = getIpcRenderer();
-            if (ipcRenderer) {
-                window.electronAPI.notify("message");
-            }
+      commit("ADD_MESSAGE", message);
+      // ✅ 关键：如果是当前会话，立即发送已读回执
+      const isCurrentChat =
+        state.currentContact &&
+        Number(state.currentContact.id) === message.senderId;
+      if (isCurrentChat) {
+        setTimeout(() => {
+          // 当前会话：立即标记已读
+          socket.emit("mark_as_read", { messageIds: [message.id] });
+          console.log("当前会话，自动发送已读回执:", message.id);
+        }, 1000);
+      } else {
+        let ipcRenderer = getIpcRenderer();
+        if (ipcRenderer) {
+          window.electronAPI.notify("message");
         }
+      }
+    });
+
+    // ==============================
+    // 🔥 监听【新订单推送】给商家
+    // ==============================
+    socket.on("new_shop_order", order => {
+      console.log("📦 收到新订单：", order);
+      const ipcRenderer = getIpcRenderer();
+      if (ipcRenderer) {
+        // 发送消息给主进程，弹出订单弹窗
+        window.electronAPI.notify("newOrder");
+      }
     });
 
     // ✅ 监听自己发送的消息确认
     socket.on("message_sent", message => {
       console.log("📤 消息发送确认:", message);
-      setTimeout(()=>{
-         socket.emit("mark_as_delivered", { messageIds: [message.id] });
-         console.log("自动发送已送达回执:", message.id);
-      }, 1000)
+      setTimeout(() => {
+        socket.emit("mark_as_delivered", { messageIds: [message.id] });
+        console.log("自动发送已送达回执:", message.id);
+      }, 1000);
       if (state.currentChat) {
-          commit("ADD_MESSAGE", message);
+        commit("ADD_MESSAGE", message);
       }
     });
 
@@ -254,8 +282,8 @@ const actions = {
   },
 
   // 获取联系人列表
-  async loadContacts({ commit, state },{type}) {
-    const response = await getChatContactList({type});
+  async loadContacts({ commit, state }, { type }) {
+    const response = await getChatContactList({ type });
     commit("SET_CONTACT_LIST", response.result);
     // if (response.result.length > 0) {
     //   commit("SET_CURRENT_CONTACT", response.result[0]);

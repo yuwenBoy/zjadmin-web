@@ -114,8 +114,10 @@ function stopFlash() {
 // 播放声音
 async function playSound(type) {
    try {
+    console.log('🔈开始播放声音' + type)
     // https://www.aigei.com/sound/ui/?sub=xi_tong_ti_shi_13#resContainer
     const fileName = soundMap[type] || 'msg.mp3'
+    console.log('🔈播放声音 ', fileName)
     const soundPath = path.join(staticPath, 'sounds', fileName)
     await sound.play(soundPath)
   } catch (err) {
