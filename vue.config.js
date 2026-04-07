@@ -33,6 +33,26 @@ module.exports = {
         '@': resolve('src'),
         '@crud': resolve('src/components/Crud')
       }
+    },
+    // 代码分割
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            name: 'vendor',
+            test: /[\\/]node_modules[\\/]/,
+            priority: 10,
+            chunks: 'initial' // 只打包初始时依赖的第三方
+          },
+          common: {
+            name: 'common',
+            minChunks: 2,
+            priority: 5,
+            reuseExistingChunk: true
+          }
+        }
+      }
     }
   },
   pluginOptions: {

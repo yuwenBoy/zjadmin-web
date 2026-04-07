@@ -107,49 +107,60 @@
                                 </div>   
                         </div>
                         <div class="table">
-                            <div class="batchAll flex" v-if="isActiveIndex==-1">
-                                <div class="batchItem">
-                                    <span class="batch-item-home">批量:</span>
-                                    <span v-show="selectProductList.length>0">已选<span style="color:#409EFF">{{selectProductList.length}}</span>个 <el-link :underline="false" style="padding-left:15px;color:#1a71ff" @click="crud.selectAllChange([])">取消选择</el-link> </span>
-                                    <span class="batch-item-list inActived" @click="updateIsActive(selectProductList,1)">上架</span>
-                                    <span class="batch-item-list downActived" @click="updateIsActive(selectProductList,2)">下架</span>
-                                    <span class="batch-item-list delActived">删除</span>
-                                    <span class="batch-item-list inActived" @click="batchEditProduct('1',selectProductList)">改分组</span>
-                                    <span class="batch-item-list inActived">改库存</span>
-                                    <el-dropdown trigger="click" class="batch-item-list"  @command="handleMenuCommand">
-                                        <span class="el-dropdown-link">
-                                            更多<i class="el-icon-arrow-down el-icon--right"></i>
-                                        </span>
-                                        <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item command="3">改打包费</el-dropdown-item>
-                                            <el-dropdown-item command="4">改份量规格</el-dropdown-item>
-                                            <el-dropdown-item command="5">改属性规格</el-dropdown-item>
-                                            <el-dropdown-item>改加料规格</el-dropdown-item>
-                                            <el-dropdown-item command="2">改描述</el-dropdown-item>
-                                        </el-dropdown-menu>
-                                    </el-dropdown>
+                            <div class="batchAll" v-if="isActiveIndex==-1">
+                                <div class="batchAll-top">
+                                    <div class="batchItem">
+                                        <span class="batch-item-home">批量:</span>
+                                        <span v-show="selectProductList.length>0">已选<span style="color:#409EFF">{{selectProductList.length}}</span>个 <el-link :underline="false" style="padding-left:15px;color:#1a71ff" @click="crud.selectAllChange([])">取消选择</el-link> </span>
+                                        <span class="batch-item-list inActived" @click="updateIsActive(selectProductList,1)">上架</span>
+                                        <span class="batch-item-list downActived" @click="updateIsActive(selectProductList,2)">下架</span>
+                                        <span class="batch-item-list delActived">删除</span>
+                                        <span class="batch-item-list inActived" @click="batchEditProduct('1',selectProductList)">改分组</span>
+                                        <span class="batch-item-list inActived">改库存</span>
+                                        <el-dropdown trigger="click" class="batch-item-list"  @command="handleMenuCommand">
+                                            <span class="el-dropdown-link">
+                                                更多<i class="el-icon-arrow-down el-icon--right"></i>
+                                            </span>
+                                            <el-dropdown-menu slot="dropdown">
+                                                <el-dropdown-item command="3">改打包费</el-dropdown-item>
+                                                <el-dropdown-item command="4">改份量规格</el-dropdown-item>
+                                                <el-dropdown-item command="5">改属性规格</el-dropdown-item>
+                                                <el-dropdown-item>改加料规格</el-dropdown-item>
+                                                <el-dropdown-item command="2">改描述</el-dropdown-item>
+                                            </el-dropdown-menu>
+                                        </el-dropdown>
+                                    </div>
                                 </div>
-                                <div class="create-product">
-                                    <el-dropdown class="custom-dropdown" split-button type="primary" @command="createProductCommand">
-                                        <span class="el-dropdown-link" style="vertical-align:bottom">快速录菜</span>
-                                        <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item command="1">
-                                                手动录菜
-                                                <div><small class="grey-text">定制特色商品，突出商品卖点</small></div>
-                                            </el-dropdown-item>
-                                            <el-dropdown-item command="2">
-                                                新建套餐
-                                                <div><small class="grey-text">搭配单品为套餐，顾客可快速下单</small></div>
-                                            </el-dropdown-item>
-                                            <el-dropdown-item command="3">
-                                                复制新建
-                                                <div><small class="grey-text">复制店内商品，稍加修改即可发布</small></div>
-                                            </el-dropdown-item>
-                                        </el-dropdown-menu>
-                                    </el-dropdown>
+                                <div class="batchAll-bottom">
+                                    <div class="create-product">
+                                        <el-dropdown class="custom-dropdown" split-button type="primary" @command="createProductCommand">
+                                            <span class="el-dropdown-link" style="vertical-align:bottom">快速录菜</span>
+                                            <el-dropdown-menu slot="dropdown">
+                                                <el-dropdown-item command="1">
+                                                    手动录菜
+                                                    <div><small class="grey-text">定制特色商品，突出商品卖点</small></div>
+                                                </el-dropdown-item>
+                                                <el-dropdown-item command="2">
+                                                    新建套餐
+                                                    <div><small class="grey-text">搭配单品为套餐，顾客可快速下单</small></div>
+                                                </el-dropdown-item>
+                                                <el-dropdown-item command="3">
+                                                    复制新建
+                                                    <div><small class="grey-text">复制店内商品，稍加修改即可发布</small></div>
+                                                </el-dropdown-item>
+                                            </el-dropdown-menu>
+                                        </el-dropdown>
+                                    </div>
+                                    <div class="view-mode">
+                                        <el-radio-group v-model="viewMode" size="small">
+                                            <el-radio-button label="table">表格</el-radio-button>
+                                            <el-radio-button label="card">卡片</el-radio-button>
+                                        </el-radio-group>
+                                    </div>
                                 </div>
                             </div>
-                            <el-table ref="table" v-if="productList.length>0" :data="productList" highlight-current-row @selection-change="changeTable">
+                            <!-- 表格展示方式 -->
+                            <el-table ref="table" v-if="viewMode === 'table' && productList.length>0" :data="productList" highlight-current-row @selection-change="changeTable">
                                 <el-table-column v-if="isActiveIndex==-1" type="selection" align="center" width="45" />
                                 <el-table-column v-if="groupItem" :label="isActiveIndex==-1 && groupItem.name ? `${groupItem.name} (${groupItem.product_count})`:''">
                                     <template slot-scope="scope">
@@ -196,7 +207,68 @@
                                     </template>
                                 </el-table-column>
                             </el-table>
-                            <div v-else class="no-product">
+                            
+                            <!-- 卡片展示方式 -->
+                            <div class="product-card-container" v-if="viewMode === 'card' && productList.length>0">
+                                <div class="product-card" v-for="(product, index) in productList" :key="product.id">
+                                    <div class="product-card-header">
+                                        <div class="product-checkbox" v-if="isActiveIndex==-1">
+                                            <el-checkbox v-model="product.checked" @change="handleProductCheck(product)"></el-checkbox>
+                                        </div>
+                                        <div class="product-status" v-if="product.isActive==2">
+                                            已下架
+                                        </div>
+                                        <div class="product-status sold-out" v-else-if="Math.max(...product.specs.map(t=>t.stock))<=0">
+                                            已售罄
+                                        </div>
+                                    </div>
+                                    <div class="product-image">
+                                        <el-image 
+                                            fit="cover" 
+                                            referrerpolicy="no-referrer" 
+                                            :src="product.imageUrl.split(',').length>0?product.imageUrl.split(',')[0]:product.imageUrl.split(',')" 
+                                            :preview-src-list="[product.imageUrl.split(',')]"
+                                        >
+                                        </el-image>
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="product-name">{{ product.productName }}</div>
+                                        <div class="product-sales">月售：0</div>
+                                        <div class="product-price">
+                                            ¥{{product.specs.length>1 && product.specs.some(t=>t.price!=t.price)? (Math.min(...product.specs.map(t=>parseFloat(t.price))) +'~'+Math.max(...product.specs.map(t=>parseFloat(t.price)))):product.specs[0].price}}
+                                        </div>
+                                        <div class="product-packing" v-if="product.specs.length==1">
+                                            打包费¥{{ product.specs[0].packingPrice }}
+                                        </div>
+                                        <div class="product-packing" v-else-if="product.specs.length>1 && (Math.min(...product.specs.map(t=>t.packingPrice && parseFloat(t.packingPrice)))==0 && Math.max(...product.specs.map(t=>parseFloat(t.packingPrice)))) ==0">
+                                            打包费¥0
+                                        </div>
+                                        <div class="product-packing" v-else>
+                                            打包费¥{{ Math.min(...product.specs.map(t=>t.packingPrice && parseFloat(t.packingPrice))) +'~'+Math.max(...product.specs.map(t=>parseFloat(t.packingPrice))) }}
+                                        </div>
+                                        <div class="product-stock">
+                                            库存{{Math.max(...product.specs.map(t=>t.stock))}}
+                                        </div>
+                                    </div>
+                                    <div class="product-actions">
+                                        <el-button 
+                                            size="small" 
+                                            :type="product.isActive==1?'default':'primary'" 
+                                            :plain="product.isActive==2"
+                                            @click="updateIsActive([product], product.isActive==1?2:1)"
+                                        >
+                                            {{ product.isActive==1?'下架':'上架' }}
+                                        </el-button>
+                                        <el-button size="small" type="info" @click="editProduct(product)">
+                                            编辑
+                                        </el-button>
+                                        <el-button size="small" type="danger" @click="remove(product)">
+                                            删除
+                                        </el-button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="productList.length==0" class="no-product">
                                 <div class="empty">
                                 </div>
                                 <div class="text">
@@ -249,6 +321,7 @@ export default {
       productCountObject:{},
       productList:[],
       selectProductList:[],
+      viewMode: 'table', // 展示方式：table（表格）、card（卡片）
       batchEditDialog:false, // 批量改分组
       batchEditType:"1",// 默认1 批量改分组
       title:'批量改分组', // 批量改分组
@@ -369,6 +442,16 @@ export default {
      */
     changeTable(row){
       this.selectProductList=row;
+    },
+    /**
+     * 处理商品选择
+     */
+    handleProductCheck(product){
+      if(product.checked){
+        this.selectProductList.push(product);
+      }else{
+        this.selectProductList = this.selectProductList.filter(item => item.id !== product.id);
+      }
     },
 
     /**
@@ -684,6 +767,22 @@ s.group-list .group-item .el-icon-edit {
     padding: 15px;
 }
 
+.batchAll-top {
+    margin-bottom: 10px;
+}
+
+.batchAll-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.view-mode {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+}
+
 .product-options .table .batchAll .batch-item-home {
     color: #666;
 }
@@ -722,6 +821,141 @@ s.group-list .group-item .el-icon-edit {
 }
 .el-alert__icon.is-big{font-size: 16px;}
 .el-alert.is-light .el-alert__closebtn{display: none;}
+
+/* 商品卡片样式 */
+.product-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.product-card {
+    width: 280px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.product-card-header {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.product-checkbox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.product-status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.product-status.sold-out {
+    background-color: #ff4d4f;
+}
+
+.product-image {
+    width: 100%;
+    height: 180px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-info {
+    margin-bottom: 15px;
+}
+
+.product-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333333;
+    margin-bottom: 8px;
+    line-height: 1.4;
+    height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.product-sales {
+    font-size: 12px;
+    color: #999999;
+    margin-bottom: 8px;
+}
+
+.product-price {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ff4d4f;
+    margin-bottom: 4px;
+}
+
+.product-packing {
+    font-size: 12px;
+    color: #999999;
+    margin-bottom: 4px;
+}
+
+.product-stock {
+    font-size: 12px;
+    color: #999999;
+}
+
+.product-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+}
+
+.product-actions .el-button {
+    flex: 1;
+}
+
+/* 响应式调整 */
+@media screen and (max-width: 1200px) {
+    .product-card {
+        width: calc(33.333% - 14px);
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .product-card {
+        width: calc(50% - 10px);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .product-card {
+        width: 100%;
+    }
+}
 </style>
 
   

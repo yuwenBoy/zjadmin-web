@@ -178,6 +178,7 @@ export default {
         console.error("加载失败:", error);
       } finally {
         this.isLoadingMore = false;
+        this.isLoadingHistory = false; // 确保在任何情况下都重置加载状态
       }
     },
     handleImScroll() {
@@ -218,7 +219,14 @@ export default {
       } else {
         payload.groupId = this.currentContact.id;
 
-        await this.$store.dispatch("chat/sendGroupMessage", {});
+        await this.$store.dispatch("chat/sendGroupMessage", payload);
+        const message = {
+          targetId: this.currentContact.id,
+          lastMessage: this.newMessage.trim(),
+          lastTime: new Date().toISOString()
+        };
+        await this.$store.dispatch("chat/updateMessage", message);
+        this.handleSentMessage(message)
       }
       this.newMessage = "";
       // 强制滚动
@@ -228,18 +236,15 @@ export default {
     // 滚动到底部(发送消息时用)
     scrollToBottom(force = false) {
       this.$nextTick(() => {
-        setTimeout(() => {
-          const el = this.$refs.messageList;
-          if (!el) return;
+        const el = this.$refs.messageList;
+        if (!el) return;
 
-          // 判断是否已经在底部（允许100px误差）
-          const isAtBottom =
-            el.scrollHeight - el.clientHeight - el.scrollTop < 100;
-          // 强制滚动 或 已在底部
-          if (force || isAtBottom) {
-            el.scrollTop = el.scrollHeight + 9999;
-          }
-        }, 50);
+        // 判断是否已经在底部（允许100px误差）
+        const isAtBottom = el.scrollHeight - el.clientHeight - el.scrollTop < 100;
+        // 强制滚动 或 已在底部
+        if (force || isAtBottom) {
+          el.scrollTop = el.scrollHeight;
+        }
       });
     },
     getMessageStatusText(message) {

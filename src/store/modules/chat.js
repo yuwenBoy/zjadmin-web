@@ -273,12 +273,12 @@ const actions = {
   // 更新消息
   updateMessage({ state, commit }, { targetId, lastMessage, lastTime }) {
     // ✅ 异步通知后端（不影响前端响应）
-    state.socket.emit("message_update", messsage => {
+    state.socket.emit("message_update", { targetId, lastMessage, lastTime }, () => {
       // ✅ 直接本地更新，不等待后端（假设后端一定会成功）
-      commit("UPDATE_CONTACT_LAST_MSG", { ...messsage });
-      console.log("🚀 本地更新消息状态", messsage);
-      return Promise.resolve({ targetId, lastMessage, lastTime });
+      commit("UPDATE_CONTACT_LAST_MSG", { contactId: targetId, lastMessage, lastTime, isIncoming: false });
+      console.log("🚀 本地更新消息状态", { targetId, lastMessage, lastTime });
     });
+    return Promise.resolve({ targetId, lastMessage, lastTime });
   },
 
   // 获取联系人列表

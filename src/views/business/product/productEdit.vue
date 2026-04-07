@@ -366,25 +366,12 @@ async created(){
 
       this.$nextTick(() => {
         const targetElement = this.$refs[contentRef];
-
         if (targetElement) {
-          // 先使用 scrollIntoView 将目标元素滚动到视口内
+          // 直接使用scrollIntoView方法，确保元素可见
           targetElement.scrollIntoView({
             behavior: 'smooth',
-            block: 'start', // 将目标元素滚动到视口的顶部
+            block: 'start'
           });
-
-          // 等待滚动动画完成后再调整滚动位置
-          setTimeout(() => {
-            // 计算目标元素的顶部位置
-            const targetTop = targetElement.getBoundingClientRect().top + window.pageYOffset;
-
-            // 手动调整滚动位置，留出一定的偏移量
-            window.scrollTo({
-              top: targetTop - 80, // 偏移量可以根据实际情况调整
-              behavior: 'smooth'
-            });
-          }, 500); // 等待滚动动画完成（500ms）
         }
       });
    },

@@ -5,25 +5,25 @@ Vue.use(Router)
 export const constantRouterMap = [{
   path: '/login',
   meta: { title: '登录选择', noCache: true },
-  component: (resolve) => require(['@/views/system/loginType'], resolve),
+  component: () => import('@/views/system/loginType'),
   hidden: true
 },
 {
     path: '/businessLogin',
     meta: { title: '登录', noCache: true },
-    component: (resolve) => require(['@/views/business/login'], resolve),
+    component: () => import('@/views/business/login'),
     hidden: true
 },
 {
   path: '/adminLogin',
   meta: { title: '登录', noCache: true },
-  component: (resolve) => require(['@/views/login'], resolve),
+  component: () => import('@/views/login'),
   hidden: true
 },
 {
     path: '/merchantApplication',
     meta: { title: '商家入驻申请', noCache: false },
-    component: (resolve) => require(['@/views/business/business/merchantApplication'], resolve),
+    component: () => import('@/views/business/business/merchantApplication'),
     hidden: true
 },
 {
@@ -32,14 +32,14 @@ export const constantRouterMap = [{
     redirect: '/dashboard',
     children:[{
         path: 'dashboard',
-        component: (resolve) => require(['@/views/system/home'], resolve),
+        component: () => import('@/views/system/home'),
         name: 'dashboard',
         meta: { title: '系统首页', icon: 'index', affix: true, noCache: true }
       }]
 },
 {
   path: '/404',
-  component: (resolve) => require(['@/views/features/404'], resolve),
+  component: () => import('@/views/features/404'),
   hidden: true
 },
 {
@@ -48,7 +48,7 @@ export const constantRouterMap = [{
   hidden: true,
   children: [{
     path: '/redirect/:path*',
-    component: (resolve) => require(['@/views/features/redirect'], resolve)
+    component: () => import('@/views/features/redirect')
   }]
 },
 {
@@ -58,7 +58,7 @@ export const constantRouterMap = [{
   redirect: 'noredirect',
   children: [{
     path: 'profile',
-    component: (resolve) => require(['@/views/system/user/profile/index'], resolve),
+    component: () => import('@/views/system/user/profile/index'),
     name: '个人中心',
     meta: { title: '个人中心' }
   }]

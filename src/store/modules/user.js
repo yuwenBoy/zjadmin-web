@@ -45,7 +45,8 @@ const user = {
                         setUserInfo(data, commit)
                         // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
                         commit('SET_LOAD_MENUS', true);
-                        commit('settings/CHANGE_SETTING', { key: 'tagsView', value: userType==1?true:false });
+                        // 根据 userType 设置 tagsView：1 为后台系统显示标签页，其他为商家版不显示标签页
+                        commit('settings/CHANGE_SETTING', { key: 'tagsView', value: userType === 1 ? true : false });
                         resolve();
                 }).catch(error => {
                     reject(error)

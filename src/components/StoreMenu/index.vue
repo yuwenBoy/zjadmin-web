@@ -148,7 +148,10 @@ export default {
     this.storeList = this.$store.state.user.user.business.store || [];
     this.storeInfo = this.storeList.find((t) => t.isDefault == 1) || {};
   },
-  mounted() {},
+  mounted() {
+    // 组件挂载时加载门店状态
+    this.handlePopoverOpen();
+  },
   computed: {
     // ✅ 仅保留computed中的isTodayOpen计算属性
     isTodayOpen() {
