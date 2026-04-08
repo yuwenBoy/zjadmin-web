@@ -13,10 +13,10 @@ export default {
       default: Avatar,
     },
   },
-  data() {
-    return {
-      imageUrl: this.src || Avatar,
-    };
+  computed: {
+    imageUrl() {
+      return this.src || Avatar;
+    },
   },
 };
 </script>

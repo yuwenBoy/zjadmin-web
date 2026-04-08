@@ -125,86 +125,69 @@ export default {
   height: 50px;
   overflow: hidden;
   position: relative;
-//   background: #00d1d3;  
-background: #FFFFFF;  
-  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);  
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  
   .hamburger-container {
-    line-height: 46px;    
-    height: 100%;
-    float: left;    
+    margin-right: 20px;
     cursor: pointer;
-    transition: background 0.3s;
-    -webkit-tap-highlight-color: transparent;
-
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 4px;
+    
     &:hover {
-      background: rgba(0, 0, 0, 0.025);
+      background: #f0f2f5;
     }
   }
 
   .breadcrumb-container {
-    float: left;
-  }
-
-  .errLog-container {
-    display: inline-block;
-    vertical-align: top;
+    flex: 1;
+    font-size: 14px;
+    color: #606266;
   }
 
   .right-menu {
-    float: right;
-    height: 100%;
-    line-height: 50px;
-
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
     &:focus {
       outline: none;
     }
-    .data {
-      position: absolute;
-      right: 392px;  
-    }
-    .data:hover {
-      border: 1px solid red;
-      transition: all 0.3s;
-    }
 
     .right-menu-item {
-      display: inline-block;
-      padding: 0 8px;
-      height: 100%;
-      font-size: 18px;
-      color: #5a5e66;
-      vertical-align: text-bottom;
-
+      padding: 8px 12px;
+      font-size: 14px;
+      color: #606266;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      
       &.hover-effect {
         cursor: pointer;
-        transition: background 0.3s;
-
+        
         &:hover {
-          background: rgba(0, 0, 0, 0.025);
+          background: #f0f2f5;
+          color: #303133;
         }
       }
     }
 
     .avatar-container {
-      margin-right: 5px;
-
       .avatar-wrapper {
-        margin-top: 5px;
-        position: relative;
-
-        .user-avatar {
-          cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 40px;
-        }
-
-        .el-icon-caret-bottom {
-          cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
+        padding: 8px 12px;
+        border-radius: 4px;
+        background: #f0f2f5;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: 14px;
+        color: #606266;
+        
+        &:hover {
+          background: #e4e7ed;
+          color: #303133;
         }
       }
     }

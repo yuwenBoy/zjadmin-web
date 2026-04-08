@@ -1,17 +1,44 @@
 <!--即时通讯弹出框组件-->
 <template>
    <el-dialog :visible.sync="dialogVisible" custom-class="IM-Window" v-if="dialogVisible" :append-to-body="true" :modal-append-to-body="true" :close-on-click-modal="false" 
-              style="width:912px;height:580px;min-width:710px;min-height:500px;position:fixed;inset:auto 80px 24px auto;background-color: rgb(255, 255, 255);
-                    border: 1px solid rgb(241, 241, 241);
-                    border-radius: 8px;
-                    overflow: hidden;
-                    box-sizing: border-box;
-                    box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 24px 0px;">
+              :style="dialogStyle">
        <slot name="title">
             <div class="im-header-list">
                 <div class="left-online">
-                    <span class="contact-name"></span>
-                 </div> 
+                    <div class="status-container">
+                        <div class="avatar">
+                            <i class="el-icon-user"></i>
+                        </div>
+                        <div class="status-dropdown">
+                            <div class="status-indicator" :class="statusClass" @click="showStatusMenu = !showStatusMenu"></div>
+                            <div class="status-menu" v-if="showStatusMenu">
+                                <div class="status-item" @click="setStatus('online')">
+                                    <div class="status-dot online"></div>
+                                    <span>在线</span>
+                                    <i v-if="currentUserStatus === 'online'" class="el-icon el-icon-check"></i>
+                                </div>
+                                <div class="status-item" @click="setStatus('busy')">
+                                    <div class="status-dot busy"></div>
+                                    <div class="status-content">
+                                        <div class="status-title">忙碌</div>
+                                        <div class="status-desc">自动回复顾客首条需回复消息，后续消息仍需处理</div>
+                                    </div>
+                                    <i v-if="currentUserStatus === 'busy'" class="el-icon el-icon-check"></i>
+                                </div>
+                                <div class="status-item divider"></div>
+                                <div class="status-item" @click="setStatus('offline')">
+                                    <div class="status-dot offline"></div>
+                                    <div class="status-content">
+                                        <div class="status-title">关闭</div>
+                                        <div class="status-desc">关闭后，不能与顾客和骑手在线沟通</div>
+                                    </div>
+                                    <i v-if="currentUserStatus === 'offline'" class="el-icon el-icon-check"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> 
                 <div class="right-btn">
                     <i class="el-icon el-icon-setting"></i>
                     <i class="el-icon el-icon-close" @click="closeDialog"></i>
@@ -41,27 +68,83 @@ export default {
   data() {
     return {
       dialogVisible: false,
+      showStatusMenu: false
     };
   },
   computed: {
-     ...mapState('chat', ['currentContact']),
+     ...mapState('chat', ['currentContact', 'currentUserStatus']),
+     statusClass() {
+       switch(this.currentUserStatus) {
+         case 'online': return 'online';
+         case 'busy': return 'busy';
+         case 'offline': return 'offline';
+         default: return 'offline';
+       }
+     },
+     statusText() {
+       switch(this.currentUserStatus) {
+         case 'online': return '在线';
+         case 'busy': return '忙碌';
+         case 'offline': return '关闭';
+         default: return '关闭';
+       }
+     },
+     dialogStyle() {
+       let backgroundColor = '#ffffff';
+       switch (this.currentUserStatus) {
+         case 'online':
+           backgroundColor = '#e6f7ff';
+           break;
+         case 'busy':
+           backgroundColor = '#fff7e6';
+           break;
+         case 'offline':
+           backgroundColor = '#f5f5f5';
+           break;
+       }
+       return {
+         width: '912px',
+         height: '580px',
+         minWidth: '710px',
+         minHeight: '500px',
+         position: 'fixed',
+         inset: 'auto 80px 24px auto',
+         backgroundColor: backgroundColor,
+         border: '1px solid rgb(241, 241, 241)',
+         borderRadius: '8px',
+         overflow: 'hidden',
+         boxSizing: 'border-box',
+         boxShadow: 'rgba(0, 0, 0, 0.2) 0px 8px 24px 0px'
+       };
+     }
   },
   watch: {
   },
   mounted() {
+    // 从WebSocket连接中获取初始状态
+    this.getInitialStatus();
   },
   methods: {
+    // 获取初始状态
+    getInitialStatus() {
+      // 从WebSocket连接中获取初始状态
+      // 初始状态默认为offline，实际状态会在WebSocket连接成功后更新
+      console.log('初始化状态为:', this.currentUserStatus);
+    },
     // 打开弹窗
    async openDialog() {
       this.dialogVisible = true;
+      // 添加点击外部关闭菜单的事件监听器
+      setTimeout(() => {
+        document.addEventListener('click', this.handleClickOutside);
+      }, 100);
     },
     // 关闭弹窗
     closeDialog() {
         this.dialogVisible = false;
         this.$store.commit('chat/SET_CURRENT_CONTACT', {})
-        console.log('关闭弹窗');
-        // 看下currentContact里的数据
-        console.log('看下currentContact里的数据', this.$store.state.chat.currentContact);
+        // 移除点击外部关闭菜单的事件监听器
+        document.removeEventListener('click', this.handleClickOutside);
      },
     // 切换当前聊天对象
     selectContact(contact) {
@@ -88,6 +171,27 @@ export default {
         }
       });
     },
+    // 设置状态
+    setStatus(status) {
+      this.showStatusMenu = false;
+      // 更新Vuex中的当前用户状态
+      this.$store.commit('chat/UPDATE_CURRENT_USER_STATUS', status);
+      // 通过WebSocket发送状态变更
+      if (this.$store.state.chat.socket) {
+        this.$store.state.chat.socket.emit('update_status', { status });
+        console.log('通过WebSocket发送状态变更:', status);
+      } else {
+        console.error('WebSocket未连接，无法发送状态变更');
+      }
+      console.log('设置状态为:', status);
+    },
+    // 点击外部关闭菜单
+    handleClickOutside(event) {
+      const statusDropdown = document.querySelector('.status-dropdown');
+      if (statusDropdown && !statusDropdown.contains(event.target)) {
+        this.showStatusMenu = false;
+      }
+    }
   }
 };
 </script>
@@ -111,6 +215,138 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        .left-online {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            .status-container {
+                position: relative;
+                width: 45px;
+                height: 45px;
+                .avatar {
+                    width: 45px;
+                    height: 45px;
+                    margin: 0px;
+                    background-color: #f0f0f0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    color: #666;
+                }
+                .status-dropdown {
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                    .status-indicator {
+                        width: 12px;
+                        height: 12px;
+                        border-radius: 50%;
+                        border: 2px solid white;
+                        cursor: pointer;
+                        &.online {
+                            background-color: #67C23A;
+                        }
+                        &.busy {
+                            background-color: #E6A23C;
+                        }
+                        &.offline {
+                            background-color: #909399;
+                        }
+                    }
+                    .status-menu {
+                        position: absolute;
+                        top: 5px;
+                        left: -35px;
+                        margin-top: 8px;
+                        background-color: white;
+                        border: 1px solid #e4e7ed;
+                        border-radius: 4px;
+                        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+                        z-index: 9999;
+                        min-width: 280px;
+                        .status-item {
+                            padding: 10px 16px;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: flex-start;
+                            gap: 12px;
+                            &:hover {
+                                background-color: #f5f7fa;
+                            }
+                            &.divider {
+                                border-top: 1px solid #e4e7ed;
+                                margin: 5px 0;
+                                padding: 0px;
+                            }
+                            .status-dot {
+                                width: 12px;
+                                height: 12px;
+                                border-radius: 50%;
+                                margin-top: 2px;
+                                &.online {
+                                    background-color: #67C23A;
+                                }
+                                &.busy {
+                                    background-color: #E6A23C;
+                                }
+                                &.offline {
+                                    background-color: #909399;
+                                }
+                            }
+                            span {
+                                flex: 1;
+                            }
+                            .status-content {
+                                flex: 1;
+                                .status-title {
+                                    font-size: 14px;
+                                    color: #303133;
+                                    margin-bottom: 4px;
+                                }
+                                .status-desc {
+                                    font-size: 12px;
+                                    color: #909399;
+                                    white-space: normal;
+                                    line-height: 1.4;
+                                    margin-left: -20px;
+                                }
+                            }
+                            i {
+                                color: #409EFF;
+                                font-size: 14px;
+                                margin-left: 8px;
+                                margin-top: 2px;
+                            }
+                            small {
+                                font-size: 12px;
+                                color: #909399;
+                                white-space: normal;
+                                line-height: 1.4;
+                            }
+                        }
+                    }
+                }
+            }
+            .status-info {
+                .status-text {
+                    font-size: 14px;
+                    font-weight: 500;
+                    color: #303133;
+                    margin-bottom: 4px;
+                }
+                .reply-rate,
+                .unlock {
+                    font-size: 12px;
+                    color: #909399;
+                    margin-bottom: 2px;
+                    cursor: pointer;
+                    &:hover {
+                        color: #409EFF;
+                    }
+                }
+            }
+        }
         .right-btn{
             width: 80px;
             display: flex;

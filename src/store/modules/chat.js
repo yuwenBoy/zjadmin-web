@@ -15,7 +15,10 @@ const state = {
   id: null, // 当前用户ID
   messageStatus: {}, // ✅ 存储消息状态 { messageId: 'sent' }
   contactList: [], // 左侧联系人列表
-  currentContact: {} // 当前联系人
+  currentContact: {}, // 当前联系人
+  userStatus: {}, // 用户状态映射 { userId: 'online' | 'busy' | 'offline' }
+  pendingMessages: [], // 待发送消息队列（关闭状态下的消息）
+  currentUserStatus: 'offline' // 当前用户状态
 };
 function getIpcRenderer() {
   // 第1层：判断是否在 Electron 环境
@@ -52,9 +55,10 @@ const mutations = {
     state.messages = []; // 切换会话时清空消息
   },
   ADD_MESSAGE(state, message) {
-    message.senderAvatar = message.senderAvatar
-      ? Config.baseImgUrl + message.senderAvatar
-      : Avatar;
+      // 不是完整URL，拼接baseImgUrl
+      message.senderAvatar = message.senderAvatar && message.senderAvatar !== ''
+        ?message.senderAvatar
+        : Avatar;
     state.messages.push(message);
   },
   SET_MESSAGES(state, messages) {
@@ -86,6 +90,47 @@ const mutations = {
   SET_CURRENT_CONTACT(state, contact) {
     state.currentContact = contact;
   },
+  
+  // 更新用户状态
+  UPDATE_USER_STATUS(state, { userId, status }) {
+    state.userStatus = {
+      ...state.userStatus,
+      [userId]: status
+    };
+  },
+
+  // 更新当前用户状态
+  UPDATE_CURRENT_USER_STATUS(state, status) {
+    const previousStatus = state.currentUserStatus;
+    state.currentUserStatus = status;
+    
+    // 如果从关闭状态切换到在线状态，发送待发送的消息
+    if (previousStatus === 'offline' && status !== 'offline' && state.pendingMessages.length > 0) {
+      console.log('📤 发送待发送消息:', state.pendingMessages.length);
+      // 逐个发送待发送的消息
+      state.pendingMessages.forEach(pendingMessage => {
+        state.socket.emit('private_message', {
+          receiverId: pendingMessage.receiverId,
+          content: pendingMessage.content,
+          targetId: pendingMessage.targetId,
+          targetType: pendingMessage.targetType
+        });
+        
+        // 更新本地消息状态
+        const message = state.messages.find(m => m.id === pendingMessage.id);
+        if (message) {
+          message.status = 1; // 更新为已发送状态
+        }
+      });
+      state.pendingMessages = [];
+    }
+  },
+
+  // 添加待发送消息
+  ADD_PENDING_MESSAGE(state, message) {
+    state.pendingMessages.push(message);
+  },
+  
   UPDATE_CONTACT_LAST_MSG(
     state,
     {
@@ -116,20 +161,28 @@ const mutations = {
         contact.unread_count = 0; // ✅ 自己发的：未读清零
       }
     } else {
-      contact = {
-        id: targetId,
-        name: senderName || `用户${targetId}`,
-        avatar: senderAvatar ? Config.baseImgUrl + senderAvatar : Avatar,
-        last_message: lastMessage,
-        last_time: lastTime,
-        unread_count: isIncoming && !isCurrentChat ? 1 : 0
-      };
-      state.contactList.push(contact);
-    }
+        // 检查是否已经是完整URL
+        let avatarUrl = senderAvatar && senderAvatar !== '' ?  senderAvatar : Avatar;
+        contact = {
+          id: targetId,
+          name: senderName || `用户${targetId}`,
+          avatar: avatarUrl,
+          last_message: lastMessage,
+          last_time: lastTime,
+          unread_count: isIncoming && !isCurrentChat ? 1 : 0
+        };
+        state.contactList.push(contact);
+      }
   },
   APPEND_HISTORY_MESSAGES(state, newMessages) {
     if (newMessages) {
-      state.messages = [...newMessages, ...state.messages];
+      // 处理每条消息的头像
+      const processedMessages = newMessages.map(message => {
+        // 不是完整URL，拼接baseImgUrl
+        message.senderAvatar = message.senderAvatar && message.senderAvatar !== '' ?message.senderAvatar : Avatar;
+        return message;
+      });
+      state.messages = [...processedMessages, ...state.messages];
     }
   },
   RESET_MESSAGES(state) {
@@ -176,16 +229,65 @@ const actions = {
     // 监听新消息
     socket.on("new_message", message => {
       console.log("📨 收到新消息:", message); // 调试用
+      
+      // 检查是否是自动回复
+      if (message.isAutoReply) {
+        console.log("🤖 收到自动回复:", message.content);
+      }
+      
       // ✅ 转成左侧列表更新
       commit("UPDATE_CONTACT_LAST_MSG", {
         contactId: message.senderId,
         lastMessage: message.content,
         lastTime: message.createdAt,
-        isIncoming: true, // 关键：表示收到消息
+        isIncoming: !message.isAutoReply && message.senderId !== state.id, // 关键：只有非自动回复且不是自己发送的消息才视为收到的消息
         senderName: message.senderCname,
         senderAvatar: message.senderAvatar
       });
       commit("ADD_MESSAGE", message);
+      
+      // 如果当前用户是忙碌状态，自动回复
+      if (state.currentUserStatus === 'busy' && !message.isAutoReply) {
+        console.log("🤖 发送自动回复");
+        const autoReply = {
+          receiverId: message.senderId,
+          content: '您好，我现在忙碌中，会尽快回复您的消息。',
+          targetId: message.senderId,
+          targetType: 2 // 假设发送者是顾客
+        };
+        
+        // 延迟1秒发送自动回复，避免太突兀
+        setTimeout(() => {
+          socket.emit('private_message', autoReply);
+          
+          // 在本地显示自动回复消息
+          const autoReplyMessage = {
+            id: `auto_${Date.now()}`,
+            senderId: state.id,
+            receiverId: message.senderId,
+            content: autoReply.content,
+            targetId: autoReply.targetId,
+            targetType: autoReply.targetType,
+            createdAt: new Date().toISOString(),
+            senderUsername: '我',
+            senderAvatar: '',
+            isAutoReply: true,
+            status: 1
+          };
+          commit("ADD_MESSAGE", autoReplyMessage);
+          
+          // 更新联系人列表的最后消息
+          commit("UPDATE_CONTACT_LAST_MSG", {
+            contactId: message.senderId,
+            lastMessage: autoReply.content,
+            lastTime: new Date().toISOString(),
+            isIncoming: false,
+            senderName: '我',
+            senderAvatar: ''
+          });
+        }, 1000);
+      }
+      
       // ✅ 关键：如果是当前会话，立即发送已读回执
       const isCurrentChat =
         state.currentContact &&
@@ -232,6 +334,42 @@ const actions = {
     socket.on("connected", data => {
       console.log("服务器确认:", data);
       socket.data = { userId: data.userId }; // 保存用户ID
+      // 更新本地状态
+      if (data.status) {
+        console.log('服务器返回的初始状态:', data.status);
+        // 更新当前用户状态
+        commit("UPDATE_CURRENT_USER_STATUS", data.status);
+      }
+    });
+    
+    // 监听状态更新
+    socket.on("status_updated", data => {
+      console.log("状态更新:", data);
+      // 更新本地状态
+      if (data.userId) {
+        commit("UPDATE_USER_STATUS", { userId: data.userId, status: data.status });
+      }
+    });
+    
+    // 监听待发送消息发送成功
+    socket.on("pending_messages_sent", data => {
+      console.log("📤 待发送消息已发送:", data);
+      // 更新本地消息状态
+      data.messageIds.forEach(messageId => {
+        const message = state.messages.find(m => m.id === messageId);
+        if (message) {
+          message.status = 1; // 更新为已发送状态
+        }
+      });
+    });
+    
+    // 监听用户状态变更
+    socket.on("user_status_changed", data => {
+      console.log("用户状态变更:", data);
+      // 更新本地状态
+      if (data.userId) {
+        commit("UPDATE_USER_STATUS", { userId: data.userId, status: data.status });
+      }
     });
 
     // 调试：监听所有事件

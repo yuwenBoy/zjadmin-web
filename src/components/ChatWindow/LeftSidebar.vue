@@ -10,9 +10,11 @@
                     class="merchant-item"
                     :class="{ active: currentContact && currentContact.id === merchant.id }"
                     @click="selectContact(merchant)">
-                    <el-badge :value="merchant.unread_count" :hidden="!merchant.unread_count || parseInt(merchant.unread_count) === 0" class="badge">
-                        <user-avatar :src="merchant.avatar" />
-                    </el-badge> 
+                    <div class="contact-avatar">
+                        <el-badge :value="merchant.unread_count" :hidden="!merchant.unread_count || parseInt(merchant.unread_count) === 0" class="badge">
+                            <user-avatar :src="merchant.avatar" />
+                        </el-badge> 
+                    </div>
                     <div class="contact-info">
                        <div class="merchant-name">{{ user.userType == 1? merchant.name : merchant.role_name ? (merchant.role_name  +'-'+ merchant.name): merchant.name }}</div>
                        <div class="last-message">{{ merchant.last_message }}</div>
@@ -42,7 +44,7 @@ export default {
   },
   components:{userAvatar},
   computed: {
-     ...mapState('chat', ['currentContact', 'contactList']),
+     ...mapState('chat', ['currentContact', 'contactList', 'userStatus']),
       ...mapGetters(["user"]),
   },
   watch: {
@@ -67,6 +69,21 @@ export default {
         type: this.imTabActive,
       })
     },
+    
+    // 获取用户状态类名
+    getStatusClass(userId) {
+      const status = this.userStatus[userId];
+      switch (status) {
+        case 'online':
+          return 'online';
+        case 'busy':
+          return 'busy';
+        case 'offline':
+          return 'offline';
+        default:
+          return 'offline';
+      }
+    }
   },
 };
 </script>
@@ -102,13 +119,12 @@ export default {
 
 .merchant-item {
   display: flex;
-  align-items: center;
-  padding: 10px 8px;
+  align-items: flex-start;
+  padding: 10px 15px;
   height: 62px;
   cursor: pointer;
   border-bottom: 1px solid #f5f5f5;
   transition: background-color 0.3s;
-  position: relative;
 }
 
 .merchant-item:hover {
@@ -119,10 +135,35 @@ export default {
   background-color: #F5F7FC !important;
 }
 
+.contact-avatar {
+  position: relative;
+  .status-indicator {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 2px solid white;
+    &.online {
+      background-color: #67C23A;
+    }
+    &.busy {
+      background-color: #E6A23C;
+    }
+    &.offline {
+      background-color: #909399;
+    }
+  }
+}
+
 .contact-info {
   flex: 1;
   margin-left: 10px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .merchant-name {
@@ -149,9 +190,9 @@ export default {
 .last-time {
   font-size: 12px;
   color: #888;
-  position: absolute;
-  right: 15px;
-  top: 0;
+  margin-left: 10px;
+  flex-shrink: 0;
+  padding-top: 2px;
 }
 
 /* 未读消息气泡 */

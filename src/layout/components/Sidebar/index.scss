@@ -1,0 +1,155 @@
+/* 侧边栏样式优化 */
+.sidebar-container {
+  background-color: #1a1a1a;
+  border-right: 1px solid #2d2d2d;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 菜单容器 */
+.menu-wrapper {
+  margin: 0;
+  border-radius: 0;
+  overflow: hidden;
+  height: 100%;
+}
+
+/* 菜单项样式 */
+.el-menu {
+  border: none !important;
+  background-color: #1a1a1a !important;
+  height: 100%;
+  
+  /* 菜单项 */
+  .el-menu-item {
+    height: 48px !important;
+    line-height: 48px !important;
+    margin: 0 !important;
+    padding: 0 20px !important;
+    border-radius: 0 !important;
+    transition: all 0.3s ease !important;
+    font-size: 14px !important;
+    color: #b0b0b0 !important;
+    
+    &:hover {
+      background-color: #2d2d2d !important;
+      color: #ffffff !important;
+    }
+    
+    &.is-active {
+      background-color: #409EFF !important;
+      color: #ffffff !important;
+      font-weight: 500 !important;
+    }
+    
+    /* 菜单项图标 */
+    .svg-icon {
+      margin-right: 12px !important;
+      font-size: 16px !important;
+      color: inherit !important;
+    }
+    
+    /* 菜单项文字 */
+    span.slot-title {
+      font-size: 14px !important;
+      font-weight: 400 !important;
+    }
+  }
+  
+  /* 子菜单 */
+  .el-submenu {
+    .el-submenu__title {
+      height: 48px !important;
+      line-height: 48px !important;
+      margin: 0 !important;
+      padding: 0 20px !important;
+      border-radius: 0 !important;
+      transition: all 0.3s ease !important;
+      font-size: 14px !important;
+      color: #b0b0b0 !important;
+      
+      &:hover {
+        background-color: #2d2d2d !important;
+        color: #ffffff !important;
+      }
+      
+      &.is-active {
+        background-color: #409EFF !important;
+        color: #ffffff !important;
+        font-weight: 500 !important;
+      }
+      
+      /* 子菜单图标 */
+      .svg-icon {
+        margin-right: 12px !important;
+        font-size: 16px !important;
+        color: inherit !important;
+      }
+      
+      /* 子菜单文字 */
+      span.slot-title {
+        font-size: 14px !important;
+        font-weight: 400 !important;
+      }
+      
+      /* 子菜单箭头 */
+      .el-submenu__icon-arrow {
+        font-size: 12px !important;
+        color: #b0b0b0 !important;
+      }
+    }
+    
+    /* 子菜单内容 */
+    .el-submenu__content {
+      background-color: #252525 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+    
+    /* 子菜单项 */
+    .el-menu-item {
+      height: 42px !important;
+      line-height: 42px !important;
+      padding-left: 40px !important;
+      font-size: 13px !important;
+      
+      &:hover {
+        background-color: #2d2d2d !important;
+        color: #ffffff !important;
+      }
+      
+      &.is-active {
+        background-color: #409EFF !important;
+        color: #ffffff !important;
+        font-weight: 500 !important;
+      }
+    }
+  }
+}
+
+/* 滚动条样式 */
+.scrollbar-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: #3d3d3d #1a1a1a;
+  height: 100%;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #3d3d3d;
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: #4d4d4d;
+  }
+}

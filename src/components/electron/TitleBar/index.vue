@@ -10,9 +10,15 @@
     </div>  
     <div class="bar-title">{{ user.userType == 2 ? "商家版" : "系统端" }}</div>
     <div class="window-controls">
-      <button class="control-btn minimize" @click="minimize">−</button>
-      <button class="control-btn maximize" @click="maximize">□</button>
-      <button class="control-btn close" @click="close">×</button>
+      <button class="control-btn minimize" @click="minimize" title="最小化">
+        <i class="el-icon el-icon-minus"></i>
+      </button>
+      <button class="control-btn maximize" @click="maximize" :title="isMaximized ? '还原' : '最大化'">
+        <i :class="['el-icon', isMaximized ? 'el-icon-copy-document' : 'el-icon-full-screen']"></i>
+      </button>
+      <button class="control-btn close" @click="close" title="关闭">
+        <i class="el-icon el-icon-close"></i>
+      </button>
     </div>
   </div>
 </template>
@@ -23,6 +29,7 @@ export default {
   data() {
     return {
       canGoBack: false,
+      isMaximized: false,
     };
   },
   computed: {
@@ -36,6 +43,16 @@ export default {
     this.$router.afterEach(() => {
       this.updateNavState();
     });
+    
+    // 监听窗口状态变化
+    if (this.isElectron && window.electronAPI.onWindowMaximized) {
+      window.electronAPI.onWindowMaximized(() => {
+        this.isMaximized = true;
+      });
+      window.electronAPI.onWindowUnmaximized(() => {
+        this.isMaximized = false;
+      });
+    }
   },
   methods: {
     updateNavState() {
@@ -60,6 +77,8 @@ export default {
     },
     maximize() {
       window.electronAPI.maximize();
+      // 切换状态
+      this.isMaximized = !this.isMaximized;
     },
     close() {
       window.electronAPI.close();

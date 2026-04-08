@@ -21,7 +21,7 @@
       </div>
       <div
         v-for="(msg, index) in messages"
-        :key="index"
+        :key="msg.id || index"
         class="message"
         :class="{ 'message-sent': msg.senderId === user.id }"
         :data-message-id="msg.id"
@@ -200,6 +200,8 @@ export default {
     // 发送消息
     async sendMessage() {
       if (!this.newMessage.trim()) return;
+      
+      const currentUserStatus = this.$store.state.chat.currentUserStatus;
       const payload = {
         content: this.newMessage,
       };
@@ -208,17 +210,55 @@ export default {
         payload.receiverId = this.currentContact.id;
         payload.targetId = this.currentContact.id;
         payload.targetType = this.currentContact.user_type;
-        await this.$store.dispatch("chat/sendPrivateMessage", payload);
-        const message = {
-          targetId: this.currentContact.id,
-          lastMessage: this.newMessage,
-          lastTime: new Date().toISOString(),
-        };
-        await this.$store.dispatch("chat/updateMessage", message);
-        this.handleSentMessage(message)
+        
+        // 根据当前状态处理消息
+        if (currentUserStatus === 'offline') {
+          // 关闭状态：将消息存储到待发送队列
+          const tempId = `temp_${Date.now()}`;
+          const pendingMessage = {
+            ...payload,
+            id: tempId,
+            senderId: this.user.id,
+            senderName: this.user.name,
+            senderAvatar: this.user.avatar || '',
+            createdAt: new Date().toISOString(),
+            status: 'pending'
+          };
+          this.$store.commit('chat/ADD_PENDING_MESSAGE', pendingMessage);
+          
+          // 在本地显示消息，但标记为待发送
+          const localMessage = {
+            id: tempId,
+            ...pendingMessage,
+            senderId: this.user.id,
+            senderUsername: this.user.name,
+            senderAvatar: this.user.avatar || '',
+            status: 0
+          };
+          this.$store.commit('chat/ADD_MESSAGE', localMessage);
+          
+          // 更新联系人列表的最后消息
+          const message = {
+            targetId: this.currentContact.id,
+            lastMessage: this.newMessage,
+            lastTime: new Date().toISOString(),
+          };
+          await this.$store.dispatch("chat/updateMessage", message);
+          this.handleSentMessage(message)
+          
+        } else {
+          // 在线或忙碌状态：正常发送消息
+          await this.$store.dispatch("chat/sendPrivateMessage", payload);
+          const message = {
+            targetId: this.currentContact.id,
+            lastMessage: this.newMessage,
+            lastTime: new Date().toISOString(),
+          };
+          await this.$store.dispatch("chat/updateMessage", message);
+          this.handleSentMessage(message)
+        }
       } else {
         payload.groupId = this.currentContact.id;
-
         await this.$store.dispatch("chat/sendGroupMessage", payload);
         const message = {
           targetId: this.currentContact.id,
@@ -229,8 +269,11 @@ export default {
         this.handleSentMessage(message)
       }
       this.newMessage = "";
-      // 强制滚动
-      this.scrollToBottom(true);
+      
+      // 延迟滚动，确保消息已添加到数组并渲染
+      setTimeout(() => {
+        this.scrollToBottom(true);
+      }, 100);
     },
     formatChatTimestamp,
     // 滚动到底部(发送消息时用)
@@ -239,25 +282,31 @@ export default {
         const el = this.$refs.messageList;
         if (!el) return;
 
-        // 判断是否已经在底部（允许100px误差）
-        const isAtBottom = el.scrollHeight - el.clientHeight - el.scrollTop < 100;
-        // 强制滚动 或 已在底部
-        if (force || isAtBottom) {
+        // 强制滚动到底部
+        if (force) {
           el.scrollTop = el.scrollHeight;
+        } else {
+          // 判断是否已经在底部（允许100px误差）
+          const isAtBottom = el.scrollHeight - el.clientHeight - el.scrollTop < 100;
+          if (isAtBottom) {
+            el.scrollTop = el.scrollHeight;
+          }
         }
       });
     },
     getMessageStatusText(message) {
       const status = this.$store.state.chat.messageStatus[message.id] || message.status;
       switch (status) {
+        case 0:
+          return "待发送"; // 待发送
         case 1:
-          return "已送达"; // 已送达
+          return "已发送"; // 已发送
         case 2:
-          return "已读"; // 已送达（灰色双勾）
+          return "已送达"; // 已送达
         case 3:
-          return "发送失败"; // 已读（蓝色双勾）
+          return "已读"; // 已读
         default:
-          return "未读"; // 未读
+          return "未发送"; // 未发送
       }
     },
      // 发送成功后，本地更新左侧列表

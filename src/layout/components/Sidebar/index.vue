@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'has-logo':showLogo}">
+  <div :class="{'has-logo':showLogo, 'sidebar-container':true}">
     <logo v-if="showLogo" :collapse="isCollapse" />
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
@@ -10,7 +10,6 @@
         :unique-opened="$store.state.settings.uniqueOpened"
         :active-text-color="variables.menuActiveText"
         :collapse-transition="false"
-        style="margin-top:10px;"
         mode="vertical"
       >
         <sidebar-item v-for="(route,index) in permission_routers" :key="index" :item="route" :base-path="route.path" />
@@ -24,6 +23,7 @@ import { mapGetters } from 'vuex'
 import Logo from './Logo'
 import SidebarItem from './SidebarItem'
 import variables from '@/assets/styles/variables.scss'
+import './index.scss'
 
 export default {
   components: { SidebarItem, Logo },

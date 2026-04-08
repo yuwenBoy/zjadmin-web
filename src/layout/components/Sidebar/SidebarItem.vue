@@ -58,7 +58,10 @@ export default {
   },
   mounted(){
     this.item && this.item.children && this.item.children.length > 0 && this.item.children.forEach((item) => {
-      item.key = item.path + new Date().getTime()
+      // 使用路径作为稳定的key，避免时间戳导致的重复
+      if (!item.key) {
+        item.key = item.path
+      }
     })
   },
   methods: {
