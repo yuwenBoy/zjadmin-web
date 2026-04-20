@@ -15,38 +15,51 @@
       :auto-upload="true"
       :show-file-list="false"
       multiple
-      :file-list="fileList">
-      
+      :file-list="fileList"
+    >
       <!-- 提示文字 -->
       <!-- <div slot="tip" class="el-upload__tip">
         只能上传jpg/png文件，且不超过2MB
       </div> -->
-      
+
       <!-- 自定义文件列表（当使用非 picture-card 时） -->
       <template v-if="listType !== 'picture-card'">
-        <div 
-          v-for="(file, index) in fileList" 
-          :key="file.uid" 
+        <div
+          v-for="(file, index) in fileList"
+          :key="file.uid"
           class="pic-list-item"
-          :style="itemStyle">
-          <img :src="file.url" class="pic" :class="{ 'main-pic': index === 0 }" />
+          :style="itemStyle"
+        >
+          <img
+            :src="file.url"
+            class="pic"
+            :class="{ 'main-pic': index === 0 }"
+          />
           <span class="el-icon-close" @click.stop="handleRemove(file)"></span>
           <!-- <span v-if="index === 0" class="main-tag">主图</span> -->
         </div>
       </template>
-      
+
       <!-- 上传按钮 -->
-      <div class="upload-trigger" :style="triggerStyle" v-if="fileList.length < maxUploadCount">
+      <div
+        class="upload-trigger"
+        :style="triggerStyle"
+        v-if="fileList.length < maxUploadCount"
+      >
         <i class="el-icon-plus pic-uploader-icon"></i>
         <p class="upload-text">
-          {{ maxUploadCount > 1 ? `添加图片 ${fileList.length}/${maxUploadCount}` : '上传图片' }}
+          {{
+            maxUploadCount > 1
+              ? `添加图片 ${fileList.length}/${maxUploadCount}`
+              : "上传图片"
+          }}
         </p>
       </div>
     </el-upload>
-    
+
     <!-- 预览弹窗 -->
     <el-dialog :visible.sync="dialogVisible" append-to-body>
-      <img width="100%" :src="dialogImageUrl" alt=""/>
+      <img width="100%" :src="dialogImageUrl" alt="" />
     </el-dialog>
   </div>
 </template>
@@ -55,9 +68,9 @@
 import { getToken } from "@/utils/storage";
 import { mapGetters } from "vuex";
 import { getFileName } from "@/utils/index";
-
+import request from "@/utils/request";
 export default {
-  name: 'PicUploader',
+  name: "PicUploader",
   props: {
     value: {
       type: [String, Array],
@@ -70,13 +83,13 @@ export default {
     // 自定义宽高
     css: {
       type: Object,
-      default: () => ({ width: '178px', height: '178px' }),
+      default: () => ({ width: "178px", height: "178px" }),
     },
     // 是否使用 picture-card 模式
     usePictureCard: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -91,42 +104,42 @@ export default {
   },
   computed: {
     ...mapGetters(["imagesUploadApi"]),
-    
+
     // 计算 list-type
     listType() {
-      return this.usePictureCard ? 'picture-card' : 'text'
+      return this.usePictureCard ? "picture-card" : "text";
     },
-    
+
     // 上传组件整体样式
     uploadStyle() {
       return {
-        '--upload-width': this.css.width || '178px',
-        '--upload-height': this.css.height || '178px',
-      }
+        "--upload-width": this.css.width || "178px",
+        "--upload-height": this.css.height || "178px",
+      };
     },
-    
+
     // 列表项样式
     itemStyle() {
       return {
-        width: this.css.width || '178px',
-        height: this.css.height || '178px',
-      }
+        width: this.css.width || "178px",
+        height: this.css.height || "178px",
+      };
     },
-    
+
     // 上传按钮样式
     triggerStyle() {
       return {
-        width: this.css.width || '178px',
-        height: this.css.height || '178px',
-      }
-    }
+        width: this.css.width || "178px",
+        height: this.css.height || "178px",
+      };
+    },
   },
   watch: {
     value: {
       handler(newVal) {
         this.updateFileList(newVal);
       },
-      immediate: true
+      immediate: true,
     },
   },
   methods: {
@@ -135,75 +148,88 @@ export default {
         this.fileList = [];
         return;
       }
-      
+
       if (Array.isArray(newVal)) {
         this.fileList = newVal.map((item, index) => ({
           uid: item.uid || `uid-${index}-${Date.now()}`,
           name: item.name || getFileName(item.location || item.url),
           url: item.location || item.url,
-          response: item.response || { result: [{ location: item.location || item.url }] },
+          response: item.response || {
+            result: [{ location: item.location || item.url }],
+          },
         }));
-      } else if (typeof newVal === 'string') {
-        this.fileList = newVal.split(',').filter(Boolean).map((item, index) => ({
-          uid: `uid-${index}-${Date.now()}`,
-          name: getFileName(item),
-          url: item.startsWith('http') ? item : this.resourcesUrl + item,
-          response: { result: [{ location: item }] },
-        }));
+      } else if (typeof newVal === "string") {
+        this.fileList = newVal
+          .split(",")
+          .filter(Boolean)
+          .map((item, index) => ({
+            uid: `uid-${index}-${Date.now()}`,
+            name: getFileName(item),
+            url: item,
+            response: { result: [{ location: item }] },
+          }));
       } else {
         this.fileList = [];
       }
     },
-    
+
     handleUploadSuccess(response, file, fileList) {
-      const location = response.result[0].location || file.url;
+      const location = response.result.data || ""; // response.result[0].location || file.url;
       const newFile = {
         uid: file.uid,
         name: file.name,
-        url: location.startsWith('http') ? location : this.resourcesUrl + getFileName(location),
+        url: location, //location.startsWith('http') ? location : this.resourcesUrl + getFileName(location),
         response: response,
       };
       this.fileList.push(newFile);
       this.emitChange();
     },
-    
+
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isJPG = file.type === "image/jpeg" || file.type === "image/png";
       const isLt2M = file.size / 1024 / 1024 < 2;
-      
+
       if (!isJPG) {
-        this.$message.error('只能上传 JPG/PNG 格式的图片!');
+        this.$message.error("只能上传 JPG/PNG 格式的图片!");
         return false;
       }
       if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!');
+        this.$message.error("上传图片大小不能超过 2MB!");
         return false;
       }
       return true;
     },
-    
-    handleRemove(file) {
-      const index = this.fileList.findIndex(f => f.uid === file.uid);
+
+    async handleRemove(file) {
+      // 1. 调用后端删除七牛图片
+      await request({
+        url: "/oss/removeImg",
+        method: "post",
+        params: {
+          imageUrl: file.url,
+        },
+      });
+      const index = this.fileList.findIndex((f) => f.uid === file.uid);
       if (index > -1) {
         this.fileList.splice(index, 1);
         this.emitChange();
       }
     },
-    
+
     emitChange() {
-      const result = this.fileList.map(f => ({
+      const result = this.fileList.map((f) => ({
         name: f.name,
-        location: f.url
+        location: f.url,
       }));
-      this.$emit('input', result.map(r=>r.location).toString());
-      this.$emit('change',  result.map(r=>r.location).toString());
+      this.$emit("input", result.map((r) => r.location).toString());
+      this.$emit("change", result.map((r) => r.location).toString());
     },
-    
+
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
-    
+
     handleExceed(files, fileList) {
       this.$message.warning(`最多只能上传 ${this.maxUploadCount} 张图片`);
     },
@@ -219,14 +245,14 @@ export default {
       display: flex;
       flex-wrap: wrap;
     }
-    
+
     .el-upload-list__item,
     .el-upload--picture-card {
       width: var(--upload-width, 178px);
       height: var(--upload-height, 178px);
       line-height: var(--upload-height, 178px);
     }
-    
+
     // 隐藏默认的 picture-card 样式（当使用自定义时）
     .el-upload-list--picture-card {
       .el-upload-list__item {
@@ -246,7 +272,7 @@ export default {
   border: 1px solid #d9d9d9;
   display: inline-block;
   vertical-align: top;
-  
+
   .pic {
     width: 100%;
     height: 100%;
@@ -254,12 +280,12 @@ export default {
     display: block;
     border: 2px solid transparent;
     box-sizing: border-box;
-    
+
     &.main-pic {
       border-color: #409eff;
     }
   }
-  
+
   .el-icon-close {
     position: absolute;
     top: 5px;
@@ -275,16 +301,16 @@ export default {
     font-size: 12px;
     opacity: 0;
     transition: opacity 0.3s;
-    
+
     &:hover {
       background: #f56c6c;
     }
   }
-  
+
   &:hover .el-icon-close {
     opacity: 1;
   }
-  
+
   .main-tag {
     position: absolute;
     top: 0;
@@ -310,17 +336,17 @@ export default {
   background: #fbfdff;
   vertical-align: top;
   margin-bottom: 10px;
-  
+
   &:hover {
     border-color: #409eff;
   }
-  
+
   .pic-uploader-icon {
     font-size: 28px;
     color: #8c939d;
     margin-bottom: 8px;
   }
-  
+
   .upload-text {
     color: #8c939d;
     font-size: 12px;
