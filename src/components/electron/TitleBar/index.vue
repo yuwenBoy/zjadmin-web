@@ -7,6 +7,10 @@
       <button class="nav-btn btn-refresh" @click="refresh" title="刷新">
         <i class="el-icon el-icon-refresh-right"></i>
       </button>
+           <div class="logo-area">
+        <!-- <img v-if="leftLogo" :src="leftLogo" class="logo-img"> -->
+        <span class="logo-text">{{ title }}</span>
+      </div>
     </div>  
     <div class="bar-title">{{ user.userType == 2 ? "商家版" : "系统端" }}</div>
     <div class="window-controls">
@@ -25,11 +29,18 @@
 
 <script>
 import { mapGetters } from "vuex";
+import Logo from '@/assets/images/logo.png'
+import BusinessLogo from '@/assets/images/business_logo.png'
+
 export default {
   data() {
     return {
       canGoBack: false,
       isMaximized: false,
+      title: 'JXXQZ后台管理系统',
+      logo: Logo,
+      businessLogo: BusinessLogo,
+      leftLogo: '',
     };
   },
   computed: {
@@ -39,6 +50,17 @@ export default {
     ...mapGetters(["user"]),
   },
   mounted() {
+    this.updateLogo()
+  },
+  watch: {
+    'user.userType': {
+      handler() {
+        this.updateLogo()
+      }
+    }
+  },
+  mounted() {
+    this.updateLogo()
     this.updateNavState();
     this.$router.afterEach(() => {
       this.updateNavState();
@@ -55,6 +77,15 @@ export default {
     }
   },
   methods: {
+    updateLogo() {
+      if(this.user && this.user.userType == 2){
+        this.title = 'JXXQZ商家端'
+        this.leftLogo = this.businessLogo
+      } else {
+        this.title = 'JXXQZ后台管理系统'
+        this.leftLogo = this.logo
+      }
+    },
     updateNavState() {
       // 排除登录页和首页
       this.canGoBack =
@@ -140,6 +171,28 @@ export default {
   align-items: center;
   padding: 0 12px;
   -webkit-app-region: no-drag; /* 关键：让按钮可点击 */
+}
+
+/* Logo区域样式 */
+.logo-area {
+  display: flex;
+  align-items: center;
+  margin-right: 12px;
+  
+  .logo-img {
+    width: 20px;
+    height: 20px;
+    margin-right: 6px;
+    border-radius: 4px;
+    object-fit: contain;
+  }
+  
+  .logo-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+  }
 }
 
 /* 导航按钮基础样式 - 与右侧 control-btn 协调 */

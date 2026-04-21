@@ -1,36 +1,22 @@
 <template>
   <div class="navbar">
-    <hamburger
-      id="hamburger-container"
-      :is-active="sidebar.opened"     
-      class="hamburger-container"    
-      @toggleClick="toggleSideBar"       
-    />
+    <!-- Logo区域 -->
+    <div class="logo-container">
+      <router-link class="logo-link" to="/">
+        <!-- <img v-if="leftLogo" :src="leftLogo" class="logo-img"> -->
+        <h1 class="logo-title">{{ title }}</h1>
+      </router-link>
+    </div>
 
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
     <chat-window ref="platformChat" />
     <div class="right-menu">   
       <template v-if="device !== 'mobile'">
-        <!-- <router-link to="/dataDnalyse" target="_blank" class="data">
-          数据监控
-        </router-link> -->
-        <!-- <search id="header-search" class="right-menu-item" /> -->
         <store-menu id="business-store-container" class="business-store-container" v-if="user.userType==2"></store-menu>  
-   
-        <!-- <el-tooltip content="全屏缩放" effect="dark" placement="bottom">
-          <screenfull id="screenfull" class="right-menu-item hover-effect" />
-        </el-tooltip> -->
-
-        <el-tooltip content="布局设置" effect="dark" placement="bottom">
-          <!-- <size-select id="size-select" class="right-menu-item hover-effect" /> -->
-        </el-tooltip>
       </template>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-            <!-- <img :src="avatarUrl" class="user-avatar" /> -->
-            <!-- <user-avatar :src="user.avatar" class="user-avatar" />
-            <i class="el-icon-caret-bottom" /> -->
         账号:{{user.username}}
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -53,28 +39,49 @@
 import { mapGetters } from "vuex";
 import Breadcrumb from "@/components/Breadcrumb";
 import StoreMenu from "@/components/StoreMenu";
-import Hamburger from "@/components/Hamburger";
-import Screenfull from "@/components/Screenfull";
-import Search from "@/components/HeaderSearch";
 import ChatWindow from "@/components/ChatWindow/index.vue";
-import userAvatar from "@/components/System/user/userAvatar.vue";
+import Logo from '@/assets/images/logo.png'
+import BusinessLogo from '@/assets/images/business_logo.png'
+
 export default {  
   name: "Navbar",  
   components: {
     Breadcrumb,
     StoreMenu,
-    Hamburger,
-    Screenfull,
-    Search,
     ChatWindow,
-    userAvatar,
   },
   data() {
     return {
+      title: 'JXXQZ后台管理系统',
+      logo: Logo,
+      businessLogo: BusinessLogo,
+      leftLogo: '',
     };
   },
+  mounted() {
+    this.updateLogo()
+  },
+  watch: {
+    'user.userType': {
+      handler() {
+        this.updateLogo()
+      }
+    },
+    user: {
+      handler(oldVal, newVal) {  
+        if(newVal && newVal.avatar){
+           this.fileName = "/" + newVal.avatar.split("\\")[3]
+        }
+      },
+      deep: true,
+      immediate: true,
+    }
+  },
   computed: {
-    ...mapGetters(["sidebar", "device", "user", "baseApi"]),
+    ...mapGetters(["device", "user", "baseApi"]),
+    isElectron() {
+      return window.electronAPI && window.electronAPI.isElectron;
+    },
     show: {
       get() {
         return this.$store.state.settings.showSettings;
@@ -88,8 +95,14 @@ export default {
     },
   },
   methods: {
-    toggleSideBar() {
-      this.$store.dispatch("app/toggleSideBar");
+    updateLogo() {
+      if(this.user && this.user.userType == 2){
+        this.title = 'JXXQZ商家端'
+        this.leftLogo = this.businessLogo
+      } else {
+        this.title = 'JXXQZ后台管理系统'
+        this.leftLogo = this.logo
+      }
     },
     open() {
       this.$msg.confirm("确定注销并退出系统吗？", {
@@ -107,15 +120,6 @@ export default {
         }
       });
     },
-  },  
-  watch: {
-    user(oldVal, newVal) {  
-        if(newVal.avatar){
-           this.fileName = "/" + newVal.avatar.split("\\")[3]
-        }
-    },
-    deep: true, // 深度监听
-    immediate: true, // 第一次改变就执行
   },
 };
 </script>
@@ -129,17 +133,43 @@ export default {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 20px 0 0;
   
-  .hamburger-container {
-    margin-right: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    padding: 8px;
-    border-radius: 4px;
+  // Logo区域样式
+  .logo-container {
+    width: 224px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left:16px;
+    flex-shrink: 0;
     
-    &:hover {
-      background: #f0f2f5;
+    .logo-link {
+      display: flex;
+      align-items: center;
+      height: 22px;
+      width: 100%;
+      padding-right: 12px;
+      border-right: 2px solid #e8e8e8;
+      text-decoration: none;
+      
+      .logo-img {
+        width: 24px;
+        height: 24px;
+        margin-right: 8px;
+        object-fit: contain;
+        flex-shrink: 0;
+        border-radius: 4px;
+      }
+      
+      .logo-title {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+        white-space: nowrap;
+        margin: 0;
+      }
     }
   }
 

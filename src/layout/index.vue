@@ -1,11 +1,14 @@
 <template>
     <div :class="classObj" class="app-wrapper">
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar :class="['sidebar-container',isElectron && 'top42']"/>
-    <div :class="{hasTagsView:needTagsView}" class="main-container">
-      <div :class="{'fixed-header':fixedHeader,'top42':isElectron}">
+    <sidebar 
+      :class="['sidebar-container',isElectron && 'top42']"
+      @submenu-toggle="handleSubmenuToggle"
+    />
+    <div :class="{hasTagsView:needTagsView}" class="main-container" :style="mainContainerStyle">
+      <div :class="{'fixed-header':fixedHeader,'top42':isElectron}" :style="fixedHeaderStyle">
         <navbar />
-        <tags-view v-if="needTagsView" />
+        <tags-view v-if="needTagsView" :style="tagsViewStyle" />
       </div>
       <app-main />
       <right-panel v-if="showSettings">
@@ -37,6 +40,11 @@ export default {
     Theme
   },
   mixins: [ResizeMixin],
+  data() {
+    return {
+      submenuPanelWidth: 0 // 子菜单面板宽度
+    }
+  },
   computed: {
     ...mapState({
       sidebar: state => state.app.sidebar,
@@ -55,6 +63,29 @@ export default {
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === 'mobile'
       }
+    },
+    // 主内容区域样式
+    mainContainerStyle() {
+      const baseWidth = 110 // 左侧导航栏宽度
+      const panelWidth = this.submenuPanelWidth
+      return {
+        marginLeft: `${baseWidth + panelWidth}px`
+      }
+    },
+    // 固定头部样式
+    fixedHeaderStyle() {
+      return {
+        width: '100%'
+      }
+    },
+    // 标签页容器样式
+    tagsViewStyle() {
+      const baseWidth = 110 // 左侧导航栏宽度
+      const panelWidth = this.submenuPanelWidth
+      return {
+        width: `calc(100% - ${baseWidth + panelWidth}px)`,
+        marginLeft: `${baseWidth + panelWidth}px`
+      }
     }
   },
   mounted() {
@@ -69,6 +100,10 @@ export default {
   methods: {
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
+    },
+    // 处理子菜单展开/收起
+    handleSubmenuToggle(isOpen) {
+      this.submenuPanelWidth = isOpen ? 114 : 0
     }
   }
 }
@@ -106,17 +141,8 @@ export default {
     top: 0;
     right: 0;
     z-index: 9;
-    width: calc(100% - #{$sideBarWidth});
     transition: width 0.28s;
     padding: 0;
-  }
-
-  .hideSidebar .fixed-header {
-    width: calc(100% - 54px)
-  }
-
-  .mobile .fixed-header {
-    width: 100%;
   }
   .top42{
     top:42px !important;

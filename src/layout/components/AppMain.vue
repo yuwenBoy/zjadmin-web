@@ -1,5 +1,5 @@
 <template>
-  <section class="app-main">
+  <section class="app-main" :class="{'has-tags-view': hasTagsView}">
     <div :class="isElectron? 'app-client-main-content' : 'app-main-content'">
       <transition name="fade-transform" mode="out-in">
       <keep-alive :include="cachedViews">
@@ -29,6 +29,9 @@ export default {
     },
     isElectron() {
       return window.electronAPI && window.electronAPI.isElectron;
+    },
+    hasTagsView() {
+      return this.$store.state.settings.tagsView
     },
     key() {
       return this.$route.path
@@ -82,18 +85,11 @@ export default {
   }
 }
 
-.fixed-header+.app-main {
-  padding-top: 50px;
-}
+.app-main {
+  padding-top: 50px; // 默认有固定导航栏
 
-.hasTagsView {
-  .app-main {
-    /* 84 = navbar + tags-view = 50 + 34 */
-    min-height: calc(100vh - 84px);
-  }
-
-  .fixed-header+.app-main {
-    padding-top: 84px;
+  &.has-tags-view {
+    padding-top: 84px; // 有标签页时 50 + 34
   }
 }
 </style>

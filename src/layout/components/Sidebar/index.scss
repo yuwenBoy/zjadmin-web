@@ -1,166 +1,332 @@
-/* 侧边栏样式优化 */
-.sidebar-container {
+/* 淘宝闪购商家版风格 - 横向展开菜单 */
+.sidebar-wrapper {
+  display: flex;
+  height: calc(100vh - 50px);
+  position: fixed;
+  left: 0;
+  top: 50px;
+  bottom: 0;
+  z-index: 1001;
+}
+
+/* Electron桌面端顶部偏移 - 从顶部标题栏下方开始 */
+.sidebar-wrapper.top42 {
+  top: 92px !important;
+  height: calc(100vh - 92px) !important;
+}
+
+/* 左侧菜单栏 */
+.sidebar-nav {
+  width: 110px;
+  height: 100%;
   background-color: #ffffff;
-  border-right: 1px solid #e4e7ed;
-  height: 100vh;
-  overflow: hidden;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+//   border-right: 1px solid #e8e8e8;
 }
 
-/* 菜单容器 */
-.menu-wrapper {
-  margin: 0;
-  border-radius: 0;
-  overflow: hidden;
-  height: 100%;
+/* 带搜索框的菜单栏 */
+.sidebar-nav.has-search {
+  .nav-menu-container {
+    flex: 1;
+    padding-top: 0;
+  }
 }
 
-/* 菜单项样式 */
-.el-menu {
+/* 搜索框容器 */
+.menu-search-box {
+  padding: 6px 4px;
+  position: relative;
+  flex-shrink: 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* 深度覆盖Element UI输入框样式 */
+.menu-search-box  .el-input__inner {
   border: none !important;
-  background-color: #ffffff !important;
-  height: 100%;
-  
-  /* 菜单项 */
-  .el-menu-item {
-    height: 48px !important;
-    line-height: 48px !important;
-    margin: 8px 12px !important;
-    padding: 0 16px !important;
-    border-radius: 8px !important;
-    transition: all 0.3s ease !important;
-    font-size: 14px !important;
-    color: #606266 !important;
-    background-color: #ffffff !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    
-    &:hover {
-      background-color: #ecf5ff !important;
-      color: #409EFF !important;
-      transform: translateY(-1px);
-      box-shadow: 0 2px 6px rgba(64, 158, 255, 0.15);
-    }
-    
-    &.is-active {
-      background-color: #409EFF !important;
-      color: #ffffff !important;
-      font-weight: 500 !important;
-      box-shadow: 0 2px 8px rgba(64, 158, 255, 0.25);
-    }
-    
-    /* 菜单项图标 */
-    .svg-icon {
-      margin-right: 12px !important;
-      font-size: 16px !important;
-      color: inherit !important;
-    }
-    
-    /* 菜单项文字 */
-    span.slot-title {
-      font-size: 14px !important;
-      font-weight: 400 !important;
-    }
-  }
-  
-  /* 子菜单 */
-  .el-submenu {
-    .el-submenu__title {
-      height: 48px !important;
-      line-height: 48px !important;
-      margin: 8px 12px !important;
-      padding: 0 16px !important;
-      border-radius: 8px !important;
-      transition: all 0.3s ease !important;
-      font-size: 14px !important;
-      color: #606266 !important;
-      background-color: #ffffff !important;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      
-      &:hover {
-        background-color: #ecf5ff !important;
-        color: #409EFF !important;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 6px rgba(64, 158, 255, 0.15);
-      }
-      
-      &.is-active {
-        background-color: #409EFF !important;
-        color: #ffffff !important;
-        font-weight: 500 !important;
-        box-shadow: 0 2px 8px rgba(64, 158, 255, 0.25);
-      }
-      
-      /* 子菜单图标 */
-      .svg-icon {
-        margin-right: 12px !important;
-        font-size: 16px !important;
-        color: inherit !important;
-      }
-      
-      /* 子菜单文字 */
-      span.slot-title {
-        font-size: 14px !important;
-        font-weight: 400 !important;
-      }
-      
-      /* 子菜单箭头 */
-      .el-submenu__icon-arrow {
-        font-size: 12px !important;
-        color: #909399 !important;
-      }
-    }
-    
-    /* 子菜单内容 */
-    .el-submenu__content {
-      background-color: transparent !important;
-      margin: 0 !important;
-      padding: 0 12px !important;
-      border-radius: 0 !important;
-      box-shadow: none !important;
-    }
-    
-    /* 子菜单项 */
-    .el-menu-item {
-      height: 40px !important;
-      line-height: 40px !important;
-      margin: 4px 0 !important;
-      padding: 0 16px !important;
-      font-size: 13px !important;
-      
-      &:hover {
-        background-color: #ecf5ff !important;
-        color: #409EFF !important;
-      }
-      
-      &.is-active {
-        background-color: #409EFF !important;
-        color: #ffffff !important;
-      }
-    }
-  }
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: 14px;
+  height: 32px;
+  line-height: 32px;
+  box-shadow: none !important;
 }
 
-/* 滚动条样式 */
-.scrollbar-wrapper {
-  scrollbar-width: thin;
-  scrollbar-color: #3d3d3d #1a1a1a;
-  height: 100%;
+.menu-search-box .el-input__inner::placeholder {
+  color: #bfbfbf;
+  padding-left: 32px;
+}
+
+.menu-search-box .el-input__inner:focus {
+  outline: none !important;
+}
+
+.menu-search-box  .el-input.is-focus .el-input__inner {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.menu-search-box .el-input__prefix {
+  left: 0;
+}
+
+.menu-search-box .el-input__prefix .el-icon-search {
+  color: #bfbfbf;
+  font-size: 14px;
+  line-height: 32px;
+}
+
+.menu-search-box  .el-input__suffix {
+  right: 0;
+}
+
+.menu-search-box .el-input__suffix .el-input__icon {
+  line-height: 32px;
+}
+
+/* 搜索结果下拉 */
+.search-result-dropdown {
+  position: absolute;
+  top: 42px;
+  left: 8px;
+  right: 8px;
+  background: #ffffff;
+  border-radius: 0;
+  border-bottom: 1px solid #e8e8e8;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1002;
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   
   &::-webkit-scrollbar {
-    width: 6px;
+    display: none;
   }
   
-  &::-webkit-scrollbar-track {
-    background: #1a1a1a;
-    border-radius: 3px;
+  &.no-result {
+    padding: 8px 0;
+  }
+}
+
+.search-result-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  transition: all 0.2s;
+  border-bottom: 1px solid #f0f0f0;
+  
+  &:last-child {
+    border-bottom: none;
   }
   
-  &::-webkit-scrollbar-thumb {
-    background: #3d3d3d;
-    border-radius: 3px;
+  &:hover {
+    background-color: #fff5e6;
+    color: #ff6600;
   }
   
-  &::-webkit-scrollbar-thumb:hover {
-    background: #4d4d4d;
+  .result-title {
+    color: inherit;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
+}
+
+/* 导航菜单容器 */
+.nav-menu-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 4px 0;
+}
+
+.nav-menu-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* 导航菜单 */
+.nav-menu {
+  padding: 4px 0;
+}
+
+/* 导航项 */
+.nav-item {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding-left: 10px;
+  margin:4px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  color: #333333;
+  white-space: nowrap;
+  
+  &:hover {
+    color: #ff6600;
+  }
+  
+  &.is-active {
+    color: #ff6600;
+    font-weight: 500;
+  }
+}
+
+/* 导航内容 - 图标和文字在一行 */
+.nav-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* 导航图标 */
+.nav-icon {
+  font-size: 16px;
+  margin-right: 5px;
+  color: inherit;
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+}
+
+.nav-icon-placeholder {
+  font-size: 14px;
+  font-weight: 600;
+  color: inherit;
+  margin-right: 10px;
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* 导航文字 */
+.nav-title {
+  font-size: 14px;
+  color: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+/* 右侧子菜单面板 */
+.submenu-panel {
+  width: 114px;
+  height: 100%;
+  background-color: #ffffff;
+  border-right: 1px solid #e8e8e8;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+  animation: slideIn 0.2s ease;
+  z-index: 1002;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 子菜单头部 - 增加内边距和间距 */
+.submenu-header {
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.submenu-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 子菜单内容容器 */
+.submenu-content-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.submenu-content-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+/* 子菜单内容 */
+.submenu-content {
+  padding: 0 0 8px 0;
+}
+
+/* 子菜单项 */
+.submenu-item {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding-left: 10px;
+  margin: 4px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #666;
+  white-space: nowrap;
+  
+  &:hover {
+    color: #ff6600;
+  }
+  
+  &.is-active {
+    background-color: #fff5e6;
+    color: #ff6600;
+    font-weight: 500;
+  }
+}
+
+.submenu-item-title {
+  font-size: 14px;
+  color: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+
+/* 主内容区域调整 */
+#app {
+  .main-container {
+    margin-left: 110px;
+    min-height: 100%;
+    transition: margin-left 0.28s;
+    position: relative;
+  }
+  
+  &.has-submenu-panel {
+    .main-container {
+      margin-left: 224px; /* 110 + 114 */
+    }
+  }
+}
+
+/* 面包屑样式 */
+.app-breadcrumb.el-breadcrumb .no-redirect {
+  color: #666 !important;
 }

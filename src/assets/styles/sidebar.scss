@@ -2,188 +2,36 @@
   .main-container {
     min-height: 100%;
     transition: margin-left 0.28s;
-    margin-left: $sideBarWidth;
     position: relative;
   }
 
   .sidebar-container {
     transition: width 0.28s;
-    
-    width: $sideBarWidth !important;
-    background-color: $menuBg;
-    height: 100%;
+    width: auto !important;
+    height: calc(100% - 50px);
     position: fixed;
     font-size: 0;
-    top: 0;
+    top: 51px;
     bottom: 0;
     left: 0;
     z-index: 1001;
-    overflow: hidden;
-
-    // reset element-ui css
-    .horizontal-collapse-transition {
-      transition: 0s width ease-in-out, 0s padding-left ease-in-out,
-        0s padding-right ease-in-out;
-    }
-
-    .scrollbar-wrapper {
-      overflow-x: hidden !important;
-      background-color: rgb(58, 84, 226);
-    }
-
-    .el-scrollbar__bar.is-vertical {
-      right: 0;
-    }
-
-    .el-scrollbar {
-      height: 100%;
-    }
-
-    &.has-logo {
-      .el-scrollbar {
-        height: calc(100% - 50px);
-      }
-    }
-
-    .is-horizontal {
-      display: none;
-    }
-
-    a {
-      display: inline-block;
-      width: 100%;
-      overflow: hidden;
-    }
-
-    .svg-icon {
-      margin-right: 8px;
-    }
-
-    .el-menu {
-      border: none;
-      height: 100%;
-      width: 100% !important;
-    }
-
-    // menu hover
-    .submenu-title-noDropdown,
-    .el-submenu__title {
-      &:hover {
-        background-color: $subMenuHoverBg !important;
-        margin: 5px;
-        border-radius: $subMenuBorderRadius;
-      }
-    }
-
-    .is-active > .el-submenu__title {
-      color: $menuActiveText !important;
-      margin: 5px;
-      border-radius: $menuBorderRadius;
-    }
-
-    & .nest-menu .el-submenu > .el-submenu__title,
-    & .el-submenu .el-menu-item {
-      min-width: 130px !important;
-      border-radius: $subMenuBorderRadius; 
-      // margin: 3px 10px;
-      height: $menuHeight;
-      line-height: $menuLineHeight;
-      &:hover {
-        background-color: $subMenuHoverBg !important;
-        margin: 5px;
-        border-radius: $subMenuBorderRadius;
-      }
-    }
-
-    .el-menu-item {
-      height: $menuHeight;
-      line-height: $menuLineHeight;
-      margin-left: 5px;
-      margin: 5px !important;
-       &:hover {
-        // you can use $subMenuHover
-        margin-left: 5px;
-        margin: 5px !important;
-      }
-    }
-  // 左侧菜单
-    .el-submenu {
-        overflow: hidden;
-  
-        &> .el-submenu__title {
-          padding: 0 !important;
-          height:35px !important;
-          line-height: 35px !important;
-          margin:5px;
-          border-radius: $menuBorderRadius !important;
-  
-          .svg-icon {
-            margin-left: 20px;
-          }
-  
-          // .el-submenu__icon-arrow {
-          //   display: none;
-          // }
-         
-        }
-      }
-      .el-menu-item.is-active{
-        background-color: $menuActiveBg !important;
-        border-radius: $subMenuBorderRadius !important;
-      }
+    overflow: visible;
+    display: flex;
   }
 
-  .hideSidebar {
-    .sidebar-container {
-      width: 54px !important;
-    }
-
-    .main-container {
-      margin-left: 54px;
-    }
-
-    .submenu-title-noDropdown {
-      padding: 0 !important;
-      position: relative;
-
-      .el-tooltip {
-        padding: 0 !important;
-
-        .svg-icon {
-          margin-left: 20px;
-        }
-      }
-    }
-
-    .el-menu--collapse {
-      .el-submenu {
-        & > .el-submenu__title {
-          & > span {
-            height: 0;
-            width: 0;
-            overflow: hidden;
-            visibility: hidden;
-            display: inline-block;
-          }
-        }
-      }
-    }
+  /* Electron桌面端顶部偏移 */
+  .sidebar-container.top42 {
+    top: 92px !important;
+    height: calc(100% - 92px) !important;
   }
 
-  .el-menu--collapse .el-menu .el-submenu {
-    min-width: $sideBarWidth !important;
+  /* 覆盖sidebar-wrapper的默认样式 */
+  .sidebar-wrapper.top42 {
+    top: 92px !important;
+    height: calc(100vh - 92px) !important;
   }
 
-  .el-submenu__title i {
-    color:#FFFFFF !important;
-  }
-
-
-  .app-breadcrumb.el-breadcrumb .no-redirect{
-    color:#333333 !important;
-  }
-
-  // mobile responsive
+  // 移动端适配
   .mobile {
     .main-container {
       margin-left: 0;
@@ -191,14 +39,13 @@
 
     .sidebar-container {
       transition: transform 0.28s;
-      width: $sideBarWidth !important;
     }
 
     &.hideSidebar {
       .sidebar-container {
         pointer-events: none;
         transition-duration: 0.3s;
-        transform: translate3d(-$sideBarWidth, 0, 0);
+        transform: translate3d(-100%, 0, 0);
       }
     }
   }
@@ -211,38 +58,7 @@
   }
 }
 
-// when menu collapsed
-.el-menu--vertical {
-  & > .el-menu {
-    .svg-icon {
-      margin-right: 8px;
-    }
-  }
-
-  .nest-menu .el-submenu > .el-submenu__title,
-  .el-menu-item {
-    &:hover {
-      // you can use $subMenuHover
-      background-color: $menuHoverBg !important;
-    }
-  }
-
-  // the scroll bar appears when the subMenu is too long
-  > .el-menu--popup {
-    max-height: 100vh;
-    overflow-y: auto;
-
-    &::-webkit-scrollbar-track-piece {
-      background: #d3dce6;
-    }
-
-    &::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: #99a9bf;
-      border-radius: 20px;
-    }
-  }
+// 面包屑样式
+.app-breadcrumb.el-breadcrumb .no-redirect {
+  color: #666 !important;
 }

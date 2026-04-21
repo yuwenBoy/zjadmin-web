@@ -63,28 +63,30 @@ export default {
 
 .sidebar-logo-container {
     position: relative;
-    width: 100%;
+    width: 140px;
     height: 50px;
     line-height: 50px;
-    text-align: center;
+    text-align: left;
     overflow: hidden;
     background: #ffffff;
     border-bottom: 1px solid #e4e7ed;
+    box-sizing: border-box;
 
   & .sidebar-logo-link {
     height: 100%;
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 0 15px;
+    justify-content: flex-start;
+    padding: 0 12px;
 
     & .sidebar-logo {
-      width: 32px;
-      height: 32px;
+      width: 24px;
+      height: 24px;
       vertical-align: middle;
       margin-right: 8px;
       border-radius: 4px;
+      flex-shrink: 0;
     }
 
     & .sidebar-title {
@@ -93,9 +95,13 @@ export default {
       color: #303133;
       font-weight: 600;
       line-height: 50px;
-      font-size: 14px;
+      font-size: 12px;
       font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
       vertical-align: middle;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 90px;
     }
   }
 
