@@ -24,6 +24,9 @@ Vue.prototype.$enum = U
 Vue.prototype.$msg =alert
 Vue.prototype.handleTree = handleTree
 
+// 创建全局事件总线
+Vue.prototype.$eventBus = new Vue()
+
 import jxxqzhas from './components/Permission'
 
 import VueQuillEditor from 'vue-quill-editor'
@@ -43,9 +46,7 @@ new Vue({
     store,
     render: h => h(App),
     created() {
-    // 应用启动时初始化 WebSocket
-    if (getToken()) {
-      this.$store.dispatch('chat/initSocket');
-    }
+    // WebSocket 在 router/index.js 的 GetInfo 成功后初始化
+    // 避免在这里初始化时 user 信息还未加载
   },
 }).$mount('#app')

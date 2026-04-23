@@ -25,6 +25,8 @@ router.beforeEach((to, from, next) => {
         //  判断当前用户是否已拉取完user_info信息
         store.dispatch('GetInfo').then(res => {
           // 拉取userInfo
+          // 用户信息获取成功后初始化 WebSocket
+          store.dispatch('chat/initSocket')
           loadMenus(next, to)
         }).catch((err) => {
           store.dispatch('LogOut').then(() => {

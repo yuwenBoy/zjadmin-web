@@ -7,6 +7,11 @@ import Config from "@/settings";
 import Avatar from "@/assets/images/avatar.png";
 Vue.use(Vuex);
 
+// 获取 eventBus 的辅助函数
+function getEventBus() {
+  return Vue.prototype.$eventBus;
+}
+
 const state = {
   socket: null,
   messages: [], // 当前会话消息
@@ -193,10 +198,20 @@ const mutations = {
 const actions = {
   // 登录后初始化 WebSocket 连接
   initSocket({ commit, rootState, state, dispatch }) {
+    // 如果已经连接，先断开
+    if (state.socket) {
+      state.socket.close();
+      commit("SET_SOCKET", null);
+    }
+    
     state.id = rootState.user.user.id;
     let _token = getToken();
     if (!_token) {
       console.log("token为空，无法连接 WebSocket！");
+      return;
+    }
+    if (!state.id) {
+      console.log("userId为空，无法连接 WebSocket！");
       return;
     }
     const socket = io(rootState.api.socketApi, {
@@ -310,10 +325,25 @@ const actions = {
     // 🔥 监听【新订单推送】给商家
     // ==============================
     socket.on("new_shop_order", order => {
-      console.log("📦 收到新订单：", order);
+      console.log("[Socket] 📦 收到新订单推送 (new_shop_order):", order);
+      console.log("[Socket] 订单门店ID:", order.storeId || order.store_id);
+      console.log("[Socket] 当前用户ID:", state.id);
+
+      // 触发全局事件，通知订单推送组件
+      const eventBus = getEventBus();
+      if (eventBus) {
+        console.log("[Socket] 触发 new-shop-order 事件到 eventBus");
+        eventBus.$emit("new-shop-order", order);
+        // 同时触发刷新订单列表和统计
+        eventBus.$emit("refresh-order-list");
+      } else {
+        console.warn("[Socket] eventBus 不存在，无法触发事件");
+      }
+
+      // Electron 环境下发送通知
       const ipcRenderer = getIpcRenderer();
-      if (ipcRenderer) {
-        // 发送消息给主进程，弹出订单弹窗
+      if (ipcRenderer && window.electronAPI) {
+        console.log("[Socket] 发送 Electron 通知");
         window.electronAPI.notify("newOrder");
       }
     });

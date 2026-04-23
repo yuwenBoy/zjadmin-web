@@ -179,23 +179,39 @@ export default {
 <style lang="scss" scoped>
 .tree-content {
   width: 100%;
-  height: calc(100vh - 80px);
-  .header{height: 45px;line-height: 45px;}
-  .node-wrapper {  
-  position: relative;  
-  padding-right: 100px; /* 根据操作按钮宽度调整 */  
-}  
-  
-.hander-click {  
-  position: absolute;  
-  right: 0;  
-  top: 0;  
-  display: none;  
-}  
-  
-.node-wrapper:hover .hander-click {  
-  display: inline-block; 
-} 
-  
+  height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+
+  .header {
+    height: 45px;
+    line-height: 45px;
+    flex-shrink: 0;
+  }
+
+  .filter-item {
+    flex-shrink: 0;
+  }
+
+  .el-tree {
+    flex: 1;
+    overflow: auto;
+  }
+
+  .node-wrapper {
+    position: relative;
+    padding-right: 100px;
+  }
+
+  .hander-click {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: none;
+  }
+
+  .node-wrapper:hover .hander-click {
+    display: inline-block;
+  }
 }
 </style>

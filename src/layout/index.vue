@@ -17,6 +17,8 @@
     </div>
     <!--  防止刷新后主题丢失  -->
     <Theme v-show="false" ref="theme" />
+    <!-- 订单推送通知组件 -->
+    <order-push-notification />
     </div>
 </template>
 
@@ -28,6 +30,7 @@ import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
 import Theme from '@/components/ThemePicker'
 import Cookies from 'js-cookie'
+import OrderPushNotification from '@/components/OrderPush'
 export default {
   name: 'Layout',
   components: {
@@ -37,7 +40,8 @@ export default {
     Settings,
     Sidebar,
     TagsView,
-    Theme
+    Theme,
+    OrderPushNotification
   },
   mixins: [ResizeMixin],
   data() {
@@ -54,7 +58,8 @@ export default {
       fixedHeader: state => state.settings.fixedHeader,
       isElectron() {
          return window.electronAPI && window.electronAPI.isElectron;
-      }
+      },
+      user: state => state.user.user
     }),
     classObj() {
       return {

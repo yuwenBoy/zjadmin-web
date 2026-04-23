@@ -149,8 +149,8 @@ export default {
           }
           this.$store.dispatch('Login', user).then(() => {
             this.loading = false
-            this.$router.push({ path: this.redirect || '/' })
-            this.$store.dispatch('chat/initSocket');
+            // WebSocket 初始化在 router/index.js 的导航守卫中处理
+            // 不要在这里重复初始化，否则会导致连接问题
           }).catch(error => {
             msg.alert('账号密码错误，请重新登录','error');
             this.loading = false

@@ -1,26 +1,33 @@
 <template>
   <div class="app-container">
     <el-row :gutter="24">
-      <el-col :xs="9" :sm="6" :md="5" :lg="4" :xl="4">
-        <div style="padding-top: 10px">
-          <dept-tree
-            :data="deptEntity"
-            :checkValue="[]"
-            @change="change"
-            :defaultSelectedKey="3"
-          />
+      <el-col :xs="treeCollapsed ? 1 : 9" :sm="treeCollapsed ? 1 : 6" :md="treeCollapsed ? 1 : 5" :lg="treeCollapsed ? 1 : 4" :xl="treeCollapsed ? 1 : 4">
+        <div class="tree-wrapper" :class="{ 'is-collapsed': treeCollapsed }">
+          <div v-show="!treeCollapsed" class="tree-content">
+            <dept-tree
+              :data="deptEntity"
+              :checkValue="[]"
+              @change="change"
+              :defaultSelectedKey="3"
+            />
+          </div>
+          <el-tooltip :content="treeCollapsed ? '展开' : '收起'" placement="right">
+            <div class="collapse-btn" @click="toggleTree">
+              <i :class="treeCollapsed ? 'el-icon-arrow-right' : 'el-icon-arrow-left'"></i>
+            </div>
+          </el-tooltip>
         </div>
       </el-col>
       <el-col
-        :xs="15"
-        :sm="18"
-        :md="20"
-        :lg="20"
-        :xl="20"
+        :xs="treeCollapsed ? 23 : 15"
+        :sm="treeCollapsed ? 23 : 18"
+        :md="treeCollapsed ? 23 : 20"
+        :lg="treeCollapsed ? 23 : 20"
+        :xl="treeCollapsed ? 23 : 20"
         style="padding-left: 0px"
       >
-        <div class="head-container">
-          <div class="content-box box-shadow">
+        <div class="head-container right-content">
+          <div class="content-box">
             <div class="text item">
               <el-form label-width="0px" inline>
                 <el-form-item>
@@ -236,7 +243,7 @@
                 align="center"
               />
               <!--   编辑与删除   -->
-              <el-table-column label="操作" align="left" width="150">
+              <el-table-column label="操作" align="left" width="150" fixed="right">
                 <template slot-scope="scope">
                   <el-link
                     v-authority="['user:edit']"
@@ -387,6 +394,7 @@ export default {
       userId: 0,
       rolesIds: [],
       deptEntity: [],
+      treeCollapsed: false,
       // 用户导入参数
       upload: {
         // 是否显示弹出层（用户导入）
@@ -576,6 +584,10 @@ export default {
     submitFileForm() {
       this.$refs.upload.submit();
     },
+    // 切换树形面板收起/展开
+    toggleTree() {
+      this.treeCollapsed = !this.treeCollapsed;
+    },
   },
 };
 </script>
@@ -590,5 +602,58 @@ export default {
   padding: 0 12px 0 0;
   box-sizing: border-box;
   font-weight: 500;
+}
+
+
+
+/* 树形面板容器 */
+.tree-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-top: 10px;
+  height: calc(100vh - 120px);
+}
+
+/* 树形内容区域 */
+.tree-content {
+  flex: 1;
+  overflow: auto;
+  max-height: calc(100vh - 120px);
+}
+
+/* 收起按钮 */
+.collapse-btn {
+  width: 24px;
+  height: 60px;
+  background: #f5f7fa;
+  border: 1px solid #e4e7ed;
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.collapse-btn:hover {
+  background: #e6f7ff;
+  color: #1890ff;
+}
+
+/* 收起状态 */
+.tree-wrapper.is-collapsed .collapse-btn {
+  border-radius: 0 4px 4px 0;
+  border-left: 1px solid #e4e7ed;
+}
+
+/* 右侧内容区域 */
+.right-content {
+  min-height: calc(100vh - 120px);
+}
+
+.right-content .content-box {
+  padding-bottom: 20px;
 }
 </style>
