@@ -47,11 +47,11 @@
               <span v-else class="nav-icon-placeholder">{{ route.meta.title ? route.meta.title.charAt(0) : '' }}</span>
               <span class="nav-title">{{ route.meta.title }}</span>
             </template>
-            <template v-else-if="route.children && route.children.length > 0">
+            <template v-else-if="getFirstVisibleChildMeta(route)">
               <!-- 使用第一个可见子路由的 meta -->
-              <svg-icon v-if="route.children[0].meta && route.children[0].meta.icon" :icon-class="route.children[0].meta.icon" class="nav-icon"/>
-              <span v-else class="nav-icon-placeholder">{{ route.children[0].meta && route.children[0].meta.title ? route.children[0].meta.title.charAt(0) : '' }}</span>
-              <span class="nav-title">{{ route.children[0].meta && route.children[0].meta.title }}</span>
+              <svg-icon v-if="getFirstVisibleChildMeta(route).icon" :icon-class="getFirstVisibleChildMeta(route).icon" class="nav-icon"/>
+              <span v-else class="nav-icon-placeholder">{{ getFirstVisibleChildMeta(route).title ? getFirstVisibleChildMeta(route).title.charAt(0) : '' }}</span>
+              <span class="nav-title">{{ getFirstVisibleChildMeta(route).title }}</span>
             </template>
             <template v-else>
               <span class="nav-icon-placeholder">{{ route.path ? route.path.charAt(0) : 'R' }}</span>
@@ -301,6 +301,11 @@ export default {
       if (!route.children || route.children.length === 0) return null
       return route.children.find(child => !child.hidden)
     },
+    // 获取第一个可见子菜单的meta信息
+    getFirstVisibleChildMeta(route) {
+      const child = this.getFirstVisibleChild(route)
+      return child ? child.meta : null
+    },
     // 点击导航项
     handleNavClick(route) {
       if (this.hasChildren(route)) {
@@ -326,7 +331,15 @@ export default {
         this.$emit('submenu-toggle', false)
         const firstChild = this.getFirstVisibleChild(route)
         if (firstChild) {
-          const fullPath = this.resolvePath(firstChild.path, route.path)
+          // 处理子菜单路径：支持相对路径和绝对路径
+          let fullPath
+          if (firstChild.path && firstChild.path.startsWith('/')) {
+            // 绝对路径直接使用
+            fullPath = firstChild.path
+          } else {
+            // 相对路径拼接父路由路径
+            fullPath = this.resolvePath(firstChild.path, route.path)
+          }
           this.$router.push(fullPath)
         } else if (route.path) {
           this.$router.push(route.path)

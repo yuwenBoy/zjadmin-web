@@ -335,7 +335,7 @@ export default {
       orderList: [],
       pagination: {
         page: 1,
-        pageSize: 20,
+        pageSize: 10,
         total: 0
       },
       statistics: {
@@ -417,24 +417,33 @@ export default {
         }
         const res = await getOrderList(params);
         if (res.code === 0 || res.success) {
-          let list = (res.result && res.result.list) || (res.data && res.data.list) || [];
-          // 转换数据格式：将后端返回的 goods 转换为前端需要的 items
+          let list = (res.result && res.result.content) || (res.data && res.data.content) || [];
+          // 转换数据格式：将后端返回的 goods/items 转换为前端需要的 items
           list = list.map(order => {
-            if (order.goods && Array.isArray(order.goods)) {
+            // 如果后端直接返回 items，需要转换字段名
+            if (order.items && Array.isArray(order.items)) {
+              order.items = order.items.map(item => ({
+                goodsName: item.productName || item.goodsName || '',
+                specName: item.specName || '',
+                quantity: item.count || item.quantity || 0,
+                unitPrice: item.price || item.unitPrice || '0.00',
+                totalPrice: (parseFloat(item.price || item.unitPrice || 0) * parseInt(item.count || item.quantity || 0)).toFixed(2),
+                img: item.img || item.image || item.imageUrl || item.picUrl || item.productImage || item.goodsImage || item.cover || ''
+              }));
+            } else if (order.goods && Array.isArray(order.goods)) {
               order.items = order.goods.map(good => ({
                 goodsName: good.productName || good.goodsName || '',
                 specName: good.specName || '',
                 quantity: good.count || good.quantity || 0,
                 unitPrice: good.price || good.unitPrice || '0.00',
-                totalPrice: (parseFloat(good.price || 0) * parseInt(good.count || 0)).toFixed(2),
-                // 兼容多种图片字段名：img、image、imageUrl、picUrl、productImage、goodsImage
+                totalPrice: (parseFloat(good.price || good.unitPrice || 0) * parseInt(good.count || good.quantity || 0)).toFixed(2),
                 img: good.img || good.image || good.imageUrl || good.picUrl || good.productImage || good.goodsImage || good.cover || ''
               }));
             }
             return order;
           });
           this.orderList = list;
-          this.pagination.total = (res.result && res.result.pagination && res.result.pagination.total) || (res.data && res.data.pagination && res.data.pagination.total) || 0;
+          this.pagination.total = (res.result && res.result.totalElements) || 0;
         } else {
           this.$message.error(res.message || "获取订单列表失败");
         }

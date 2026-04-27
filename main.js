@@ -183,6 +183,10 @@ ipcMain.handle('remove-auth-token', () => {
   }
 })
 
+// 设置应用名称（修复通知标题显示为 electron.app.Electron 的问题）
+app.setAppUserModelId('com.zjadmin.merchant')
+app.name = '商家版'
+
 // 应用启动
 app.whenReady().then(() => {
   mainWindow = createWindow()

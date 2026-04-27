@@ -198,8 +198,9 @@ const mutations = {
 const actions = {
   // 登录后初始化 WebSocket 连接
   initSocket({ commit, rootState, state, dispatch }) {
-    // 如果已经连接，先断开
+    // 如果已经连接，先断开并清理事件监听器
     if (state.socket) {
+      state.socket.removeAllListeners();
       state.socket.close();
       commit("SET_SOCKET", null);
     }

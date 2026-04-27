@@ -73,13 +73,13 @@ export default {
   overflow: hidden;
   .app-main-content {
     height: calc(100vh - 30px);
-    overflow-y: hidden;
+    overflow-y: auto;
     background-color: #f5f7fc;
     overflow-x: hidden;
   }
   .app-client-main-content{
     height: calc(100vh - 83px);
-    overflow-y: hidden;
+    overflow-y: auto;
     background-color: #f5f7fc;
     overflow-x: hidden;
   }

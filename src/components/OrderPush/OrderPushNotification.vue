@@ -24,8 +24,14 @@
           </div>
         </div>
 
-        <!-- 订单内容 -->
-        <div class="push-content">
+        <!-- 订单内容 - 添加点击跳转 -->
+        <div class="push-content" @click="goToOrderDetail(order)">
+          <!-- 订单编号 -->
+          <div class="order-no-row">
+            <i class="el-icon-document"></i>
+            <span class="label">订单号:</span>
+            <span class="value order-no">{{ order.orderNo || order.orderId }}</span>
+          </div>
           <div class="customer-info">
             <div class="info-item">
               <i class="el-icon-user"></i>
@@ -315,9 +321,6 @@ export default {
         return;
       }
 
-      // 播放提示音
-      this.playNotificationSound();
-
       // 格式化订单数据
       const order = {
         ...adaptedData,
@@ -340,43 +343,140 @@ export default {
       this.showBrowserNotification(order);
     },
 
-    // 播放提示音
-    playNotificationSound() {
-      try {
-        const audio = new Audio("/sounds/new-order.mp3");
-        audio.volume = 0.8;
-        audio.play().catch(err => {
-          console.log("播放提示音失败:", err);
-        });
-      } catch (error) {
-        console.log("播放提示音失败:", error);
-      }
-    },
-
     // 显示浏览器通知
     showBrowserNotification(order) {
-      if (!("Notification" in window)) return;
+      if (!("Notification" in window)) {
+        console.warn('[OrderPush] 浏览器不支持 Notification API');
+        return;
+      }
       
       const title = "新订单提醒";
       const body = `订单号: ${order.orderNo || order.orderId || '未知'}\n顾客: ${order.addressName || '未知顾客'}\n金额: ¥${order.finalTotal || 0}`;
       
+      // 修复图标路径：使用绝对路径确保在 Electron 中正常显示
+      const getIconPath = () => {
+        // 尝试多种方式获取图标路径
+        const possiblePaths = [
+          window.location.origin + '/favicon.ico',
+          window.location.protocol + '//' + window.location.host + '/favicon.ico',
+          '/favicon.ico'
+        ];
+        
+        // 在 Electron file:// 协议下，使用绝对路径
+        if (window.location.protocol === 'file:') {
+          // 对于 Electron，尝试使用应用目录下的图标
+          return possiblePaths[0];
+        }
+        return possiblePaths[1];
+      };
+      
+      const notificationOptions = {
+        body: body,
+        icon: getIconPath(),
+        tag: order.orderId,
+        requireInteraction: true, // 保持通知直到用户交互
+        silent: false // 播放提示音
+      };
+      
+      const showNotification = () => {
+        try {
+          const notification = new Notification(title, notificationOptions);
+          
+          // 添加点击事件 - 跳转到订单详情
+          notification.onclick = () => {
+            console.log('[OrderPush] 浏览器通知被点击');
+            // 聚焦到当前窗口
+            window.focus();
+            // 跳转到订单详情
+            this.goToOrderDetail(order);
+            // 关闭通知
+            notification.close();
+          };
+          
+          console.log('[OrderPush] 浏览器通知已显示');
+        } catch (err) {
+          console.error('[OrderPush] 显示浏览器通知失败:', err);
+        }
+      };
+      
+      // 检查并请求通知权限
       if (Notification.permission === "granted") {
-        new Notification(title, {
-          body: body,
-          icon: "/favicon.ico",
-          tag: order.orderId
-        });
+        showNotification();
       } else if (Notification.permission !== "denied") {
         Notification.requestPermission().then(permission => {
+          console.log('[OrderPush] 通知权限请求结果:', permission);
           if (permission === "granted") {
-            new Notification(title, {
-              body: body,
-              icon: "/favicon.ico",
-              tag: order.orderId
-            });
+            showNotification();
           }
+        }).catch(err => {
+          console.error('[OrderPush] 请求通知权限失败:', err);
         });
+      } else {
+        console.warn('[OrderPush] 通知权限被拒绝');
       }
+    },
+
+    // 跳转到订单详情页
+    goToOrderDetail(order) {
+      console.log('[OrderPush] 跳转到订单详情:', order.orderId);
+      
+      // 关闭当前通知卡片
+      this.closeOrder(order);
+      
+      // 尝试获取订单处理页面的实际路由路径
+      const targetPath = this.findOrderProcessingPath() || '/business/order/processing';
+      
+      // 使用 Vue Router 跳转到订单处理页面
+      // 传递订单ID作为查询参数，目标页面可以根据此参数自动打开详情弹窗
+      this.$router.push({
+        path: targetPath,
+        query: { 
+          orderId: order.orderId,
+          highlight: 'true'
+        }
+      });
+      
+      // 发送事件通知订单列表高亮显示该订单
+      if (this.$eventBus) {
+        this.$eventBus.$emit('highlight-order', order.orderId);
+      }
+    },
+    
+    // 查找订单处理页面的实际路径（支持动态路由配置）
+    findOrderProcessingPath() {
+      const routers = (this.$store && this.$store.getters && this.$store.getters.permission_routers) || [];
+      
+      for (const route of routers) {
+        // 检查一级路由
+        if (route.path && route.path.includes('business') && route.children) {
+          for (const child of route.children) {
+            // 匹配包含 processing 或 order 的子路由
+            const childPath = child.path || '';
+            const component = child.component || '';
+            if (childPath.includes('processing') || 
+                (typeof component === 'string' && component.includes('order/processing'))) {
+              // 拼接完整路径
+              const basePath = route.path.endsWith('/') ? route.path : route.path + '/';
+              const fullPath = childPath.startsWith('/') ? childPath : basePath + childPath;
+              console.log('[OrderPush] 找到订单处理页面路径:', fullPath);
+              return fullPath;
+            }
+          }
+        }
+        // 递归检查子路由
+        if (route.children) {
+          for (const child of route.children) {
+            if (child.path && child.path.includes('processing')) {
+              const fullPath = route.path + '/' + child.path;
+              console.log('[OrderPush] 找到订单处理页面路径:', fullPath);
+              return fullPath;
+            }
+          }
+        }
+      }
+      
+      console.log('[OrderPush] 未找到动态路由，使用默认路径');
+      return null;
     },
 
     // 开始倒计时
@@ -635,6 +735,40 @@ export default {
 /* 内容区域 */
 .push-content {
   padding: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.push-content:hover {
+  background-color: #f5f7fa;
+}
+
+/* 订单编号行 */
+.order-no-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #e4e7ed;
+  font-size: 13px;
+}
+
+.order-no-row i {
+  color: #409eff;
+  font-size: 14px;
+}
+
+.order-no-row .label {
+  color: #909399;
+  min-width: 52px;
+}
+
+.order-no-row .value.order-no {
+  color: #409eff;
+  font-weight: 600;
+  font-family: 'DIN Alternate', 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: 0.5px;
 }
 
 .customer-info {
