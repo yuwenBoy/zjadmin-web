@@ -20,10 +20,7 @@ export default {
   async mounted() {
     // 延迟检测，确保 preload 注入完成
     setTimeout(() => {
-      console.log("检测 window.electronAPI:", window.electronAPI);
-
       if (window.electronAPI && window.electronAPI.isElectron) {
-        console.log("🎉 成功运行在 Electron 桌面端！");
         window.electronAPI.onNavAction((action) => {
           if (action === "back") {
             this.handleBack();
@@ -31,8 +28,6 @@ export default {
             this.handleForward();
           }
         });
-      } else {
-        console.log("⚠️ 当前运行在浏览器环境");
       }
     }, 500); // 延迟 500ms
   },

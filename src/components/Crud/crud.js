@@ -600,7 +600,6 @@ function CRUD(options) {
 // hook VM
 function callVmHook(crud, hook) {
     if (crud.debug) {
-        console.log('callVmHook: ' + hook)
     }
     const tagHook = crud.tag ? hook + '$' + crud.tag : null
     let ret = true

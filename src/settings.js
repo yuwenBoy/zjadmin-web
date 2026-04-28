@@ -50,9 +50,6 @@ module.exports = {
      * 备案号
      */
     caseNumber: '',
-    /**
-     * nginx 图片资源访问地址
-     */
-    baseImgUrl:'//image.jxxqz.com:3001/',
+ 
     weatherAPIKey:'0a6a76126434abffa21e08398266e517', // 483569520b741ebca59287681f3a6427
 }

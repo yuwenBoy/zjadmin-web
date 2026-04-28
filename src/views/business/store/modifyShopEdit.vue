@@ -624,7 +624,6 @@ export default {
       this.form.longitude = addressInfo.lng;
       this.form.detail_address = addressInfo.name;
       this.showMap = false;
-      console.log(addressInfo)
       // 如果地图返回的adcode和级联选中的不一致，提示用户
       if (addressInfo.address !== this.form.detail_address) {
         this.$message.warning("地图定位位置与所选区域不一致，请重新选择");
@@ -650,7 +649,6 @@ export default {
             licenseInfo: this.form.licenseInfo,
             permitInfo: this.form.permitInfo,
           };
-          console.log(requestInfo);
           updateStoreAndSubmitAudit(requestInfo).then((res) => {
             this.$message.success("修改成功");
             this.$router.replace("info");

@@ -48,7 +48,6 @@ function createWindow(url = null, options = {}) {
   })
 
   if (isDev) {
-    console.log('🚀 开发环境加载本地页面')
     win.loadURL(url || 'http://localhost:3500')
     win.webContents.openDevTools()
   } else {
@@ -124,7 +123,6 @@ async function playSound(type) {
     const fileName = soundMap[type] || 'msg.mp3'
     const soundPath = path.join(staticPath, 'sounds', fileName)
 
-    console.log('🔊 播放声音:', soundPath)
     await sound.play(soundPath)
 
     setTimeout(() => {

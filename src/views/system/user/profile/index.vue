@@ -103,8 +103,6 @@ import myUpload from "vue-image-crop-upload";
 import userInfo from "./userInfo";
 import resetPwd from "./resetPwd";
 import store from "@/store";
-import Config from '@/settings';
-import { getFileName } from '@/utils/index'
 export default {
   name: "Center",
   components: {
@@ -130,7 +128,7 @@ export default {
     ...mapGetters(["user"]),
   },
   mounted() {
-    this.fileName = this.user.avatar ? (Config.baseImgUrl +  getFileName(this.user.avatar)):'';
+    this.fileName = this.user.avatar || '';
   },
   methods: {
     toggleShow() {
@@ -141,7 +139,7 @@ export default {
         setTimeout(() => {
           this.isDisPlay = false;
         }, 500);
-        this.fileName = Config.baseImgUrl + getFileName(this.user.avatar);
+        this.fileName =this.user.avatar || '';
       });
     },
     //上传失败回调

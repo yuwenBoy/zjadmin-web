@@ -45,10 +45,8 @@ export default {
   },
   methods: {
     handleRemove(file, fileList) {
-      console.log(file, fileList);
     },
     handlePreview(file) {
-      console.log(file);
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },

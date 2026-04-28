@@ -189,7 +189,6 @@ export default {
     this.audit.id = this.$route.query.id;
     this.audit.reason = this.form.reason;
     this.audit.status = this.form.status;
-    console.log(this.form)
     this.form.status = '';
     this.getCategoriesDataList()
   },
@@ -207,7 +206,6 @@ export default {
     convertDeptIdsToPaths(deptIds) {
         const paths = []
         deptIds.forEach(id => {
-            console.log(this.deptDataList)
             const path = this.findDeptPath(id, this.deptDataList)
             if (path.length > 0) {
             paths.push(path)
@@ -226,7 +224,6 @@ export default {
                 const childPath = this.findDeptPath(parseInt(deptId), node.children);
                 if (childPath.length > 0) {
                     const fullPath = [...currentPath, ...childPath];
-                    console.log('✅ 找到路径:', fullPath);
                     return fullPath;
                 }
             }
@@ -241,7 +238,6 @@ export default {
           if (valid) {
                 this.$msg.confirm(`确定审核吗？操作后不可恢复`, {
                     ok: () => {
-                        console.log(this.form);
                         if(this.form.status==2){
                            if(!this.form.reason){
                                 this.$msg.alert('请选择拒绝原因');
@@ -266,7 +262,6 @@ export default {
                     cancel: () => {},
                 });
           } else {
-            console.log('error submit!!');
             return false;
           }
         });

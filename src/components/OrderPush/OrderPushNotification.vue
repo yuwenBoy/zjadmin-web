@@ -163,14 +163,10 @@ export default {
     };
   },
   created() {
-    console.log("[OrderPush] 组件已创建");
     // 监听新订单事件
     if (this.$eventBus) {
-      console.log("[OrderPush] 开始监听 new-shop-order 事件");
       this.$eventBus.$on("new-shop-order", this.handleNewOrder);
-      console.log("[OrderPush] 已注册 new-shop-order 事件监听器");
     } else {
-      console.warn("[OrderPush] $eventBus 不存在!");
     }
     // 开始倒计时
     this.startCountdown();
@@ -178,7 +174,6 @@ export default {
     // 挂载全局测试方法
     if (typeof window !== 'undefined') {
       window.testOrderPush = this.testOrderPush;
-      console.log("[OrderPush] 测试方法已挂载，在控制台运行 testOrderPush() 可测试弹窗");
     }
   },
   beforeDestroy() {
@@ -249,7 +244,6 @@ export default {
                 rawData.buyerRemark || rawData.buyer_remark || ''
       };
       
-      console.log("[OrderPush] 适配后的数据:", adapted);
       return adapted;
     },
     
@@ -270,7 +264,6 @@ export default {
 
     // 测试弹窗方法 - 模拟后端推送格式
     testOrderPush() {
-      console.log("[OrderPush] 🧪 手动触发测试订单");
       // 模拟后端 Socket 推送的数据格式
       const testOrder = {
         orderId: Date.now(),
@@ -294,9 +287,6 @@ export default {
 
     // 处理新订单
     handleNewOrder(orderData) {
-      console.log("[OrderPush] 📦 收到新订单原始数据:", orderData);
-      console.log("[OrderPush] 原始数据字段:", Object.keys(orderData.order || orderData));
-      
       // 数据适配：处理可能的不同字段名格式
       const adaptedData = this.adaptOrderData(orderData);
       
@@ -317,7 +307,6 @@ export default {
       // 检查是否已存在
       const exists = this.orderList.some(o => o.orderId === adaptedData.orderId);
       if (exists) {
-        console.log("[OrderPush] 订单已存在，跳过:", adaptedData.orderId);
         return;
       }
 
@@ -384,7 +373,6 @@ export default {
           
           // 添加点击事件 - 跳转到订单详情
           notification.onclick = () => {
-            console.log('[OrderPush] 浏览器通知被点击');
             // 聚焦到当前窗口
             window.focus();
             // 跳转到订单详情
@@ -393,7 +381,6 @@ export default {
             notification.close();
           };
           
-          console.log('[OrderPush] 浏览器通知已显示');
         } catch (err) {
           console.error('[OrderPush] 显示浏览器通知失败:', err);
         }
@@ -404,7 +391,6 @@ export default {
         showNotification();
       } else if (Notification.permission !== "denied") {
         Notification.requestPermission().then(permission => {
-          console.log('[OrderPush] 通知权限请求结果:', permission);
           if (permission === "granted") {
             showNotification();
           }
@@ -418,8 +404,6 @@ export default {
 
     // 跳转到订单详情页
     goToOrderDetail(order) {
-      console.log('[OrderPush] 跳转到订单详情:', order.orderId);
-      
       // 关闭当前通知卡片
       this.closeOrder(order);
       
@@ -458,7 +442,6 @@ export default {
               // 拼接完整路径
               const basePath = route.path.endsWith('/') ? route.path : route.path + '/';
               const fullPath = childPath.startsWith('/') ? childPath : basePath + childPath;
-              console.log('[OrderPush] 找到订单处理页面路径:', fullPath);
               return fullPath;
             }
           }
@@ -468,14 +451,11 @@ export default {
           for (const child of route.children) {
             if (child.path && child.path.includes('processing')) {
               const fullPath = route.path + '/' + child.path;
-              console.log('[OrderPush] 找到订单处理页面路径:', fullPath);
               return fullPath;
             }
           }
         }
       }
-      
-      console.log('[OrderPush] 未找到动态路由，使用默认路径');
       return null;
     },
 

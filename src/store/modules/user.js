@@ -37,7 +37,6 @@ const user = {
                             // ✅ 保存 Token 到主进程
                             window.electronAPI.setToken(data.accessToken)
                             const config = await window.electronAPI.getAppConfig()
-                            console.log('✅ [Login.vue] 重新获取配置确认:', config.token ? 'Token 存在' : 'Token 仍为空')
                          }
                         setToken(data.accessToken,data.refreshToken)
                         router.push('/');
@@ -91,7 +90,6 @@ export const logOut = async (commit) => {
     commit('SET_ROLES', [])
     if (window.electronAPI) {
         const result = await window.electronAPI.removeToken()
-        console.log('✅ [Logout.vue] 主进程 Token 已清除:', result)
     }
     removeToken()
 }

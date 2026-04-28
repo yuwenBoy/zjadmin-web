@@ -139,7 +139,6 @@ export default {
         item.value = item.id;
       })
       this.treeEntity = arrayToTree(response_data.result,0);
-      console.log(this.treeEntity);
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {

@@ -112,9 +112,6 @@ computed: {
         }
     }
 },
-mounted(){
-    console.log(this.attributeId)
-},
 methods: {
     /**
      * 

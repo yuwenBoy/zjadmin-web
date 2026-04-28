@@ -125,12 +125,6 @@ export default {
     this.getInitialStatus();
   },
   methods: {
-    // 获取初始状态
-    getInitialStatus() {
-      // 从WebSocket连接中获取初始状态
-      // 初始状态默认为offline，实际状态会在WebSocket连接成功后更新
-      console.log('初始化状态为:', this.currentUserStatus);
-    },
     // 打开弹窗
    async openDialog() {
       this.dialogVisible = true;
@@ -148,7 +142,6 @@ export default {
      },
     // 切换当前聊天对象
     selectContact(contact) {
-      console.log('切换当前聊天对象', contact);
       this.$store.commit('chat/SET_CURRENT_CONTACT', contact)
        // 2. 如果有未读消息，发送已读回执（关键！）
       if (contact.unread_count > 0) {
@@ -160,7 +153,6 @@ export default {
         contact.unread_count = 0;
         // 发送已读回执到服务端
         this.$store.state.chat.socket.emit('mark_as_read', { messageIds });
-             console.log('发送已读回执:', messageIds);
         }
     }
     
@@ -179,11 +171,9 @@ export default {
       // 通过WebSocket发送状态变更
       if (this.$store.state.chat.socket) {
         this.$store.state.chat.socket.emit('update_status', { status });
-        console.log('通过WebSocket发送状态变更:', status);
       } else {
         console.error('WebSocket未连接，无法发送状态变更');
       }
-      console.log('设置状态为:', status);
     },
     // 点击外部关闭菜单
     handleClickOutside(event) {

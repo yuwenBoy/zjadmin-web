@@ -143,7 +143,6 @@
           item.weight = labels[1].replace('人份','');
         }
         item.unitInfo.name= labels[1];
-        console.log(item)
       },
       handleConfirm(index) {
         this.$emit("deleteSpec", index);

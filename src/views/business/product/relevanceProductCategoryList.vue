@@ -106,14 +106,8 @@ mounted(){
     methods: {
     // 表格刷新之后
     [CRUD.HOOK.beforeRefresh](crud, form) {
-        console.log('表格刷新之后');
         crud.params.dynamicAttributeId = this.attributeId
     },
-    // 表格刷新之前
-    // [CRUD.HOOK.afterRefresh](crud, form) {
-    //     console.log('表格刷新之前');
-    //     crud.params.dynamicAttributeId = this.attributeId
-    // },
       handleClose() {
         this.dialogVisible = false; // 通过 setter 触发事件
         this.dialogKey-=1;
@@ -156,7 +150,6 @@ mounted(){
     });
       },
       handleConfirm() {
-          console.log('提交')
       },
       handleCancel() {
         this.$emit('update:visible', false); // 关闭时同步状态

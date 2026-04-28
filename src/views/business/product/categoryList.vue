@@ -132,7 +132,6 @@ import jForm from "./categoryEdit";
         });
     },
     addChilder(row){
-        console.log(row);
         this.crud.defaultForm.parent_id = row.id;
         this.crud.toAdd();
     },

@@ -35,9 +35,6 @@ export default {
       },
     };
   },
-  created(){
-    console.log(this.tools.message)
-  },
   methods: {
     change() {
       if (this.tools.isOpen) {

@@ -94,16 +94,12 @@
         treeEntity: [],
       };
     },
-    mounted(){
-        console.log(this.crud)
-    },
     methods: {
     // 新增与编辑前做的操作
     [CRUD.HOOK.afterToCU](crud, form) {
         form.attributeId = this.attributeId;
         this.treeEntity = [];
         this.getTreeAllApi(this.attributeId);
-        console.log(form)
     },
     // 新增取消之前
     [CRUD.HOOK.beforeAddCancel](crud, form){

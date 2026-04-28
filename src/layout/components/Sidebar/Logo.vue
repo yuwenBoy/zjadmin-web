@@ -46,7 +46,6 @@ export default {
         this.leftLogo = this.logo;
     }
     // this.$forceUpdate(); // 强制触发视图更新
-    console.log(this.leftLogo);
   }
 }
 </script>

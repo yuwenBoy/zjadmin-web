@@ -43,7 +43,6 @@
         async getCityData() {
       const res = await getCityDataApi();
       this.list =res.result
-      console.log(this.list);
       res.result && console.table(this.flattenRegions(res.result))
     },
     },

@@ -91,7 +91,6 @@ export default {
           this.$refs.tree.setCurrentKey(firstNodeId); // 设置默认选中
           // 手动触发@node-click事件
           const firstNodeData = this.findNodeById(this.treeList, firstNodeId);
-          console.log(firstNodeData)
           if (firstNodeData) {
             this.handleNodeClick(firstNodeData);
           }
@@ -160,11 +159,9 @@ export default {
   watch: {
     data(val, oldVal) {
       this.treeList = val;
-      console.log(123)
       this.setDefaultSelectedKey();
     },
     checkValue(val, oldVal) {
-      console.log(val); // 清空菜单的选中
       this.$refs.tree.setCheckedKeys([]);
       this.checkList = val;
     },

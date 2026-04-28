@@ -31,17 +31,14 @@ function getIpcRenderer() {
 
   // 第2层：判断是否有 electronAPI（preload 注入）
   if (window.electronAPI && window.electronAPI.ipcRenderer) {
-    console.log("以获取 ipcRenderer 方式");
     return window.electronAPI.ipcRenderer;
   }
 
   // 第3层：判断是否有原生 require（旧方式）
   if (window.require) {
     try {
-      console.log("以获取 ipcRenderer 方式");
       return window.require("electron").ipcRenderer;
     } catch (e) {
-      console.log("获取 ipcRenderer 失败", e);
       return null;
     }
   }
@@ -60,7 +57,6 @@ const mutations = {
     state.messages = []; // 切换会话时清空消息
   },
   ADD_MESSAGE(state, message) {
-      // 不是完整URL，拼接baseImgUrl
       message.senderAvatar = message.senderAvatar && message.senderAvatar !== ''
         ?message.senderAvatar
         : Avatar;
@@ -111,7 +107,6 @@ const mutations = {
     
     // 如果从关闭状态切换到在线状态，发送待发送的消息
     if (previousStatus === 'offline' && status !== 'offline' && state.pendingMessages.length > 0) {
-      console.log('📤 发送待发送消息:', state.pendingMessages.length);
       // 逐个发送待发送的消息
       state.pendingMessages.forEach(pendingMessage => {
         state.socket.emit('private_message', {
@@ -183,7 +178,6 @@ const mutations = {
     if (newMessages) {
       // 处理每条消息的头像
       const processedMessages = newMessages.map(message => {
-        // 不是完整URL，拼接baseImgUrl
         message.senderAvatar = message.senderAvatar && message.senderAvatar !== '' ?message.senderAvatar : Avatar;
         return message;
       });
@@ -208,11 +202,9 @@ const actions = {
     state.id = rootState.user.user.id;
     let _token = getToken();
     if (!_token) {
-      console.log("token为空，无法连接 WebSocket！");
       return;
     }
     if (!state.id) {
-      console.log("userId为空，无法连接 WebSocket！");
       return;
     }
     const socket = io(rootState.api.socketApi, {
@@ -226,7 +218,6 @@ const actions = {
     socket.on("connect", () => {
       console.log("WebSocket 已连接");
       commit("SET_CONNECTED", true);
-      console.log("userId:", state.id);
       socket.data = { userId: state.id };
     });
 
@@ -238,19 +229,11 @@ const actions = {
 
     // 监听消息状态更新
     socket.on("message_status_updated", data => {
-      console.log("📊 消息状态更新:", data);
       commit("UPDATE_MESSAGE_STATUS", data);
     });
 
     // 监听新消息
     socket.on("new_message", message => {
-      console.log("📨 收到新消息:", message); // 调试用
-      
-      // 检查是否是自动回复
-      if (message.isAutoReply) {
-        console.log("🤖 收到自动回复:", message.content);
-      }
-      
       // ✅ 转成左侧列表更新
       commit("UPDATE_CONTACT_LAST_MSG", {
         contactId: message.senderId,
@@ -264,7 +247,6 @@ const actions = {
       
       // 如果当前用户是忙碌状态，自动回复
       if (state.currentUserStatus === 'busy' && !message.isAutoReply) {
-        console.log("🤖 发送自动回复");
         const autoReply = {
           receiverId: message.senderId,
           content: '您好，我现在忙碌中，会尽快回复您的消息。',
@@ -312,7 +294,6 @@ const actions = {
         setTimeout(() => {
           // 当前会话：立即标记已读
           socket.emit("mark_as_read", { messageIds: [message.id] });
-          console.log("当前会话，自动发送已读回执:", message.id);
         }, 1000);
       } else {
         let ipcRenderer = getIpcRenderer();
@@ -326,14 +307,9 @@ const actions = {
     // 🔥 监听【新订单推送】给商家
     // ==============================
     socket.on("new_shop_order", order => {
-      console.log("[Socket] 📦 收到新订单推送 (new_shop_order):", order);
-      console.log("[Socket] 订单门店ID:", order.storeId || order.store_id);
-      console.log("[Socket] 当前用户ID:", state.id);
-
       // 触发全局事件，通知订单推送组件
       const eventBus = getEventBus();
       if (eventBus) {
-        console.log("[Socket] 触发 new-shop-order 事件到 eventBus");
         eventBus.$emit("new-shop-order", order);
         // 同时触发刷新订单列表和统计
         eventBus.$emit("refresh-order-list");
@@ -344,17 +320,14 @@ const actions = {
       // Electron 环境下发送通知
       const ipcRenderer = getIpcRenderer();
       if (ipcRenderer && window.electronAPI) {
-        console.log("[Socket] 发送 Electron 通知");
         window.electronAPI.notify("newOrder");
       }
     });
 
     // ✅ 监听自己发送的消息确认
     socket.on("message_sent", message => {
-      console.log("📤 消息发送确认:", message);
       setTimeout(() => {
         socket.emit("mark_as_delivered", { messageIds: [message.id] });
-        console.log("自动发送已送达回执:", message.id);
       }, 1000);
       if (state.currentChat) {
         commit("ADD_MESSAGE", message);
@@ -363,11 +336,9 @@ const actions = {
 
     // 监听连接确认
     socket.on("connected", data => {
-      console.log("服务器确认:", data);
       socket.data = { userId: data.userId }; // 保存用户ID
       // 更新本地状态
       if (data.status) {
-        console.log('服务器返回的初始状态:', data.status);
         // 更新当前用户状态
         commit("UPDATE_CURRENT_USER_STATUS", data.status);
       }
@@ -375,7 +346,6 @@ const actions = {
     
     // 监听状态更新
     socket.on("status_updated", data => {
-      console.log("状态更新:", data);
       // 更新本地状态
       if (data.userId) {
         commit("UPDATE_USER_STATUS", { userId: data.userId, status: data.status });
@@ -384,7 +354,6 @@ const actions = {
     
     // 监听待发送消息发送成功
     socket.on("pending_messages_sent", data => {
-      console.log("📤 待发送消息已发送:", data);
       // 更新本地消息状态
       data.messageIds.forEach(messageId => {
         const message = state.messages.find(m => m.id === messageId);
@@ -396,16 +365,10 @@ const actions = {
     
     // 监听用户状态变更
     socket.on("user_status_changed", data => {
-      console.log("用户状态变更:", data);
       // 更新本地状态
       if (data.userId) {
         commit("UPDATE_USER_STATUS", { userId: data.userId, status: data.status });
       }
-    });
-
-    // 调试：监听所有事件
-    socket.onAny((event, ...args) => {
-      console.log(`[Socket事件: ${event}]`, args);
     });
 
     commit("SET_SOCKET", socket);
@@ -416,7 +379,6 @@ const actions = {
     { commit, state },
     { receiverId, content, targetId, targetType }
   ) {
-    console.log("发送私聊消息", receiverId, content, targetId, targetType);
     state.socket.emit("private_message", {
       receiverId,
       content,
@@ -445,7 +407,6 @@ const actions = {
     state.socket.emit("message_update", { targetId, lastMessage, lastTime }, () => {
       // ✅ 直接本地更新，不等待后端（假设后端一定会成功）
       commit("UPDATE_CONTACT_LAST_MSG", { contactId: targetId, lastMessage, lastTime, isIncoming: false });
-      console.log("🚀 本地更新消息状态", { targetId, lastMessage, lastTime });
     });
     return Promise.resolve({ targetId, lastMessage, lastTime });
   },

@@ -11,8 +11,6 @@ const api = {
         socketApi: apiUrl + 'chat',
         // 图片上传
         imagesUploadApi: apiUrl + baseUrl + '/oss/pictures',
-        // 上传头像
-        // uploadAvatarApi: baseUrl + '/oss/updateAvatar',
         // 上传文件到七牛云
         qiNiuUploadApi: baseUrl + '/api/qiNiuContent',
         // Sql 监控

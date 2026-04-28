@@ -93,7 +93,6 @@ export default {
   },
   data() {
     return {
-      resourcesUrl: "http://image.jxxqz.com:3001/",
       headers: {
         Authorization: getToken(),
       },
@@ -178,7 +177,7 @@ export default {
       const newFile = {
         uid: file.uid,
         name: file.name,
-        url: location, //location.startsWith('http') ? location : this.resourcesUrl + getFileName(location),
+        url: location,
         response: response,
       };
       this.fileList.push(newFile);

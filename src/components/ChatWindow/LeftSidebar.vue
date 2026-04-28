@@ -207,7 +207,6 @@ export default {
 }
 
 .avatar {
-  margin: 0 10px;
   flex-shrink: 0;
 }
 </style>

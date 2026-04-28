@@ -173,10 +173,8 @@ import { hasDuplicateProperty } from '@/utils'
         this.isPopoverVisible =false;
     },
     querySearch(queryString, cb) {
-      console.log(queryString);
       var restaurants = this.storePropertiesList;
       var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      console.log(results);
       // 调用 callback 返回建议列表的数据
       cb(results);
     },

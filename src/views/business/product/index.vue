@@ -617,7 +617,6 @@ export default {
      * 批量改分组、描述
      */
     batchSubmit(batchForm){
-        console.log(batchForm)
         this.$refs[batchForm].validate((valid) =>   {
           if (valid) {
             let mergeObj = {...this.batchForm,type:this.batchEditType,productIds:this.selectProductList.map(t=>t.id)}

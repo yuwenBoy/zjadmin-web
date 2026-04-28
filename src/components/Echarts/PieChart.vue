@@ -62,7 +62,6 @@ export default {
     window.addEventListener("resize", this.__resizeHandler);
   },
   deactivated() {
-    console.log("deactivated=================");
   },
   beforeDestroy() {
     if (!this.chart) {

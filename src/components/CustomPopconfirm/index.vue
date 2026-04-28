@@ -29,9 +29,6 @@
         default: '取消'
       }
     },
-    mounted(){
-        console.log('ccc')
-    },
     methods: {
       handleConfirm() {
         this.$emit('confirm');
