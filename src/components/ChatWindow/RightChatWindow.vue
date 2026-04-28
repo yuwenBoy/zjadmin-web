@@ -43,7 +43,7 @@
             >
             <div class="message-content">{{ msg.content }}</div>
             <span class="message-status" v-if="msg.senderId === user.id">
-              {{ getMessageStatusText(msg) }}
+              <i :class="getMessageStatusIcon(msg)" :title="getMessageStatusText(msg)"></i>
             </span>
           </div>
         </div>
@@ -309,6 +309,21 @@ export default {
           return "未发送"; // 未发送
       }
     },
+    getMessageStatusIcon(message) {
+      const status = this.$store.state.chat.messageStatus[message.id] || message.status;
+      switch (status) {
+        case 0:
+          return "el-icon-loading status-pending"; // 待发送 - 加载图标
+        case 1:
+          return "el-icon-check status-sent"; // 已发送 - 单勾
+        case 2:
+          return "el-icon-check status-delivered"; // 已送达 - 单勾
+        case 3:
+          return "el-icon-check status-read"; // 已读 - 双勾（用单勾但变色表示）
+        default:
+          return "el-icon-circle-close status-failed"; // 未发送 - 失败图标
+      }
+    },
      // 发送成功后，本地更新左侧列表
     handleSentMessage(message) {
       // ✅ 找到当前会话，立即更新最后一条消息和时间
@@ -349,11 +364,12 @@ export default {
 
 <style scoped>
 .chat-window {
-  height: 500px;
+  height: 100%;
   flex: 1;
   display: flex;
   flex-direction: column;
   background-color: #f5f7fc !important;
+  overflow: hidden;
 }
 /* 聊天头部 */
 .chat-header {
@@ -482,15 +498,34 @@ button {
 }
 
 .message-status {
-  font-size: 12px;
-  color: #999;
+  font-size: 14px;
   margin-left: 5px;
   position: absolute;
   right: 10px;
-  bottom: -15px;
+  bottom: -18px;
 }
-.message-status.read {
-  color: #1890ff; /* 已读蓝色 */
+.message-status i {
+  font-size: 14px;
+}
+.status-pending {
+  color: #909399;
+  animation: spin 1s linear infinite;
+}
+.status-sent {
+  color: #909399;
+}
+.status-delivered {
+  color: #67C23A;
+}
+.status-read {
+  color: #409EFF;
+}
+.status-failed {
+  color: #F56C6C;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 .loading-tip {
   text-align: center;

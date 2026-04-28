@@ -51,7 +51,6 @@
                 <el-link type="info" :underline="false" @click="remove(scope.row)">删除</el-link>
                 <el-link type="danger" v-authority="['storeList:businessApply']" v-if="scope.row.status==1" :underline="false" @click="switchStatus(scope.row,2)">暂停营业</el-link>
                 <el-link type="success" v-authority="['storeList:businessApply']" v-if="scope.row.status==2" :underline="false" @click="switchStatus(scope.row,1)">营业</el-link>
-                <el-link type="info" v-authority="['storeList:systemApply']"  :underline="false" @click="systemApply(scope.row,1)">平台审核</el-link>
               </template>
             </el-table-column>
           </el-table>

@@ -10,7 +10,7 @@
                             <i class="el-icon-user"></i>
                         </div>
                         <div class="status-dropdown">
-                            <div class="status-indicator" :class="statusClass" @click="showStatusMenu = !showStatusMenu"></div>
+                            <div class="status-indicator" :class="statusClass" @click="toggleStatusMenu"></div>
                             <div class="status-menu" v-if="showStatusMenu">
                                 <div class="status-item" @click="setStatus('online')">
                                     <div class="status-dot online"></div>
@@ -125,21 +125,32 @@ export default {
     this.getInitialStatus();
   },
   methods: {
+    // 获取初始状态
+    getInitialStatus() {
+      // 如果WebSocket已连接，获取当前用户状态
+      if (this.$store.state.chat.socket) {
+        this.$store.state.chat.socket.emit('get_status', (response) => {
+          if (response && response.status) {
+            this.$store.commit('chat/UPDATE_CURRENT_USER_STATUS', response.status);
+          }
+        });
+      }
+    },
     // 打开弹窗
-   async openDialog() {
+    async openDialog() {
       this.dialogVisible = true;
-      // 添加点击外部关闭菜单的事件监听器
-      setTimeout(() => {
-        document.addEventListener('click', this.handleClickOutside);
-      }, 100);
     },
     // 关闭弹窗
     closeDialog() {
         this.dialogVisible = false;
         this.$store.commit('chat/SET_CURRENT_CONTACT', {})
-        // 移除点击外部关闭菜单的事件监听器
-        document.removeEventListener('click', this.handleClickOutside);
+        this.showStatusMenu = false;
      },
+    // 点击状态指示器
+    toggleStatusMenu(event) {
+      event.stopPropagation();
+      this.showStatusMenu = !this.showStatusMenu;
+    },
     // 切换当前聊天对象
     selectContact(contact) {
       this.$store.commit('chat/SET_CURRENT_CONTACT', contact)
@@ -173,13 +184,6 @@ export default {
         this.$store.state.chat.socket.emit('update_status', { status });
       } else {
         console.error('WebSocket未连接，无法发送状态变更');
-      }
-    },
-    // 点击外部关闭菜单
-    handleClickOutside(event) {
-      const statusDropdown = document.querySelector('.status-dropdown');
-      if (statusDropdown && !statusDropdown.contains(event.target)) {
-        this.showStatusMenu = false;
       }
     }
   }
@@ -299,7 +303,7 @@ export default {
                                     color: #909399;
                                     white-space: normal;
                                     line-height: 1.4;
-                                    margin-left: -20px;
+                                    margin-top: 4px;
                                 }
                             }
                             i {

@@ -47,7 +47,6 @@
               <template slot-scope="scope">
                 <el-link type="info" :underline="false" @click="crud.toEdit(scope.row)">修改</el-link>
                 <el-link type="info" :underline="false" @click="remove(scope.row)">删除</el-link>
-                <el-link type="info" v-authority="['storeList:systemApply']"  :underline="false" @click="systemApply(scope.row)">平台审核</el-link>
               </template>
             </el-table-column>
           </el-table>

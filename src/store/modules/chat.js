@@ -5,6 +5,7 @@ import { getToken } from "@/utils/storage";
 import { getMessageHistory, getChatContactList } from "@/api/im";
 import Config from "@/settings";
 import Avatar from "@/assets/images/avatar.png";
+import { getFullImageUrl } from "@/utils";
 Vue.use(Vuex);
 
 // 获取 eventBus 的辅助函数
@@ -57,9 +58,7 @@ const mutations = {
     state.messages = []; // 切换会话时清空消息
   },
   ADD_MESSAGE(state, message) {
-      message.senderAvatar = message.senderAvatar && message.senderAvatar !== ''
-        ?message.senderAvatar
-        : Avatar;
+      message.senderAvatar = getFullImageUrl(message.senderAvatar, Avatar);
     state.messages.push(message);
   },
   SET_MESSAGES(state, messages) {
@@ -161,8 +160,7 @@ const mutations = {
         contact.unread_count = 0; // ✅ 自己发的：未读清零
       }
     } else {
-        // 检查是否已经是完整URL
-        let avatarUrl = senderAvatar && senderAvatar !== '' ?  senderAvatar : Avatar;
+        let avatarUrl = getFullImageUrl(senderAvatar, Avatar);
         contact = {
           id: targetId,
           name: senderName || `用户${targetId}`,
@@ -178,7 +176,7 @@ const mutations = {
     if (newMessages) {
       // 处理每条消息的头像
       const processedMessages = newMessages.map(message => {
-        message.senderAvatar = message.senderAvatar && message.senderAvatar !== '' ?message.senderAvatar : Avatar;
+        message.senderAvatar = getFullImageUrl(message.senderAvatar, Avatar);
         return message;
       });
       state.messages = [...processedMessages, ...state.messages];
@@ -330,7 +328,15 @@ const actions = {
         socket.emit("mark_as_delivered", { messageIds: [message.id] });
       }, 1000);
       if (state.currentChat) {
-        commit("ADD_MESSAGE", message);
+        // 检查是否已经存在相同的消息（避免重复添加，比如自动回复消息）
+        const exists = state.messages.find(m => m.id === message.id || 
+          (m.senderId === message.senderId && m.content === message.content && m.createdAt === message.createdAt));
+        if (!exists) {
+          commit("ADD_MESSAGE", message);
+        } else {
+          // 如果已存在，更新状态即可
+          commit("UPDATE_MESSAGE_STATUS", { messageId: exists.id, status: 1 });
+        }
       }
     });
 

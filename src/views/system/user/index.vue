@@ -650,7 +650,8 @@ export default {
 
 /* 右侧内容区域 */
 .right-content {
-  min-height: calc(100vh - 120px);
+  height: calc(100vh - 120px);
+  overflow-y: auto;
 }
 
 .right-content .content-box {

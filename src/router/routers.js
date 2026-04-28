@@ -25,7 +25,19 @@ export const constantRouterMap = [{
     meta: { title: '商家入驻申请', noCache: false },
     component: () => import('@/views/business/business/merchantApplication'),
     hidden: true
-},
+  },
+  {
+    path: '/audit',
+    component: Layout,
+    hidden: true,
+    redirect: '/audit/list',
+    children: [{
+      path: 'list',
+      component: () => import('@/views/business/business/auditList'),
+      name: 'auditList',
+      meta: { title: '审核管理', icon: 'audit', noCache: false }
+    }]
+  },
 {
     path: '/',
     component: Layout,

@@ -407,9 +407,41 @@ export function removeClass(ele, cls) {
  * 根据文件路径获取文件名
  */
 export function getFileName(path) {
+  if (!path) return '';
+  
+  // 处理URL格式
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    try {
+      const url = new URL(path);
+      return url.pathname.split('/').pop() || '';
+    } catch (e) {
+      // 如果URL解析失败，回退到普通路径处理
+    }
+  }
+  
+  // 处理本地路径（支持正斜杠和反斜杠）
   const filePath = path;
-  const fileName = filePath.substr(filePath.lastIndexOf("\\") + 1);
-  return fileName;
+  const lastIndex = Math.max(filePath.lastIndexOf("\\"), filePath.lastIndexOf("/"));
+  return filePath.substr(lastIndex + 1);
+}
+
+/**
+ * 获取完整的图片URL
+ * @param {string} url - 图片路径或URL
+ * @param {string} defaultUrl - 默认图片URL（可选）
+ * @returns {string} - 完整的图片URL
+ */
+export function getFullImageUrl(url, defaultUrl = '') {
+  if (!url || url === '') return defaultUrl;
+  
+  // 如果已经是完整URL，直接返回
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  
+  // 如果是相对路径，拼接图片服务器地址
+  const baseUrl = 'http://image.jxxqz.com:3001/';
+  return baseUrl + url.replace(/^\/*/, ''); // 移除开头的斜杠
 }
 
 // 替换邮箱字符

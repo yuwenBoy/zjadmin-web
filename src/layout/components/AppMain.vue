@@ -6,7 +6,7 @@
         <router-view :key="key" />
       </keep-alive>
     </transition>
-    <div  class="chat-btn"  @click="openChat" :class="{ 'active': chatVisible }">
+    <div class="chat-btn" @click="openChat" :class="[chatBtnClass, { 'active': chatVisible }]">
       消息
     </div>
     <chat-window ref="platformChat" />
@@ -35,6 +35,19 @@ export default {
     },
     key() {
       return this.$route.path
+    },
+    // 根据在线状态返回按钮样式类
+    chatBtnClass() {
+      const status = this.$store.state.chat.currentUserStatus;
+      switch (status) {
+        case 'online':
+          return 'status-online';
+        case 'busy':
+          return 'status-busy';
+        case 'offline':
+        default:
+          return 'status-offline';
+      }
     }
   },
   components: {
@@ -70,9 +83,8 @@ export default {
   min-height: calc(100vh - 50px);
   width: 100%;
   position: relative;
-  overflow: hidden;
   .app-main-content {
-    height: calc(100vh - 30px);
+    height: calc(100vh - 50px);
     overflow-y: auto;
     background-color: #f5f7fc;
     overflow-x: hidden;
@@ -115,8 +127,7 @@ export default {
   height: 45px;
   border-radius: 50%; /* 圆角50%实现圆形 */
 
-  /* 绿色调样式（适配你的界面风格） */
-  background-color: #36b37e; /* ElementUI 绿色主色调，可自行调整 */
+  /* 默认样式 */
   color: #ffffff; /* 白色文字 */
 
   /* 文字居中 */
@@ -128,22 +139,59 @@ export default {
 
   /* 交互效果 */
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(54, 179, 126, 0.3); /* 绿色系阴影，增强层次感 */
   transition: all 0.3s ease; /* 过渡动画，更丝滑 */
   border: none; /* 去掉边框 */
   outline: none; /* 去掉聚焦轮廓 */
 }
 
-/* 鼠标悬浮效果 */
-.chat-btn:hover {
-  background-color: #2ea06e; /* 深一点的绿色 */
-  transform: scale(1.05); /* 轻微放大 */
-  box-shadow: 0 4px 15px rgba(54, 179, 126, 0.4);
+/* 在线状态 - 绿色 */
+.chat-btn.status-online {
+  background-color: #67C23A;
+  box-shadow: 0 2px 10px rgba(103, 194, 58, 0.3);
 }
 
-/* 按钮激活状态（聊天窗口打开时） */
-.chat-btn.active {
-  background-color: #1f7d54; /* 更深的绿色 */
-  transform: scale(0.95); /* 轻微缩小，反馈点击状态 */
+.chat-btn.status-online:hover {
+  background-color: #5EB838;
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(103, 194, 58, 0.4);
+}
+
+.chat-btn.status-online.active {
+  background-color: #4CAE4C;
+  transform: scale(0.95);
+}
+
+/* 忙碌状态 - 橙色 */
+.chat-btn.status-busy {
+  background-color: #E6A23C;
+  box-shadow: 0 2px 10px rgba(230, 162, 60, 0.3);
+}
+
+.chat-btn.status-busy:hover {
+  background-color: #D99532;
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(230, 162, 60, 0.4);
+}
+
+.chat-btn.status-busy.active {
+  background-color: #C9842A;
+  transform: scale(0.95);
+}
+
+/* 关闭状态 - 灰色 */
+.chat-btn.status-offline {
+  background-color: #909399;
+  box-shadow: 0 2px 10px rgba(144, 147, 153, 0.3);
+}
+
+.chat-btn.status-offline:hover {
+  background-color: #83878E;
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(144, 147, 153, 0.4);
+}
+
+.chat-btn.status-offline.active {
+  background-color: #767A80;
+  transform: scale(0.95);
 }
 </style>

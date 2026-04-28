@@ -45,24 +45,7 @@
               prop="business.contactPhone"
               align="center"
             />
-            <el-table-column prop="business.createdAt" label="提交时间" width="145" /> 
-            <!--   编辑与删除   -->
-            <el-table-column label="操作" width="150px" align="left">
-              <template slot-scope="scope">
-                <el-link
-                  type="warning"
-                  :underline="false"
-                   @click="$router.push({ name: 'businessAuditEdit', query: {...scope.row} })"
-                  >审核</el-link
-                >
-                <el-link
-                  type="info"
-                  :underline="false"
-                  @click="$router.push({ name: 'businessAuditEdit', query: {options:1, ...scope.row} })"
-                  >查看详情</el-link
-                >
-              </template>
-            </el-table-column>
+            <el-table-column prop="business.createdAt" label="提交时间" width="145" />
           </el-table>
         </div>
       </div>
