@@ -1,416 +1,293 @@
 <template>
-  <div class="audit-detail-container">
-    <div class="header-card">
+  <div class="app-container">
+    <!-- 固定的头部返回行 -->
+    <div class="fixed-header">
       <div class="header-left">
-        <span class="title">{{ pageTitle }}</span>
-        <el-tag :type="statusTagType" size="medium" class="status-tag">
-          {{ statusText }}
-        </el-tag>
-      </div>
-      <div class="header-right">
-        <div class="info-item">
-          <span class="label">审核ID：</span>
-          <span class="value">{{ getVal(auditData, 'id') || '-' }}</span>
-        </div>
-        <div class="info-item">
-          <span class="label">提交时间：</span>
-          <span class="value">{{ formatDate(getVal(auditData, 'createdAt')) || '-' }}</span>
-        </div>
-        <div class="info-item">
-          <span class="label">申请人：</span>
-          <span class="value">{{ getVal(auditData, 'applicant.cname') || '-' }}</span>
-        </div>
-        <div class="info-item">
-          <span class="label">{{ targetTypeText }}：</span>
-          <span class="value">{{ getVal(auditData, 'store.storeName') || '-' }}</span>
-        </div>
-        <div class="info-item" v-if="isStore">
-          <span class="label">门店ID：</span>
-          <span class="value">{{ getVal(auditData, 'store.id') || '-' }}</span>
-        </div>
-        <!-- <div class="info-item">
-          <span class="label">业务线：</span>
-          <span class="value">淘宝闪购</span>
-        </div> -->
-      </div>
-    </div>
-
-    <!-- 驳回问题汇总（已驳回状态显示） -->
-    <div class="reject-summary" v-if="auditData.status === 2 && auditData.rejectReason">
-      <div class="summary-title">
-        <i class="el-icon-warning"></i> 驳回问题汇总（共{{ getTotalRejectProblems() }}项）
-      </div>
-      <div class="summary-content">
-        <div class="field-group" v-for="(problems, fieldKey) in auditData.rejectReason" :key="fieldKey">
-          <div class="field-name">{{ getFieldName(fieldKey) }}：</div>
-          <div class="problem-item" v-for="(problem, index) in problems" :key="index">
-            {{ index + 1 }}. {{ problem.reason }}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="compare-container">
-      <!-- 基础信息对比 -->
-      <div class="compare-card">
-        <div class="card-title">基础信息</div>
-        <div class="compare-content">
-          <div class="compare-col before-col">
-            <div class="col-title">修改前</div>
-            <div class="info-list">
-              <div class="info-row">
-                <span class="info-label">{{ targetTypeText }}名称：</span>
-                <span class="info-value">{{ getVal(auditData, 'beforeData.store.storeName') || '-' }}</span>
-              </div>
-              <div class="info-row" :class="{ 'reject-item': hasFieldReject('address') }">
-                <span class="info-label">详细地址：</span>
-                <span class="info-value">{{ getVal(auditData, 'beforeData.store.detail_address') || '-' }}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">联系电话：</span>
-                <span class="info-value">{{ getVal(auditData, 'store.contactInfo') || '-' }}</span>
-              </div>
-              <div class="info-row" v-if="isStore">
-                <span class="info-label">经度：</span>
-                <span class="info-value">{{ getVal(auditData, 'beforeData.store.longitude') || '-' }}</span>
-              </div>
-              <div class="info-row" v-if="isStore">
-                <span class="info-label">纬度：</span>
-                <span class="info-value">{{ getVal(auditData, 'beforeData.store.latitude') || '-' }}</span>
-              </div>
-            </div>
-          </div>
-          <div class="compare-col after-col">
-            <div class="col-title">修改后</div>
-            <div class="info-list">
-              <div class="info-row">
-                <span class="info-label">{{ targetTypeText }}名称：</span>
-                <span class="info-value changed">{{ getVal(auditData, 'afterData.store.storeName') || '-' }}</span>
-              </div>
-              <div class="info-row" :class="{ 'reject-item': hasFieldReject('address') }">
-                <span class="info-label">详细地址：</span>
-                <span class="info-value changed">{{ getVal(auditData, 'afterData.store.detail_address') || '-' }}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">联系电话：</span>
-                <span class="info-value">{{ getVal(auditData, 'store.contactInfo') || '-' }}</span>
-              </div>
-              <div class="info-row" v-if="isStore">
-                <span class="info-label">经度：</span>
-                <span class="info-value changed">{{ getVal(auditData, 'afterData.store.longitude') || '-' }}</span>
-              </div>
-              <div class="info-row" v-if="isStore">
-                <span class="info-label">纬度：</span>
-                <span class="info-value changed">{{ getVal(auditData, 'afterData.store.latitude') || '-' }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- 地址驳回原因选择（仅待审核状态显示） -->
-        <div class="reject-field-group" v-if="auditData.status === 0">
-          <div class="field-title">详细地址驳回原因</div>
-          <div class="risk-item" v-for="(risk, index) in rejectRiskLibrary.address" :key="index">
-            <el-checkbox 
-              v-model="checkedRisks.address" 
-              :label="index"
-              @change="handleRiskCheck"
-            >
-              {{ risk.riskName }}
-            </el-checkbox>
-            <el-input
-              v-if="checkedRisks.address && checkedRisks.address.includes(index)"
-              v-model="customReason['address_' + index]"
-              placeholder="可补充自定义原因（选填）"
-              size="small"
-              class="custom-reason-input"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- 资质信息对比 -->
-      <div class="compare-card">
-        <div class="card-title">资质信息</div>
-        <div class="compare-content">
-          <div class="compare-col before-col">
-            <div class="col-title">修改前</div>
-            <div class="cert-list">
-              <!-- 营业执照 -->
-              <div class="cert-item" :class="{ 'reject-item': hasFieldReject('mainlicensepic') }">
-                <span class="cert-label">营业执照：</span>
-                <div class="cert-img" @click="previewImage(getVal(auditData, 'beforeData.licenseInfo.license_pic'))">
-                  <img v-if="getVal(auditData, 'beforeData.licenseInfo.license_pic')" :src="getVal(auditData, 'beforeData.licenseInfo.license_pic')" alt="营业执照">
-                  <div v-else class="no-img">暂无图片</div>
-                </div>
-                <div class="cert-info">
-                  <span>注册号：{{ getVal(auditData, 'beforeData.licenseInfo.license_no') || '-' }}</span>
-                  <span>公司名称：{{ getVal(auditData, 'beforeData.licenseInfo.company_name') || '-' }}</span>
-                </div>
-                <div class="cert-info">
-                  <span>法人：{{ getVal(auditData, 'beforeData.licenseInfo.legal_person') || '-' }}</span>
-                  <span>有效期：{{ getVal(auditData, 'beforeData.licenseInfo.license_valid_date') || (getVal(auditData, 'beforeData.licenseInfo.is_long_term') ? '长期' : '-') }}</span>
-                </div>
-              </div>
-              <!-- 食品经营许可证（门店） -->
-              <div class="cert-item" v-if="isStore" :class="{ 'reject-item': hasFieldReject('industrylicensepic') }">
-                <span class="cert-label">食品经营许可证：</span>
-                <div class="cert-img" @click="previewImage(getVal(auditData, 'beforeData.permitInfo.permit_pic'))">
-                  <img v-if="getVal(auditData, 'beforeData.permitInfo.permit_pic')" :src="getVal(auditData, 'beforeData.permitInfo.permit_pic')" alt="食品经营许可证">
-                  <div v-else class="no-img">暂无图片</div>
-                </div>
-                <div class="cert-info">
-                  <span>许可证号：{{ getVal(auditData, 'beforeData.permitInfo.permit_no') || '-' }}</span>
-                  <span>企业名称：{{ getVal(auditData, 'beforeData.permitInfo.permit_name') || '-' }}</span>
-                </div>
-                <div class="cert-info">
-                  <span>法人：{{ getVal(auditData, 'beforeData.permitInfo.permit_legalPerson') || '-' }}</span>
-                  <span>有效期：{{ getVal(auditData, 'beforeData.permitInfo.permit_expireDate') || '-' }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="compare-col after-col">
-            <div class="col-title">修改后</div>
-            <div class="cert-list">
-              <!-- 营业执照 -->
-              <div class="cert-item" :class="{ 'reject-item': hasFieldReject('mainlicensepic') }">
-                <span class="cert-label">营业执照：</span>
-                <div class="cert-img" @click="previewImage(getVal(auditData, 'afterData.licenseInfo.license_pic'))">
-                  <img v-if="getVal(auditData, 'afterData.licenseInfo.license_pic')" :src="getVal(auditData, 'afterData.licenseInfo.license_pic')" alt="营业执照">
-                  <div v-else class="no-img">暂无图片</div>
-                </div>
-                <div class="cert-info">
-                  <span>注册号：{{ getVal(auditData, 'afterData.licenseInfo.license_no') || '-' }}</span>
-                  <span>公司名称：{{ getVal(auditData, 'afterData.licenseInfo.company_name') || '-' }}</span>
-                </div>
-                <div class="cert-info">
-                  <span>法人：{{ getVal(auditData, 'afterData.licenseInfo.legal_person') || '-' }}</span>
-                  <span>有效期：{{ getVal(auditData, 'afterData.licenseInfo.license_valid_date') || (getVal(auditData, 'afterData.licenseInfo.is_long_term') ? '长期' : '-') }}</span>
-                </div>
-              </div>
-              <!-- 食品经营许可证（门店） -->
-              <div class="cert-item" v-if="isStore" :class="{ 'reject-item': hasFieldReject('industrylicensepic') }">
-                <span class="cert-label">食品经营许可证：</span>
-                <div class="cert-img" @click="previewImage(getVal(auditData, 'afterData.permitInfo.permit_pic'))">
-                  <img v-if="getVal(auditData, 'afterData.permitInfo.permit_pic')" :src="getVal(auditData, 'afterData.permitInfo.permit_pic')" alt="食品经营许可证">
-                  <div v-else class="no-img">暂无图片</div>
-                </div>
-                <div class="cert-info">
-                  <span>许可证号：{{ getVal(auditData, 'afterData.permitInfo.permit_no') || '-' }}</span>
-                  <span>企业名称：{{ getVal(auditData, 'afterData.permitInfo.permit_name') || '-' }}</span>
-                </div>
-                <div class="cert-info">
-                  <span>法人：{{ getVal(auditData, 'afterData.permitInfo.permit_legalPerson') || '-' }}</span>
-                  <span>有效期：{{ getVal(auditData, 'afterData.permitInfo.permit_expireDate') || '-' }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- 营业执照驳回原因选择（仅待审核状态显示） -->
-        <div class="reject-field-group" v-if="auditData.status === 0">
-          <div class="field-title">营业执照驳回原因</div>
-          <div class="risk-item" v-for="(risk, index) in rejectRiskLibrary.mainlicensepic" :key="index">
-            <el-checkbox 
-              v-model="checkedRisks.mainlicensepic" 
-              :label="index"
-              @change="handleRiskCheck"
-            >
-              {{ risk.riskName }}
-            </el-checkbox>
-            <el-input
-              v-if="checkedRisks.mainlicensepic && checkedRisks.mainlicensepic.includes(index)"
-              v-model="customReason['mainlicensepic_' + index]"
-              placeholder="可补充自定义原因（选填）"
-              size="small"
-              class="custom-reason-input"
-            />
-          </div>
-        </div>
-
-        <!-- 食品经营许可证驳回原因选择（仅待审核状态显示） -->
-        <div class="reject-field-group" v-if="auditData.status === 0 && isStore">
-          <div class="field-title">食品经营许可证驳回原因</div>
-          <div class="risk-item" v-for="(risk, index) in rejectRiskLibrary.industrylicensepic" :key="index">
-            <el-checkbox 
-              v-model="checkedRisks.industrylicensepic" 
-              :label="index"
-              @change="handleRiskCheck"
-            >
-              {{ risk.riskName }}
-            </el-checkbox>
-            <el-input
-              v-if="checkedRisks.industrylicensepic && checkedRisks.industrylicensepic.includes(index)"
-              v-model="customReason['industrylicensepic_' + index]"
-              placeholder="可补充自定义原因（选填）"
-              size="small"
-              class="custom-reason-input"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- 门店照片对比（门店） -->
-      <div class="compare-card" v-if="isStore">
-        <div class="card-title">门店照片</div>
-        <div class="compare-content">
-          <div class="compare-col before-col">
-            <div class="col-title">修改前</div>
-            <div class="photo-list">
-              <div class="photo-item" @click="previewImage(getVal(auditData, 'beforeData.store.doorPhoto'))" :class="{ 'reject-item': hasFieldReject('doorpic') }">
-                <span class="photo-label">门脸照：</span>
-                <div class="photo-img">
-                  <img v-if="getVal(auditData, 'beforeData.store.doorPhoto')" :src="getVal(auditData, 'beforeData.store.doorPhoto')" alt="门脸照">
-                  <div v-else class="no-img">暂无图片</div>
-                </div>
-              </div>
-              <div class="photo-item" @click="previewImage(getVal(auditData, 'beforeData.store.envPhoto'))" :class="{ 'reject-item': hasFieldReject('indoorpic') }">
-                <span class="photo-label">内景照：</span>
-                <div class="photo-img">
-                  <img v-if="getVal(auditData, 'beforeData.store.envPhoto')" :src="getVal(auditData, 'beforeData.store.envPhoto')" alt="内景照">
-                  <div v-else class="no-img">暂无图片</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="compare-col after-col">
-            <div class="col-title">修改后</div>
-            <div class="photo-list">
-              <div class="photo-item" @click="previewImage(getVal(auditData, 'afterData.store.doorPhoto'))" :class="{ 'reject-item': hasFieldReject('doorpic') }">
-                <span class="photo-label">门脸照：</span>
-                <div class="photo-img">
-                  <img v-if="getVal(auditData, 'afterData.store.doorPhoto')" :src="getVal(auditData, 'afterData.store.doorPhoto')" alt="门脸照">
-                  <div v-else class="no-img">暂无图片</div>
-                </div>
-              </div>
-              <div class="photo-item" @click="previewImage(getVal(auditData, 'afterData.store.envPhoto'))" :class="{ 'reject-item': hasFieldReject('indoorpic') }">
-                <span class="photo-label">内景照：</span>
-                <div class="photo-img">
-                  <img v-if="getVal(auditData, 'afterData.store.envPhoto')" :src="getVal(auditData, 'afterData.store.envPhoto')" alt="内景照">
-                  <div v-else class="no-img">暂无图片</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- 门脸照驳回原因选择（仅待审核状态显示） -->
-        <div class="reject-field-group" v-if="auditData.status === 0">
-          <div class="field-title">门脸照驳回原因</div>
-          <div class="risk-item" v-for="(risk, index) in rejectRiskLibrary.doorpic" :key="index">
-            <el-checkbox 
-              v-model="checkedRisks.doorpic" 
-              :label="index"
-              @change="handleRiskCheck"
-            >
-              {{ risk.riskName }}
-            </el-checkbox>
-            <el-input
-              v-if="checkedRisks.doorpic && checkedRisks.doorpic.includes(index)"
-              v-model="customReason['doorpic_' + index]"
-              placeholder="可补充自定义原因（选填）"
-              size="small"
-              class="custom-reason-input"
-            />
-          </div>
-        </div>
-
-        <!-- 内景照驳回原因选择（仅待审核状态显示） -->
-        <div class="reject-field-group" v-if="auditData.status === 0">
-          <div class="field-title">内景照驳回原因</div>
-          <div class="risk-item" v-for="(risk, index) in rejectRiskLibrary.indoorpic" :key="index">
-            <el-checkbox 
-              v-model="checkedRisks.indoorpic" 
-              :label="index"
-              @change="handleRiskCheck"
-            >
-              {{ risk.riskName }}
-            </el-checkbox>
-            <el-input
-              v-if="checkedRisks.indoorpic && checkedRisks.indoorpic.includes(index)"
-              v-model="customReason['indoorpic_' + index]"
-              placeholder="可补充自定义原因（选填）"
-              size="small"
-              class="custom-reason-input"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div class="log-card">
-        <div class="card-title">审核日志</div>
-        <div class="log-list">
-          <div class="log-item">
-            <div class="log-time">{{ formatDate(getVal(auditData, 'createdAt')) }}</div>
-            <div class="log-content">
-              <span class="log-operator">{{ getVal(auditData, 'applicant.cname') || '系统' }}</span>
-              <span class="log-action">提交审核</span>
-            </div>
-          </div>
-          <div class="log-item" v-if="getVal(auditData, 'auditAt') && getVal(auditData, 'auditAt') !== '-'">
-            <div class="log-time">{{ formatDate(getVal(auditData, 'auditAt')) }}</div>
-            <div class="log-content">
-              <span class="log-operator">{{ getVal(auditData, 'operator.cname') || '系统' }}</span>
-              <span class="log-action">{{ getVal(auditData, 'status') === 1 ? '审核通过' : '审核驳回' }}</span>
-              <span class="log-reason" v-if="getVal(auditData, 'reason')">：{{ getVal(auditData, 'reason') }}</span>
-            </div>
-          </div>
-          <div class="log-item" v-if="getVal(auditData, 'auditAt') === '-'">
-            <div class="empty-log">暂无审核操作日志</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="footer-actions" :class="{ disabled: getVal(auditData, 'status') !== 0 }">
-      <div class="action-buttons">
-        <el-button @click="goBack" type="default" size="medium">返回列表</el-button>
-        <el-button
-          v-if="getVal(auditData, 'status') === 0"
-          @click="handleReject"
-          type="danger"
-          size="medium"
-          class="reject-btn"
-          :disabled="!hasCheckedAnyRisk()"
-        >
-          审核驳回
+        <el-button type="text" @click="goBack" class="back-btn">
+          <i class="el-icon-arrow-left"></i> 返回
         </el-button>
-        <el-button
-          v-if="getVal(auditData, 'status') === 0"
-          @click="handlePass"
-          type="primary"
-          size="medium"
-          class="pass-btn"
-        >
-          审核通过
-        </el-button>
-        <div v-else class="audit-result">
-          <span class="result-label">审核结果：{{ getVal(auditData, 'statusText') || statusText }}</span>
-          <span class="result-operator" v-if="getVal(auditData, 'operator.cname')">
-            审核人：{{ getVal(auditData, 'operator.cname') }}
-          </span>
-          <span class="result-time" v-if="getVal(auditData, 'auditAt') && getVal(auditData, 'auditAt') !== '-'">
-            审核时间：{{ formatDate(getVal(auditData, 'auditAt')) }}
-          </span>
-        </div>
+        <span class="page-title">{{ pageTitle }}</span>
       </div>
     </div>
 
-    <!-- 图片预览弹窗 -->
-    <el-dialog
-      title="图片预览"
-      width="800px"
-      :visible.sync="previewVisible"
-      append-to-body
-      close-on-click-modal
-      :modal-append-to-body="false"
-    >
-      <div class="preview-img-container">
-        <img :src="previewUrl" alt="预览图片" class="preview-img" />
+    <!-- 可滚动的内容区域 -->
+    <div class="scrollable-content">
+      <!-- 基本信息 -->
+      <div class="detail-header">
+        <div class="info-grid-wrapper">
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">审核ID</span>
+              <span class="value">{{ getVal(auditData, 'id') || '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">申请人</span>
+              <span class="value">{{ getVal(auditData, 'applicant.cname') || '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">状态</span>
+              <span class="value" :class="statusClass">{{ statusText }}</span>
+            </div>
+            <div class="info-item" v-if="getVal(auditData, 'status') !== 0">
+              <span class="label">审核人</span>
+              <span class="value">{{ getVal(auditData, 'operator.cname') || '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">提交时间</span>
+              <span class="value">{{ formatDate(getVal(auditData, 'createdAt')) || '-' }}</span>
+            </div>
+            <div class="info-item" v-if="getVal(auditData, 'status') !== 0 && getVal(auditData, 'auditAt')">
+              <span class="label">审核时间</span>
+              <span class="value">{{ formatDate(getVal(auditData, 'auditAt')) }}</span>
+            </div>
+            <div class="info-item" v-if="getVal(auditData, 'reason')">
+              <span class="label">审核意见</span>
+              <span class="value">{{ getVal(auditData, 'reason') }}</span>
+            </div>
+          </div>
+        </div>
       </div>
-    </el-dialog>
+
+      <!-- 驳回问题 -->
+      <div class="section" v-if="auditData.status === 2 && auditData.rejectReason">
+        <div class="section-title">驳回问题</div>
+        <div class="problem-list">
+          <div v-for="(problems, fieldKey) in auditData.rejectReason" :key="fieldKey" class="problem-item">
+            <span class="problem-title">{{ getFieldName(fieldKey) }}</span>
+            <div v-for="(problem, index) in problems" :key="index" class="problem-desc">
+              {{ index + 1 }}. {{ problem.reason }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 内容区域 -->
+      <div class="content-area">
+        <!-- 商家基本信息 -->
+        <div class="section" v-if="isBusiness">
+          <div class="section-title">商家基本信息</div>
+          <div class="compare-box">
+            <div class="compare-col">
+              <div class="col-title">修改前</div>
+              <div class="info-list">
+                <div class="info-row"><span class="label">商家名称</span><span class="value">{{ getVal(auditData, 'beforeData.business.businessName') || '-' }}</span></div>
+                <div class="info-row"><span class="label">详细地址</span><span class="value">{{ getVal(auditData, 'beforeData.business.detailAddress') || '-' }}</span></div>
+                <div class="info-row"><span class="label">联系人</span><span class="value">{{ getVal(auditData, 'beforeData.business.contactPerson') || '-' }}</span></div>
+                <div class="info-row"><span class="label">联系电话</span><span class="value">{{ getVal(auditData, 'beforeData.business.contactPhone') || '-' }}</span></div>
+              </div>
+            </div>
+            <div class="compare-col">
+              <div class="col-title">修改后</div>
+              <div class="info-list">
+                <div class="info-row highlight"><span class="label">商家名称</span><span class="value">{{ getVal(auditData, 'afterData.business.businessName') || '-' }}</span></div>
+                <div class="info-row highlight"><span class="label">详细地址</span><span class="value">{{ getVal(auditData, 'afterData.business.detailAddress') || '-' }}</span></div>
+                <div class="info-row highlight"><span class="label">联系人</span><span class="value">{{ getVal(auditData, 'afterData.business.contactPerson') || '-' }}</span></div>
+                <div class="info-row highlight"><span class="label">联系电话</span><span class="value">{{ getVal(auditData, 'afterData.business.contactPhone') || '-' }}</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 门店基本信息 -->
+        <div class="section" v-if="isStore">
+          <div class="section-title">门店基本信息</div>
+          <div class="compare-box">
+            <div class="compare-col">
+              <div class="col-title">修改前</div>
+              <div class="info-list">
+                <div class="info-row"><span class="label">门店名称</span><span class="value">{{ getVal(auditData, 'beforeData.store.storeName') || '-' }}</span></div>
+                <div class="info-row"><span class="label">详细地址</span><span class="value">{{ getVal(auditData, 'beforeData.store.detailAddress') || '-' }}</span></div>
+                <div class="info-row"><span class="label">联系电话</span><span class="value">{{ getVal(auditData, 'beforeData.store.contactPhone') || '-' }}</span></div>
+                <div class="info-row"><span class="label">经度</span><span class="value">{{ getVal(auditData, 'beforeData.store.longitude') || '-' }}</span></div>
+                <div class="info-row"><span class="label">纬度</span><span class="value">{{ getVal(auditData, 'beforeData.store.latitude') || '-' }}</span></div>
+              </div>
+            </div>
+            <div class="compare-col">
+              <div class="col-title">修改后</div>
+              <div class="info-list">
+                <div class="info-row highlight"><span class="label">门店名称</span><span class="value">{{ getVal(auditData, 'afterData.store.storeName') || '-' }}</span></div>
+                <div class="info-row highlight"><span class="label">详细地址</span><span class="value">{{ getVal(auditData, 'afterData.store.detailAddress') || '-' }}</span></div>
+                <div class="info-row highlight"><span class="label">联系电话</span><span class="value">{{ getVal(auditData, 'afterData.store.contactPhone') || '-' }}</span></div>
+                <div class="info-row highlight"><span class="label">经度</span><span class="value">{{ getVal(auditData, 'afterData.store.longitude') || '-' }}</span></div>
+                <div class="info-row highlight"><span class="label">纬度</span><span class="value">{{ getVal(auditData, 'afterData.store.latitude') || '-' }}</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 门店头像 -->
+        <div class="section" v-if="isStore && (getVal(auditData, 'beforeData.store.avatarImg') || getVal(auditData, 'afterData.store.avatarUrl'))">
+          <div class="section-title">门店头像</div>
+          <div class="compare-box">
+            <div class="compare-col">
+              <div class="col-title">修改前</div>
+              <div class="avatar-box" @click="previewImage(getVal(auditData, 'beforeData.store.avatarImg'))">
+                <img v-if="getVal(auditData, 'beforeData.store.avatarImg')" :src="getVal(auditData, 'beforeData.store.avatarImg')" alt="头像">
+                <span v-else class="no-img">暂无</span>
+              </div>
+            </div>
+            <div class="compare-col">
+              <div class="col-title">修改后</div>
+              <div class="avatar-box" @click="previewImage(getVal(auditData, 'afterData.store.avatarUrl'))">
+                <img v-if="getVal(auditData, 'afterData.store.avatarUrl')" :src="getVal(auditData, 'afterData.store.avatarUrl')" alt="头像">
+                <span v-else class="no-img">暂无</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 资质信息 -->
+        <div class="section" v-if="isBusiness || isStore">
+          <div class="section-title">资质信息</div>
+          <div class="compare-box">
+            <div class="compare-col">
+              <div class="col-title">修改前</div>
+              <div class="cert-list">
+                <div class="cert-item">
+                  <span class="cert-label">营业执照</span>
+                  <div class="cert-img" @click="previewImage(getVal(auditData, 'beforeData.licenseInfo.license_pic') || getVal(auditData, 'beforeData.store.licensePic'))">
+                    <img v-if="getVal(auditData, 'beforeData.licenseInfo.license_pic') || getVal(auditData, 'beforeData.store.licensePic')" :src="getVal(auditData, 'beforeData.licenseInfo.license_pic') || getVal(auditData, 'beforeData.store.licensePic')" alt="营业执照">
+                    <span v-else class="no-img">暂无</span>
+                  </div>
+                  <div class="cert-info">注册号：{{ getVal(auditData, 'beforeData.licenseInfo.license_no') || getVal(auditData, 'beforeData.store.licenseNo') || '-' }}</div>
+                </div>
+                <div class="cert-item" v-if="isStore">
+                  <span class="cert-label">食品经营许可证</span>
+                  <div class="cert-img" @click="previewImage(getVal(auditData, 'beforeData.permitInfo.permit_pic') || getVal(auditData, 'beforeData.store.permitPic'))">
+                    <img v-if="getVal(auditData, 'beforeData.permitInfo.permit_pic') || getVal(auditData, 'beforeData.store.permitPic')" :src="getVal(auditData, 'beforeData.permitInfo.permit_pic') || getVal(auditData, 'beforeData.store.permitPic')" alt="许可证">
+                    <span v-else class="no-img">暂无</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="compare-col">
+              <div class="col-title">修改后</div>
+              <div class="cert-list">
+                <div class="cert-item">
+                  <span class="cert-label">营业执照</span>
+                  <div class="cert-img" @click="previewImage(getVal(auditData, 'afterData.licenseInfo.license_pic') || getVal(auditData, 'afterData.store.licensePic'))">
+                    <img v-if="getVal(auditData, 'afterData.licenseInfo.license_pic') || getVal(auditData, 'afterData.store.licensePic')" :src="getVal(auditData, 'afterData.licenseInfo.license_pic') || getVal(auditData, 'afterData.store.licensePic')" alt="营业执照">
+                    <span v-else class="no-img">暂无</span>
+                  </div>
+                  <div class="cert-info">注册号：{{ getVal(auditData, 'afterData.licenseInfo.license_no') || getVal(auditData, 'afterData.store.licenseNo') || '-' }}</div>
+                </div>
+                <div class="cert-item" v-if="isStore">
+                  <span class="cert-label">食品经营许可证</span>
+                  <div class="cert-img" @click="previewImage(getVal(auditData, 'afterData.permitInfo.permit_pic') || getVal(auditData, 'afterData.store.permitPic'))">
+                    <img v-if="getVal(auditData, 'afterData.permitInfo.permit_pic') || getVal(auditData, 'afterData.store.permitPic')" :src="getVal(auditData, 'afterData.permitInfo.permit_pic') || getVal(auditData, 'afterData.store.permitPic')" alt="许可证">
+                    <span v-else class="no-img">暂无</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 门店照片 -->
+        <div class="section" v-if="isStore">
+          <div class="section-title">门店照片</div>
+          <div class="compare-box">
+            <div class="compare-col">
+              <div class="col-title">修改前</div>
+              <div class="photo-list">
+                <div class="photo-item">
+                  <span class="photo-label">门脸照</span>
+                  <div class="photo-img" @click="previewImage(getVal(auditData, 'beforeData.store.doorPhoto'))">
+                    <img v-if="getVal(auditData, 'beforeData.store.doorPhoto')" :src="getVal(auditData, 'beforeData.store.doorPhoto')" alt="门脸照">
+                    <span v-else class="no-img">暂无</span>
+                  </div>
+                </div>
+                <div class="photo-item">
+                  <span class="photo-label">内景照</span>
+                  <div class="photo-img" @click="previewImage(getVal(auditData, 'beforeData.store.envPhoto'))">
+                    <img v-if="getVal(auditData, 'beforeData.store.envPhoto')" :src="getVal(auditData, 'beforeData.store.envPhoto')" alt="内景照">
+                    <span v-else class="no-img">暂无</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="compare-col">
+              <div class="col-title">修改后</div>
+              <div class="photo-list">
+                <div class="photo-item">
+                  <span class="photo-label">门脸照</span>
+                  <div class="photo-img" @click="previewImage(getVal(auditData, 'afterData.store.doorPhoto'))">
+                    <img v-if="getVal(auditData, 'afterData.store.doorPhoto')" :src="getVal(auditData, 'afterData.store.doorPhoto')" alt="门脸照">
+                    <span v-else class="no-img">暂无</span>
+                  </div>
+                </div>
+                <div class="photo-item">
+                  <span class="photo-label">内景照</span>
+                  <div class="photo-img" @click="previewImage(getVal(auditData, 'afterData.store.envPhoto'))">
+                    <img v-if="getVal(auditData, 'afterData.store.envPhoto')" :src="getVal(auditData, 'afterData.store.envPhoto')" alt="内景照">
+                    <span v-else class="no-img">暂无</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 审核日志 -->
+        <div class="section">
+          <div class="section-title">审核日志</div>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <span class="time">{{ formatDate(getVal(auditData, 'createdAt')) }}</span>
+                <span class="desc">{{ getVal(auditData, 'applicant.cname') || '系统' }} 提交审核申请</span>
+              </div>
+            </div>
+            <div class="timeline-item" v-if="getVal(auditData, 'auditAt') && getVal(auditData, 'auditAt') !== '-'">
+              <div class="timeline-dot" :class="getVal(auditData, 'status') === 1 ? 'success' : 'danger'"></div>
+              <div class="timeline-content">
+                <span class="time">{{ formatDate(getVal(auditData, 'auditAt')) }}</span>
+                <span class="desc" :class="getVal(auditData, 'status') === 1 ? 'success' : 'danger'">
+                  {{ getVal(auditData, 'operator.cname') || '系统' }} {{ getVal(auditData, 'status') === 1 ? '审核通过' : '审核驳回' }}
+                  <span v-if="getVal(auditData, 'reason')">：{{ getVal(auditData, 'reason') }}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 驳回原因面板 -->
+      <div class="section" v-if="getVal(auditData, 'status') === 0">
+        <div class="section-title">驳回原因（至少选择一项）</div>
+        <div class="reject-content">
+          <div class="reject-section" v-for="(risks, fieldKey) in rejectRiskLibrary" :key="fieldKey">
+            <div class="section-label">{{ getFieldName(fieldKey) }}</div>
+            <div class="risk-list">
+              <div v-for="(risk, index) in risks" :key="index" class="risk-item" :class="{ active: checkedRisks[fieldKey] && checkedRisks[fieldKey].includes(index) }">
+                <el-checkbox v-model="checkedRisks[fieldKey]" :label="index" @change="handleRiskCheck">
+                  {{ risk.riskName }}
+                </el-checkbox>
+                <el-input
+                  v-if="checkedRisks[fieldKey] && checkedRisks[fieldKey].includes(index)"
+                  v-model="customReason[fieldKey + '_' + index]"
+                  placeholder="补充说明"
+                  size="small"
+                  class="reason-input"
+                ></el-input>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar" v-if="getVal(auditData, 'status') === 0">
+          <el-button @click="handleReject" :disabled="!hasCheckedAnyRisk()">驳回</el-button>
+          <el-button type="primary" @click="handlePass">通过</el-button>
+        </div>
+      </div>
+
+      <!-- 图片预览 -->
+      <el-dialog title="图片预览" :visible.sync="previewVisible" width="600px" append-to-body>
+        <div class="preview-box">
+          <img :src="previewUrl" alt="预览图片" class="preview-img" />
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -424,43 +301,16 @@ export default {
       auditData: {},
       rejectRiskLibrary: {
         address: [
-          {
-            riskName: "地址策略标-证地不一致",
-            reason: "门店文本地址（详细地址）须与证照地址一致。注意：省市区三段式信息也需勾选与证照一致。"
-          },
-          {
-            riskName: "地址格式错误",
-            reason: "地址需包含省市区+详细地址，格式不符合要求。"
-          }
+          { riskName: '地址策略标-证地不一致', reason: '门店文本地址（详细地址）须与证照地址一致' },
+          { riskName: '地址格式错误', reason: '地址需包含省市区+详细地址，格式不符合要求' }
         ],
         mainlicensepic: [
-          {
-            riskName: "主体资质-禁止无效门店无商户主体变更营业执照",
-            reason: "该门店缺少商户主体，请先补全门店商户主体后再进行资质变更"
-          },
-          {
-            riskName: "主体资质-非证件照片",
-            reason: "上传有误，请上传正确的营业执照图片"
-          }
+          { riskName: '主体资质-禁止无效门店无商户主体变更营业执照', reason: '该门店缺少商户主体' },
+          { riskName: '主体资质-非证件照片', reason: '上传有误，请上传正确的营业执照图片' }
         ],
-        doorpic: [
-          {
-            riskName: "门头图-不为门面照",
-            reason: "不得上传与店铺门面无关的照片，如突出的人物照、动物照、菜品图、证照等"
-          }
-        ],
-        indoorpic: [
-          {
-            riskName: "大堂-不为大堂图",
-            reason: "请勿上传与店铺大堂无关的图片，如突出的人物照、动物照、菜品图、证照等"
-          }
-        ],
-        industrylicensepic: [
-          {
-            riskName: "行业资质-非证件照片",
-            reason: "上传有误，请上传正确的行业资质图片"
-          }
-        ]
+        doorpic: [{ riskName: '门头图-不为门面照', reason: '不得上传与店铺门面无关的照片' }],
+        indoorpic: [{ riskName: '大堂-不为大堂图', reason: '请勿上传与店铺大堂无关的图片' }],
+        industrylicensepic: [{ riskName: '行业资质-非证件照片', reason: '上传有误，请上传正确的行业资质图片' }]
       },
       checkedRisks: {
         address: [],
@@ -468,17 +318,29 @@ export default {
         doorpic: [],
         indoorpic: [],
         industrylicensepic: []
-      }, // 初始化所有字段的选中状态
-      customReason: {}, // 自定义原因 {address_0: '补充原因'}
+      },
+      customReason: {},
       previewVisible: false,
       previewUrl: '',
       statusText: '',
-      statusTagType: '',
+      statusDesc: '',
       pageTitle: '',
-      targetTypeText: '',
       isStore: false,
       isBusiness: false
     };
+  },
+  computed: {
+    statusClass() {
+      const status = this.getVal(this.auditData, 'status');
+      switch (status) {
+        case 1:
+          return 'success';
+        case 2:
+          return 'danger';
+        default:
+          return 'pending';
+      }
+    }
   },
   mounted() {
     const auditId = this.$route.query.id;
@@ -490,7 +352,6 @@ export default {
     }
   },
   methods: {
-    // 安全取值
     getVal(obj, path) {
       if (!obj || !path) return '';
       const keys = path.split('.');
@@ -502,7 +363,6 @@ export default {
       return result === null || result === undefined ? '' : result;
     },
 
-    // 加载详情
     async loadAuditDetail(auditId) {
       try {
         const res = await getAuditLogDetail(auditId);
@@ -515,62 +375,54 @@ export default {
       }
     },
 
-    // 设置目标类型
     setTargetType(targetType) {
       switch (targetType) {
         case 1:
-          this.pageTitle = '商家审核详情';
-          this.targetTypeText = '商家';
+          this.pageTitle = '商家审核';
           this.isBusiness = true;
           this.isStore = false;
           break;
         case 2:
-          this.pageTitle = '门店审核详情';
-          this.targetTypeText = '门店';
+        case 3:
+          this.pageTitle = '门店审核';
           this.isStore = true;
           this.isBusiness = false;
           break;
         default:
           this.pageTitle = '审核详情';
-          this.targetTypeText = '关联对象';
           this.isStore = false;
           this.isBusiness = false;
       }
     },
 
-    // 设置状态
     setStatusInfo(status) {
       const statusMap = {
-        0: { text: '待审核', type: 'warning' },
-        1: { text: '审核通过', type: 'success' },
-        2: { text: '审核驳回', type: 'danger' }
+        0: { text: '待审核', desc: '等待审核人员处理' },
+        1: { text: '审核通过', desc: '审核已完成，信息已更新' },
+        2: { text: '审核驳回', desc: '审核已完成，需修改后重新提交' }
       };
-      const info = statusMap[status] || { text: '未知状态', type: 'info' };
+      const info = statusMap[status] || { text: '未知状态', desc: '' };
       this.statusText = info.text;
-      this.statusTagType = info.type;
+      this.statusDesc = info.desc;
     },
 
-    // 格式化日期
     formatDate(date) {
       if (!date || date === '-') return '-';
       const d = new Date(date.replace(/\/+/g, '-'));
       if (isNaN(d.getTime())) return date;
-      return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')}`;
+      return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
     },
 
-    // 预览图片
     previewImage(url) {
       if (!url) return;
       this.previewUrl = url;
       this.previewVisible = true;
     },
 
-    // 返回列表
     goBack() {
       this.$router.go(-1);
     },
 
-    // 审核通过
     async handlePass() {
       try {
         await this.$confirm('确定要审核通过吗？', '温馨提示', {
@@ -588,7 +440,6 @@ export default {
       }
     },
 
-    // 字段key转中文名称
     getFieldName(fieldKey) {
       const fieldMap = {
         address: '详细地址',
@@ -600,72 +451,58 @@ export default {
       return fieldMap[fieldKey] || fieldKey;
     },
 
-    // 勾选风险时的处理
     handleRiskCheck() {
-      // 触发视图更新即可，无需额外逻辑
       this.$forceUpdate();
     },
 
-    // 判断是否勾选了至少一个风险（核心：控制驳回按钮禁用）
     hasCheckedAnyRisk() {
       return Object.keys(this.checkedRisks).some(fieldKey => {
         return Array.isArray(this.checkedRisks[fieldKey]) && this.checkedRisks[fieldKey].length > 0;
       });
     },
 
-    // 组装结构化驳回原因（和淘宝返回格式一致）
     buildRejectReason() {
       const rejectReason = {};
-      // 遍历所有选中的字段
       Object.keys(this.checkedRisks).forEach(fieldKey => {
         const riskIndexes = this.checkedRisks[fieldKey];
         if (Array.isArray(riskIndexes) && riskIndexes.length > 0) {
           rejectReason[fieldKey] = [];
-          // 遍历该字段下选中的风险
           riskIndexes.forEach(index => {
             const risk = this.rejectRiskLibrary[fieldKey][index];
             if (!risk) return;
-            // 组装单个风险的信息
-            const riskItem = {
+            rejectReason[fieldKey].push({
               name: null,
               riskName: risk.riskName,
               riskReason: risk.reason,
-              reason: this.customReason[fieldKey + '_' + index] || risk.reason, // 优先用自定义原因
+              reason: this.customReason[fieldKey + '_' + index] || risk.reason,
               advise: null,
               referArticleUrl: null,
               remark: null
-            };
-            rejectReason[fieldKey].push(riskItem);
+            });
           });
         }
       });
       return rejectReason;
     },
 
-    // 审核驳回（核心方法）
     async handleReject() {
-      // 二次校验：防止前端校验失效
       if (!this.hasCheckedAnyRisk()) {
         this.$message.warning('请至少选择一项驳回原因');
         return;
       }
-
       try {
-        await this.$confirm('确定要驳回该审核申请吗？', '温馨提示', {
+        await this.$confirm('确定要驳回此审核吗？', '温馨提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
           type: 'warning'
         });
-        // 组装结构化驳回原因
-        const rejectReason = this.buildRejectReason();
-        // 调用后端驳回接口
         const res = await auditReject({
           auditId: this.getVal(this.auditData, 'id'),
-          rejectReason: rejectReason // 传结构化数据
+          rejectReason: this.buildRejectReason()
         });
         if (res.success) {
           this.$message.success('审核驳回成功');
-          // 刷新审核详情
           this.loadAuditDetail(this.getVal(this.auditData, 'id'));
-          // 重置选中状态
           Object.keys(this.checkedRisks).forEach(fieldKey => {
             this.checkedRisks[fieldKey] = [];
           });
@@ -680,7 +517,6 @@ export default {
       }
     },
 
-    // 计算驳回问题总数（已驳回状态展示用）
     getTotalRejectProblems() {
       const rejectReason = this.auditData.rejectReason || {};
       let total = 0;
@@ -688,190 +524,207 @@ export default {
         total += Array.isArray(rejectReason[fieldKey]) ? rejectReason[fieldKey].length : 0;
       });
       return total;
-    },
-
-    // 判断字段是否被驳回（用于标红）
-    hasFieldReject(fieldKey) {
-      const rejectReason = this.auditData.rejectReason || {};
-      // 该字段存在且有问题 → 返回true（标红）
-      return this.auditData.status === 2 && !!rejectReason[fieldKey] && rejectReason[fieldKey].length > 0;
     }
   }
 };
 </script>
 
 <style scoped>
-.audit-detail-container {
-  padding: 16px 20px;
-  background: #f5f7fa;
-  height: 100%;
-  overflow: auto;
-  box-sizing: border-box;
+.app-container {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 84px);
 }
 
-.header-card {
-  background: #fff;
-  padding: 12px 16px;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  margin-bottom: 16px;
+/* 固定的顶部返回行 */
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  border: 1px solid #ebeef5;
+  padding: 12px 14px;
+  background: #fff;
+  border-bottom: 1px solid #ebeef5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.header-left .title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin-right: 12px;
-}
-
-.status-tag {
-  vertical-align: middle;
-}
-
-.header-right {
+.header-left {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.back-btn {
+  color: #409eff;
+  font-size: 14px;
+}
+
+.page-title {
+  font-size: 14px;
+  color: #303133;
+  font-weight: 600;
+}
+
+/* 可滚动的内容区域 */
+.scrollable-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  margin-top: 49px; /* 顶部固定区域的高度 */
+}
+
+.content-area {
+  overflow: visible;
+}
+
+.section {
+  background: #fff;
+  border-radius: 4px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.detail-header ~ .section,
+.scrollable-content > .section:first-child {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #303133;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 12px;
 }
 
 .info-item {
-  font-size: 13px;
-  color: #666;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: #fafafa;
+  border-radius: 4px;
 }
 
 .info-item .label {
-  color: #999;
-  margin-right: 4px;
+  color: #909399;
 }
 
-/* 驳回问题汇总样式 */
-.reject-summary {
-  background: #fff2f0;
-  border: 1px solid #ffccc7;
-  border-radius: 4px;
-  padding: 12px 16px;
-  margin-bottom: 16px;
+.info-item .value {
+  color: #303133;
 }
 
-.summary-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #f56c6c;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.info-item .value.success {
+  color: #67c23a;
 }
 
-.summary-content {
-  font-size: 13px;
+.info-item .value.danger {
   color: #f56c6c;
 }
 
-.field-group {
-  margin-bottom: 8px;
+.info-item .value.pending {
+  color: #e6a23c;
 }
 
-.field-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: #f56c6c;
-  margin-bottom: 4px;
-}
-
-.problem-item {
-  line-height: 1.6;
-  margin-left: 12px;
-}
-
-.compare-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding-bottom: 140px;
-}
-
-.compare-card,
-.log-card {
-  background: #fff;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
-  border: 1px solid #ebeef5;
-}
-
-.card-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #333;
-  padding: 10px 16px;
-  border-bottom: 1px solid #ebeef5;
-  background: #fafafa;
-}
-
-.compare-content {
-  display: flex;
-  padding: 16px;
-  gap: 20px;
-}
-
-.compare-col {
-  flex: 1;
-}
-
-.col-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 12px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid #ebeef5;
-  display: block;
-}
-
-.info-list {
+.problem-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.info-row {
-  font-size: 13px;
-  color: #666;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 4px 0;
-}
-
-/* 驳回字段标红样式 */
-.info-row.reject-item {
+.problem-item {
+  padding: 10px;
+  background: #fef0f0;
+  border-radius: 4px;
   border-left: 3px solid #f56c6c;
-  padding-left: 8px;
-  background: #fff2f0;
-  border-radius: 2px;
 }
 
-.info-label {
-  color: #999;
-  min-width: 70px;
-}
-
-.info-value.changed {
+.problem-title {
+  display: block;
   color: #f56c6c;
-  font-weight: 500;
-  background: #fff2f0;
-  padding: 1px 3px;
-  border-radius: 2px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.problem-desc {
+  color: #606266;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.compare-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.compare-col {
+  background: #fafafa;
+  border-radius: 4px;
+  padding: 12px;
+}
+
+.col-title {
+  font-weight: 600;
+  color: #303133;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.info-list .info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.info-list .info-row:last-child {
+  border-bottom: none;
+}
+
+.info-list .info-row .label {
+  color: #909399;
+}
+
+.info-list .info-row .value {
+  color: #303133;
+}
+
+.info-list .info-row.highlight .value {
+  color: #409eff;
+}
+
+.avatar-box {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto;
+  border: 2px solid #ebeef5;
+  cursor: pointer;
+}
+
+.avatar-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .cert-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .cert-item {
@@ -880,29 +733,18 @@ export default {
   gap: 8px;
 }
 
-/* 驳回资质标红 */
-.cert-item.reject-item {
-  border: 1px solid #ffccc7;
-  padding: 8px;
-  border-radius: 4px;
-  background: #fff2f0;
-}
-
 .cert-label {
-  font-size: 13px;
-  color: #999;
+  font-weight: 600;
+  color: #303133;
 }
 
 .cert-img {
-  width: 180px;
+  width: 100%;
   height: 120px;
-  border: 1px solid #ebeef5;
   border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
   overflow: hidden;
+  border: 1px solid #ebeef5;
+  cursor: pointer;
 }
 
 .cert-img img {
@@ -911,53 +753,35 @@ export default {
   object-fit: cover;
 }
 
-.no-img {
-  font-size: 12px;
-  color: #ccc;
-}
-
 .cert-info {
-  display: flex;
-  gap: 12px;
-  font-size: 12px;
-  color: #666;
+  color: #909399;
+  font-size: 13px;
 }
 
 .photo-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .photo-item {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  cursor: pointer;
-}
-
-/* 驳回照片标红 */
-.photo-item.reject-item {
-  border: 1px solid #ffccc7;
-  padding: 8px;
-  border-radius: 4px;
-  background: #fff2f0;
 }
 
 .photo-label {
-  font-size: 13px;
-  color: #999;
+  font-weight: 600;
+  color: #303133;
 }
 
 .photo-img {
-  width: 180px;
-  height: 120px;
-  border: 1px solid #ebeef5;
+  width: 100%;
+  height: 140px;
   border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
+  border: 1px solid #ebeef5;
+  cursor: pointer;
 }
 
 .photo-img img {
@@ -966,139 +790,142 @@ export default {
   object-fit: cover;
 }
 
-.log-list {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.log-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding-bottom: 12px;
-  border-bottom: 1px dashed #ebeef5;
-}
-
-.log-time {
-  font-size: 12px;
-  color: #999;
-}
-
-.log-content {
-  font-size: 13px;
-  color: #666;
-}
-
-.log-operator {
-  color: #1890ff;
-  margin-right: 4px;
-}
-
-.log-action {
-  margin-right: 4px;
-}
-
-.log-reason {
-  color: #f56c6c;
-}
-
-.empty-log {
-  font-size: 13px;
-  color: #999;
-  text-align: center;
-  padding: 16px 0;
-}
-
-.footer-actions {
-  position: fixed;
-  bottom: 0;
-  left: 200px;
-  right: 0;
-  background: #fff;
-  padding: 10px 20px;
-  border-top: 1px solid #ebeef5;
-  box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.05);
-  z-index: 999;
-  border-radius: 0;
-}
-
-.footer-actions.disabled .reject-btn,
-.footer-actions.disabled .pass-btn {
-  display: none;
-}
-
-.action-buttons {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: flex-end;
-}
-
-.audit-result {
-  font-size: 13px;
-  color: #666;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.result-label {
-  font-weight: 500;
-}
-
-.preview-img-container {
-  width: 100%;
-  height: 600px;
+.no-img {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 100%;
   background: #f5f5f5;
+  color: #909399;
+}
+
+.timeline {
+  padding-left: 16px;
+  border-left: 2px solid #dcdfe6;
+}
+
+.timeline-item {
+  position: relative;
+  padding-left: 16px;
+  padding-bottom: 16px;
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -6px;
+  top: 4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #409eff;
+  border: 2px solid #fff;
+}
+
+.timeline-dot.success {
+  background: #67c23a;
+}
+
+.timeline-dot.danger {
+  background: #f56c6c;
+}
+
+.timeline-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.timeline-content .time {
+  color: #909399;
+  font-size: 13px;
+}
+
+.timeline-content .desc {
+  color: #303133;
+}
+
+.timeline-content .desc.success {
+  color: #67c23a;
+}
+
+.timeline-content .desc.danger {
+  color: #f56c6c;
+}
+
+.action-bar {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid #ebeef5;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.reject-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.panel-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #303133;
+  margin-bottom: 14px;
+}
+
+.panel-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.reject-section {
+  background: #fafafa;
+  border-radius: 4px;
+  padding: 12px;
+}
+
+.section-label {
+  font-weight: 600;
+  color: #303133;
+  margin-bottom: 10px;
+}
+
+.risk-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.risk-item {
+  padding: 8px;
+  background: #fff;
+  border-radius: 4px;
+}
+
+.risk-item.active {
+  border: 1px solid #409eff;
+}
+
+.reason-input {
+  margin-top: 8px;
+  width: 100%;
+}
+
+.preview-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .preview-img {
   max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-/* 字段驳回原因选择区样式 */
-.reject-field-group {
-  padding: 12px 16px;
-  border-top: 1px dashed #ebeef5;
-  background: #fafafa;
-}
-
-.field-title {
-  font-size: 13px;
-  font-weight: 500;
-  color: #666;
-  margin-bottom: 8px;
-}
-
-.risk-item {
-  margin-bottom: 8px;
-  display: flex;
-  flex-direction: column;
-}
-
-.custom-reason-input {
-  margin-left: 24px;
-  margin-top: 4px;
-  width: 400px;
-}
-
-@media (max-width: 1200px) {
-  .compare-content {
-    flex-direction: column;
-    gap: 16px;
-  }
-  .header-right {
-    gap: 8px;
-  }
-  .custom-reason-input {
-    width: 100%;
-  }
+  max-height: 500px;
 }
 </style>

@@ -110,16 +110,5 @@
     border-bottom: 1px solid #e6ebf5;
     box-sizing: border-box;
   }
-  .el-form-item__label {
-    text-align: right;
-    vertical-align: middle;
-    float: left;
-    font-size: 14px;
-    color: #606266;
-    line-height: 40px;
-    padding: 0 12px 0 0;
-    box-sizing: border-box;
-    font-weight: 500;
-  }
   </style>
     
