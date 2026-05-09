@@ -207,11 +207,14 @@
             align="center"
           />
           <el-table-column
-            prop="lastActiveTime"
-            label="最后访问"
+            label="最后访问时间"
             width="170"
             align="center"
-          />
+          >
+            <template slot-scope="scope">
+              {{ scope.row.lastActiveTime || '——' }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="操作"
             width="150"
@@ -256,36 +259,36 @@
         v-loading="operLogLoading"
         :data="operLogData"
         stripe
-        max-height="400"
+        max-height="350"
       >
         <el-table-column type="index" label="序号" align="center" width="60" />
         <el-table-column
-          prop="operation"
-          label="操作描述"
-          min-width="150"
-          show-overflow-tooltip
+          prop="operator"
+          label="操作人"
+          width="100"
+          align="center"
         />
         <el-table-column
-          prop="requestPath"
-          label="请求路径"
-          min-width="150"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="requestMethod"
-          label="请求方式"
+          prop="operationType"
+          label="操作类型"
           width="100"
           align="center"
         >
           <template slot-scope="scope">
             <el-tag
-              :type="getMethodTagType(scope.row.requestMethod)"
+              :type="getMethodTagType(scope.row.operationType)"
               size="small"
             >
-              {{ scope.row.requestMethod }}
+              {{ scope.row.operationType }}
             </el-tag>
           </template>
         </el-table-column>
+        <el-table-column
+          prop="requestPath"
+          label="请求路径"
+          min-width="200"
+          show-overflow-tooltip
+        />
         <el-table-column
           prop="clientIp"
           label="IP地址"
@@ -298,9 +301,76 @@
           width="170"
           align="center"
         />
+        <el-table-column
+          label="操作"
+          width="80"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <el-button
+              type="text"
+              size="mini"
+              @click="showOperLogDetail(scope.row)"
+              >详情</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
+      <!-- 分页组件 -->
+      <div class="oper-log-pagination">
+        <el-pagination
+          :current-page="operLogPage.currentPage"
+          :page-size="operLogPage.pageSize"
+          :total="operLogPage.total"
+          :page-sizes="[10, 20, 50, 100]"
+          layout="total, sizes, prev, pager, next, jumper"
+          @size-change="handleOperLogSizeChange"
+          @current-change="handleOperLogCurrentChange"
+        />
+      </div>
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" @click="operLogVisible = false">关闭</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 操作日志详情弹窗 -->
+    <el-dialog
+      :visible.sync="operLogDetailVisible"
+      title="操作日志详情"
+      width="700px"
+      append-to-body
+      :close-on-click-modal="false"
+    >
+      <el-form :model="currentOperLog" label-width="100px" class="oper-log-detail-form">
+        <el-form-item label="操作人">
+          <span>{{ currentOperLog.operator || '-' }}</span>
+        </el-form-item>
+        <el-form-item label="操作类型">
+          <el-tag
+            :type="getMethodTagType(currentOperLog.operationType)"
+            size="small"
+          >
+            {{ currentOperLog.operationType || '-' }}
+          </el-tag>
+        </el-form-item>
+        <el-form-item label="请求路径">
+          <span>{{ currentOperLog.requestPath || '-' }}</span>
+        </el-form-item>
+        <el-form-item label="IP地址">
+          <span>{{ currentOperLog.clientIp || currentOperLog.ip || '-' }}</span>
+        </el-form-item>
+        <el-form-item label="操作时间">
+          <span>{{ currentOperLog.operationTime || currentOperLog.createTime || '-' }}</span>
+        </el-form-item>
+        <el-form-item label="请求参数">
+          <pre class="detail-pre">{{ formatJson(currentOperLog.requestParams) }}</pre>
+        </el-form-item>
+        <el-form-item label="响应结果">
+          <pre class="detail-pre">{{ formatJson(currentOperLog.responseResult) }}</pre>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="operLogDetailVisible = false">关闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -311,6 +381,7 @@ import CRUD, { presenter } from "@crud/crud";
 import pagination from "@crud/Pagination";
 import {
   getOnlineUserList,
+  getOnlineStats,
   kickUser,
   kickUsers,
   getUserOperLog,
@@ -346,6 +417,15 @@ export default {
       operLogLoading: false,
       operLogData: [],
       currentUser: {},
+      // 操作日志分页
+      operLogPage: {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0,
+      },
+      // 操作日志详情
+      operLogDetailVisible: false,
+      currentOperLog: {},
     };
   },
   created() {
@@ -357,16 +437,26 @@ export default {
   methods: {
     // 获取统计数据
     async getStats() {
-        this.$store.state.chat.socket.emit("get_online_users");
-      // 从表格数据中统计
-      this.$nextTick(() => {
-        const data = this.crud.data || [];
-        console.log(this.crud.data);
-        this.stats.onlineCount = data.filter(
-          (item) => item.status === "online"
-        ).length;
-        this.stats.totalCount = this.crud.page.total || data.length;
-      });
+      try {
+        const res = await getOnlineStats();
+        if (res.success) {
+          const result = res.result;
+          this.stats.onlineCount = result.onlineCount || 0;
+          this.stats.todayLoginCount = result.todayLoginCount || 0;
+          this.stats.totalCount = result.totalCount || 0;
+          this.stats.peakCount = result.historyPeak || 0;
+        }
+      } catch (error) {
+        console.error("获取统计数据失败:", error);
+        // 如果API调用失败，从表格数据中统计
+        this.$nextTick(() => {
+          const data = this.crud.data || [];
+          this.stats.onlineCount = data.filter(
+            (item) => item.status === "online"
+          ).length;
+          this.stats.totalCount = this.crud.page.total || data.length;
+        });
+      }
     },
     // 重置查询
     resetQuery() {
@@ -455,12 +545,30 @@ export default {
     handleOperLog(row) {
       this.currentUser = row;
       this.operLogVisible = true;
+      this.operLogPage.currentPage = 1;
+      this.loadOperLog();
+    },
+    // 加载操作日志
+    loadOperLog() {
       this.operLogLoading = true;
       this.operLogData = [];
-      getUserOperLog({ userId: row.userId || row.id })
+      const params = {
+        userId: this.currentUser.userId || this.currentUser.id,
+        page: this.operLogPage.currentPage,
+        size: this.operLogPage.pageSize,
+      };
+      getUserOperLog(params)
         .then((res) => {
           if (res.success) {
-            this.operLogData = res.result.content || [];
+            // 兼容后端返回的数据结构（分页格式）
+            const result = res.result;
+            if (result.content) {
+              this.operLogData = result.content;
+              this.operLogPage.total = result.totalElements || result.total || 0;
+            } else {
+              this.operLogData = result || [];
+              this.operLogPage.total = this.operLogData.length;
+            }
           } else {
             this.$message.error(res.message || "获取操作日志失败");
           }
@@ -471,6 +579,34 @@ export default {
         .finally(() => {
           this.operLogLoading = false;
         });
+    },
+    // 操作日志分页大小改变
+    handleOperLogSizeChange(val) {
+      this.operLogPage.pageSize = val;
+      this.operLogPage.currentPage = 1;
+      this.loadOperLog();
+    },
+    // 操作日志当前页改变
+    handleOperLogCurrentChange(val) {
+      this.operLogPage.currentPage = val;
+      this.loadOperLog();
+    },
+    // 显示操作日志详情
+    showOperLogDetail(row) {
+      this.currentOperLog = row;
+      this.operLogDetailVisible = true;
+    },
+    // 格式化JSON显示
+    formatJson(data) {
+      if (!data) {
+        return '-';
+      }
+      try {
+        const obj = typeof data === 'string' ? JSON.parse(data) : data;
+        return JSON.stringify(obj, null, 2);
+      } catch (e) {
+        return data.toString();
+      }
     },
   },
 };
@@ -565,5 +701,29 @@ export default {
 
 .box-shadow {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.oper-log-pagination {
+  padding: 12px 0;
+  border-top: 1px solid #ebeef5;
+  display: flex;
+  justify-content: center;
+}
+
+.oper-log-detail-form {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.detail-pre {
+  background: #f5f7fa;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #606266;
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 </style>

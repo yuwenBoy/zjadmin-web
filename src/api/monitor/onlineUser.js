@@ -14,6 +14,19 @@ export function getOnlineUserList(params) {
 }
 
 /**
+ * 获取统计数据（在线人数、今日登录、总记录数、历史峰值）
+ * @param {*} params
+ * @returns
+ */
+export function getOnlineStats(params) {
+  return request({
+    url: "/log/online/stats",
+    method: "get",
+    params
+  });
+}
+
+/**
  * 强制用户下线
  * @param {*} params
  * @returns
@@ -34,8 +47,8 @@ export function kickUser(params) {
 export function getUserOperLog(params) {
   return request({
     url: "/log/online/operLog",
-    method: "get",
-    params
+    method: "post",
+    data:params
   });
 }
 
@@ -54,6 +67,7 @@ export function kickUsers(params) {
 
 export default {
   getOnlineUserList,
+  getOnlineStats,
   kickUser,
   getUserOperLog,
   kickUsers

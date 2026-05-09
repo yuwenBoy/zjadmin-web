@@ -117,14 +117,19 @@ service.interceptors.response.use(
         if (getRTExp() <= Date.now()) {
           Message.confirm(
             "登录状态已过期，您可以继续留在该页面，或者重新登录？",
+            "提示",
             {
-              ok: () => {
-                store.dispatch("LogOut").then(() => {
-                  location.reload(); // 为了重新实例化vue-router对象 避免bug
-                });
-              }
+              confirmButtonText: "重新登录",
+              cancelButtonText: "取消",
+              type: "warning"
             }
-          );
+          ).then(() => {
+            store.dispatch("LogOut").then(() => {
+              location.reload(); // 为了重新实例化vue-router对象 避免bug
+            });
+          }).catch(() => {
+            // 用户取消，留在当前页面
+          });
         } else if (!isRefreshing) {
           try {
             isRefreshing = true;
