@@ -335,10 +335,16 @@ async created(){
     this.getProductCategoryList();
     this.productId = this.$route.query.id;
     if(this.productId>0){
-         const {result,success,message,code} =  await detail({id:this.productId})
-         this.form = result
-         this.newProductDynamic = result.newProductDynamic;
-         this.handerCategory(this.form.categories);
+         try {
+           const {result} =  await detail({id:this.productId})
+           if (result) {
+             this.form = result
+             this.newProductDynamic = result.newProductDynamic || [];
+             this.handerCategory(this.form.categories);
+           }
+         } catch (error) {
+           console.error('获取商品详情失败:', error)
+         }
     }
     this.form.groupId = this.$route.query.groupId
   },
@@ -354,10 +360,18 @@ async created(){
     },
     /** 获取经营范围类目列表 */ 
    async getProductCategoryList(){
-       const {result} = await fetchMainProductCategories()
-       const that = this
-       let data = that.handleTree(result,'id','parent_id')
-       that.productCategoryList = data
+       try {
+         const {result} = await fetchMainProductCategories()
+         if (result && Array.isArray(result)) {
+           const data = this.handleTree(result,'id','parent_id')
+           this.productCategoryList = data
+         } else {
+           this.productCategoryList = []
+         }
+       } catch (error) {
+         console.error('获取类目列表失败:', error)
+         this.productCategoryList = []
+       }
     },
    // 标签点击事件处理函数
    handleTabClick(tab, event) {
@@ -375,12 +389,17 @@ async created(){
         }
       });
    },
-      /***
+    /***
      * 获取产品分组菜单
      */
     async getProductGroupList() {
-     let response_data = await fetchProductGroup();
-      this.productGroupList = response_data.result;
+     try {
+       let response_data = await fetchProductGroup();
+       this.productGroupList = response_data.result || [];
+     } catch (error) {
+       console.error('获取产品分组列表失败:', error)
+       this.productGroupList = [];
+     }
     },
     // 详情属性验证规则
     getValidator(item,isRequired){
@@ -514,9 +533,14 @@ async created(){
     'form.dynamicAttributeList': {
       deep: true,
       handler() {
-        let minPrice = Math.min(...this.form.product_spea.map(t=>t.price));
-        let indexOfMin = this.form.product_spea.findIndex(item=>item.price == minPrice)
-        this.preViewActived = indexOfMin;
+        if (this.form.product_spea && this.form.product_spea.length > 0) {
+          const prices = this.form.product_spea.map(t => parseFloat(t.price) || 0)
+          if (prices.length > 0) {
+            let minPrice = Math.min(...prices)
+            let indexOfMin = this.form.product_spea.findIndex(item => parseFloat(item.price) === minPrice)
+            this.preViewActived = indexOfMin >= 0 ? indexOfMin : 0
+          }
+        }
       }
     },
     'form': {

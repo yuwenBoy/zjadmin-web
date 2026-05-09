@@ -33,8 +33,8 @@ export const constantRouterMap = [{
     redirect: '/audit/list',
     children: [{
       path: 'list',
-      component: () => import('@/views/business/business/auditList'),
-      name: 'auditList',
+      component: () => import('@/views/business/business/auditLogList'),
+      name: 'auditLogList',
       meta: { title: '审核管理', icon: 'audit', noCache: false }
     }]
   },

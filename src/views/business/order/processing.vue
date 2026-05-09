@@ -78,6 +78,9 @@
         <el-tab-pane label="已取消" name="6,7">
           <span slot="label"><i class="el-icon-close"></i> 已取消</span>
         </el-tab-pane>
+        <el-tab-pane label="待支付" name="0">
+          <span slot="label"><i class="el-icon-wallet"></i> 待支付</span>
+        </el-tab-pane>
       </el-tabs>
 
       <el-table

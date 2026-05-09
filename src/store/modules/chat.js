@@ -284,6 +284,15 @@ const actions = {
         }, 1000);
       }
       
+
+      // 监听在线用户列表
+    socket.on('online_users_response', (res) => {
+      console.log('真实在线用户：', res.onlineUsers);
+      
+      // ✅ 这里才是真实在线人数
+      this.stats.onlineCount = res.onlineUsers.length;
+    });
+
       // ✅ 关键：如果是当前会话，立即发送已读回执
       const isCurrentChat =
         state.currentContact &&

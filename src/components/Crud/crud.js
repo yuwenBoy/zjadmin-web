@@ -321,7 +321,7 @@ function CRUD(options) {
                 crud.delAllLoading = false
                  dataStatus.delete = CRUD.STATUS.PREPARED
                 crud.dleChangePage(1)
-               
+                crud.delSuccessNotify()
                }else{
                   this.$msg.alert( res.message,'error');
                }

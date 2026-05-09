@@ -98,8 +98,13 @@ import { hasDuplicateProperty } from '@/utils'
      * 获取商家门店所属属性
      */
     async getStorePropertiesList(){
-        const data = await fetchProperties();
-        this.storePropertiesList = data.result;
+        try {
+          const data = await fetchProperties();
+          this.storePropertiesList = data.result || [];
+        } catch (error) {
+          console.error('获取属性列表失败:', error)
+          this.storePropertiesList = [];
+        }
     },
      generateRules() {
       this.form.properties.forEach((item, index) => {

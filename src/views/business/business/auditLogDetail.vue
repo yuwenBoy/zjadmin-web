@@ -378,14 +378,24 @@ export default {
     setTargetType(targetType) {
       switch (targetType) {
         case 1:
-          this.pageTitle = '商家审核';
+          this.pageTitle = '商家入驻审核';
           this.isBusiness = true;
           this.isStore = false;
           break;
         case 2:
         case 3:
-          this.pageTitle = '门店审核';
+          this.pageTitle = '门店信息审核';
           this.isStore = true;
+          this.isBusiness = false;
+          break;
+        case 4:
+          this.pageTitle = '商品审核';
+          this.isStore = false;
+          this.isBusiness = false;
+          break;
+        case 5:
+          this.pageTitle = '骑手审核';
+          this.isStore = false;
           this.isBusiness = false;
           break;
         default:
@@ -539,17 +549,12 @@ export default {
 
 /* 固定的顶部返回行 */
 .fixed-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
+  position: relative;
   display: flex;
   align-items: center;
   padding: 12px 14px;
   background: #fff;
   border-bottom: 1px solid #ebeef5;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .header-left {
@@ -574,7 +579,6 @@ export default {
   flex: 1;
   overflow-y: auto;
   padding: 14px;
-  margin-top: 49px; /* 顶部固定区域的高度 */
 }
 
 .content-area {

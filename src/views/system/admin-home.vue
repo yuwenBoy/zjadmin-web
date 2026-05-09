@@ -103,9 +103,9 @@
           <div class="quick-grid">
             <div class="quick-item" @click="goToBusiness">
               <div class="quick-icon business">
-                <i class="el-icon-plus"></i>
+                <i class="el-icon-s-check"></i>
               </div>
-              <span>商家审核</span>
+              <span>审核管理</span>
             </div>
             <div class="quick-item" @click="goToUsers">
               <div class="quick-icon users">
@@ -261,7 +261,7 @@ export default {
       }
     },
     goToBusiness() {
-      this.$router.push('/business/businessManagerList')
+      this.$router.push('/audit/list')
     },
     goToBusinessDetail(id) {
       this.$router.push('/system/business/detail/' + id)

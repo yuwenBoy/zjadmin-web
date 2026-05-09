@@ -186,11 +186,11 @@ export default {
                    this.form.coverUrl = this.form.coverUrl && this.form.coverUrl.length > 0 ? this.form.coverUrl[0].location : ''
                     create(JSON.stringify(this.form)).then(response => {
                         // 处理响应
-                        this.$msg.success('申请成功，平台将在1-3个工作日进行审核，请耐心等待！');
+                        this.$msg.success('商家入驻申请已提交，请等待平台审核！');
                     }).catch(error => {
                         // 处理错误
                         console.error('Error submitting form:', error);
-                        this.$msg.error('操作失败，原因！'+error.msg);
+                        this.$msg.error('提交失败：'+error.msg);
                     });
                 },
             cancel: () => {},

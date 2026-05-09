@@ -66,41 +66,37 @@
           @select-all="crud.selectAllChange"
           @selection-change="crud.selectionChangeHandler"
         >
-          <el-table-column type="selection" width="55" align="center" />
+          <el-table-column type="selection" width="55"/>
           <el-table-column
             type="index"
             label="序号"
-            align="center"
             width="50"
           />
           <el-table-column
             :show-overflow-tooltip="true"
             label="菜单名称"
-            align="center"
             prop="name"
             width="185"
           />
           <el-table-column
             :show-overflow-tooltip="true"
             label="菜单编码"
-            align="center"
             prop="code"
           />
-          <el-table-column prop="icon" label="图标" align="center" width="60px">
+          <el-table-column prop="icon" label="图标" width="60px">
             <template slot-scope="scope">
               <svg-icon :icon-class="scope.row.icon ? scope.row.icon : ''" />
             </template>
           </el-table-column>
           <el-table-column
             label="路径"
+            width="200px"
             show-overflow-tooltip
-            align="center"
             prop="menuPath"
           />
           <el-table-column
             label="菜单类型"
             prop="menuType"
-            align="center"
             width="85">
             <template slot-scope="scope">
               <span style="font-weight:bold;" :style="{color: $enum.moduleMenuTypeEnumColor[scope.row.menuType] }">{{ $enum.moduleMenuTypeEnum[scope.row.menuType] }}</span>
@@ -109,7 +105,6 @@
           <el-table-column
             label="是否可见"
             prop="hidden"
-            align="center"
             width="105"
           >
             <template slot-scope="scope">
@@ -120,7 +115,6 @@
           <el-table-column
             label="是否可授权员工"
             prop="isAuthorized"
-            align="center"
             width="125"
           >
             <template slot-scope="scope">
@@ -130,17 +124,15 @@
           </el-table-column>
           <el-table-column
             prop="indexNo"
-            align="center"
             label="排序"
-            width="85"
+            width="65"
           />
           <el-table-column
             prop="create_time"
             label="创建时间"
             width="160"
-            align="center"
           />
-          <el-table-column label="操作" width="100px" align="left">
+          <el-table-column label="操作" width="100px" align="left" fixed="right">
             <template slot-scope="scope">
               <el-link
                 v-authority="['module:edit']"
@@ -467,22 +459,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.el-card__header {
-  padding: 8px 20px;
-  border-bottom: 1px solid #e6ebf5;
-  box-sizing: border-box;
-}
-.el-form-item__label {
-  text-align: right;
-  vertical-align: middle;
-  float: left;
-  font-size: 14px;
-  color: #606266;
-  line-height: 40px;
-  padding: 0 12px 0 0;
-  box-sizing: border-box;
-  font-weight: 500;
-}
-</style>
