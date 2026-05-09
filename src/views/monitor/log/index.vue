@@ -118,7 +118,7 @@
             <pre class="detail-pre">{{ formatJson(currentLog.requestParams) }}</pre>
           </el-form-item>
           <el-form-item label="响应结果">
-            <pre class="detail-pre">{{ formatJson(currentLog.responseResult) }}</pre>
+            <pre class="detail-pre">{{ formatJson(currentLog.responseData) }}</pre>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
