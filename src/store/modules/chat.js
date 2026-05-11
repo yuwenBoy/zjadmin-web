@@ -245,9 +245,40 @@ const actions = {
       
       // 如果当前用户是忙碌状态，自动回复
       if (state.currentUserStatus === 'busy' && !message.isAutoReply) {
+        // 从localStorage读取忙碌状态自动回复内容
+        let busyAutoReply = '您好，我现在忙碌中，会尽快回复您的消息。';
+        try {
+          const savedSettings = localStorage.getItem('chatSettings');
+          if (savedSettings) {
+            const settings = JSON.parse(savedSettings);
+            if (settings.busyAutoReply) {
+              busyAutoReply = settings.busyAutoReply;
+            }
+          }
+        } catch (e) {
+          console.error('读取自动回复设置失败:', e);
+        }
+        
+        // 如果没有设置，则根据用户类型生成默认回复
+         if (!busyAutoReply || busyAutoReply.trim() === '') {
+           const user = Vue.prototype.$store ? Vue.prototype.$store.state.user.user : null;
+           if (user && user.userType === 1) {
+             busyAutoReply = '您好，我现在忙碌中，会尽快回复您的消息。';
+           } else if (user && user.userType === 2 && user.business && user.business.store && user.business.store.length > 0) {
+             const defaultStore = user.business.store.find(item => item.isDefault);
+             let phone = '';
+             if (defaultStore && defaultStore.contactInfo) {
+               phone = defaultStore.contactInfo;
+             } else {
+               phone = user.business.store[0].contactInfo || '';
+             }
+             busyAutoReply = `亲亲，现在是出餐高峰期，不能及时回复您，如有急事请直接拨打${phone}`;
+           }
+         }
+        
         const autoReply = {
           receiverId: message.senderId,
-          content: '您好，我现在忙碌中，会尽快回复您的消息。',
+          content: busyAutoReply,
           targetId: message.senderId,
           targetType: 2 // 假设发送者是顾客
         };

@@ -196,7 +196,7 @@
                 :type="scope.row.status === 'online' ? 'success' : 'info'"
                 size="small"
               >
-                {{ scope.row.status === "online" ? "在线" : "离线" }}
+                {{ scope.row.status === "online" ? "在线"  : scope.row.status === "busy" ? "忙碌" :"离线" }}
               </el-tag>
             </template>
           </el-table-column>
