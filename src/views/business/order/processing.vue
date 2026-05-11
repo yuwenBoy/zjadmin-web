@@ -451,7 +451,6 @@ export default {
           this.$message.error(res.message || "获取订单列表失败");
         }
       } catch (error) {
-        console.error("获取订单列表失败:", error);
         this.$message.error("获取订单列表失败");
       } finally {
         this.loading = false;
@@ -466,7 +465,6 @@ export default {
           this.statistics = res.result || res.data || this.statistics;
         }
       } catch (error) {
-        console.error("获取订单统计失败:", error);
       }
     },
 

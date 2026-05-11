@@ -157,6 +157,13 @@ service.interceptors.response.use(
               return await request(config);
             }
           } catch (error) {
+            Notification.error({
+              title: "登录状态已过期，请重新登录",
+              duration: 5000
+            });
+            store.dispatch("LogOut").then(() => {
+              location.reload();
+            });
           } finally {
             isRefreshing = false;
           }

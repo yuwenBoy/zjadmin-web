@@ -447,7 +447,6 @@ export default {
           this.stats.peakCount = result.historyPeak || 0;
         }
       } catch (error) {
-        console.error("获取统计数据失败:", error);
         // 如果API调用失败，从表格数据中统计
         this.$nextTick(() => {
           const data = this.crud.data || [];

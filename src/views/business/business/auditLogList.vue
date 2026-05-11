@@ -367,7 +367,6 @@ export default {
           return allReasons.length > 0 ? allReasons.join("；") : "无驳回原因";
         }
       } catch (e) {
-        console.error("解析驳回原因失败：", e);
         return isGroup ? { error: "解析失败" } : "驳回原因解析失败";
       }
     },

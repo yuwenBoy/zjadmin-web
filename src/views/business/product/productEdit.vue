@@ -343,7 +343,6 @@ async created(){
              this.handerCategory(this.form.categories);
            }
          } catch (error) {
-           console.error('获取商品详情失败:', error)
          }
     }
     this.form.groupId = this.$route.query.groupId
@@ -369,7 +368,6 @@ async created(){
            this.productCategoryList = []
          }
        } catch (error) {
-         console.error('获取类目列表失败:', error)
          this.productCategoryList = []
        }
     },
@@ -397,7 +395,6 @@ async created(){
        let response_data = await fetchProductGroup();
        this.productGroupList = response_data.result || [];
      } catch (error) {
-       console.error('获取产品分组列表失败:', error)
        this.productGroupList = [];
      }
     },

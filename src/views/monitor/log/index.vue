@@ -114,6 +114,9 @@
               {{ currentLog.statusCode || '-' }}
             </span>
           </el-form-item>
+          <el-form-item label="User Agent">
+            <pre class="detail-pre">{{ currentLog.userAgent || '-' }}</pre>
+          </el-form-item>
           <el-form-item label="请求参数">
             <pre class="detail-pre">{{ formatJson(currentLog.requestParams) }}</pre>
           </el-form-item>
@@ -128,11 +131,9 @@
     </div>
   </template>
     <script>
-  import crudUser from "@/api/shop/goods";
   import CRUD, { presenter } from "@crud/crud";
   import OPTOperation from "@crud/OPT.operation";
   import pagination from "@crud/Pagination";
-  import { mapGetters } from "vuex";
   export default {
     components: {
       OPTOperation,
@@ -142,28 +143,21 @@
       return CRUD({
         title: "操作日志",
         url: "/log/getByCondition",
-        crudMethod: { ...crudUser },
       });
     },
     mixins: [presenter()],
     data() {
       return {
-        // 详情弹窗
         detailVisible: false,
         currentLog: {},
       };
     },
-    computed: {
-      ...mapGetters(["user"]),
-    },
     mounted() {},
     methods: {
-      // 显示详情
       showDetail(row) {
         this.currentLog = row;
         this.detailVisible = true;
       },
-      // 获取请求方式标签类型
       getMethodTagType(method) {
         const types = {
           GET: 'success',
@@ -173,7 +167,6 @@
         };
         return types[method] || 'info';
       },
-      // 格式化JSON显示
       formatJson(data) {
         if (!data) {
           return '-';
@@ -184,31 +177,6 @@
         } catch (e) {
           return data.toString();
         }
-      },
-      toDelete(datas) {
-        this.$msg.confirm(`确认删除选中的${datas.length}条数据?`, {
-          ok: () => {
-            this.crud.delAllLoading = true;
-            this.crud.doDelete(row);
-          },
-        });
-      },
-  
-      remove(obj) {
-        this.$confirm(
-          `确认删除账号【${obj.username}】吗，删除后不可恢复`,
-          "提示",
-          {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning",
-          }
-        )
-          .then(() => {
-            this.crud.delAllLoading = true;
-            this.crud.doDelete(obj);
-          })
-          .catch(() => {});
       },
     },
   };

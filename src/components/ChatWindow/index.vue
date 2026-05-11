@@ -153,24 +153,27 @@ export default {
     },
     // 切换当前聊天对象
     selectContact(contact) {
+      // 1. 设置当前联系人
       this.$store.commit('chat/SET_CURRENT_CONTACT', contact)
-       // 2. 如果有未读消息，发送已读回执（关键！）
+      
+      // 2. 如果有未读消息，直接清零并发送已读回执
       if (contact.unread_count > 0) {
-        // 获取该联系人的未读消息ID列表
-        const unreadMessages = this.$store.state.chat.messages.filter(m => m.senderId == contact.id && m.status == 0)
-        if (unreadMessages.length > 0) {
-        const messageIds = unreadMessages.map(m => m.id);
-        // 3. 本地清零未读数
+        // 3. 先本地清零未读数（立即更新UI）
         contact.unread_count = 0;
-        // 发送已读回执到服务端
-        this.$store.state.chat.socket.emit('mark_as_read', { messageIds });
+        
+        // 4. 通过WebSocket发送已读回执到服务端（基于会话ID标记已读）
+        if (this.$store.state.chat.socket) {
+          this.$store.state.chat.socket.emit('mark_conversation_read', { 
+            targetId: contact.id,
+            targetType: contact.user_type || 2
+          });
         }
-    }
-    
-    // 4. 滚动到底部（使用RightChatWindow的方法）
-    this.$nextTick(() => {
+      }
+      
+      // 5. 滚动到底部
+      this.$nextTick(() => {
         if (this.$refs.messageList && this.$refs.messageList.scrollToBottom) {
-          this.$refs.messageList.scrollToBottom(true); // 强制滚动
+          this.$refs.messageList.scrollToBottom(true);
         }
       });
     },
