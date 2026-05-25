@@ -90,6 +90,7 @@
         border
         stripe
         highlight-current-row
+        :max-height="tableMaxHeight"
       >
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -329,8 +330,11 @@ const OrderStatusText = {
   [OrderStatus.REFUND_ALL_PART]: "已退款"
 };
 
+import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
+
 export default {
   name: "OrderProcessing",
+  mixins: [tableHeightMixin],
   data() {
     return {
       activeStatus: "all",

@@ -69,6 +69,7 @@
           <el-table
             ref="table"
             :data="crud.data"
+            :max-height="tableMaxHeight"
             stripe
             @selection-change="crud.selectionChangeHandler"
           >
@@ -138,6 +139,8 @@ import CRUD, { presenter } from "@crud/crud";
 import OPTOperation from "@crud/OPT.operation";
 import pagination from "@crud/Pagination";
 import { mapGetters } from "vuex";
+import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
+
 export default {
   components: {
     OPTOperation,
@@ -150,14 +153,16 @@ export default {
       crudMethod: { ...crudUser },
     });
   },
-  mixins: [presenter()],
+  mixins: [presenter(), tableHeightMixin],
   data() {
-    return {};
+    return {
+    };
   },
   computed: {
     ...mapGetters(["user"]),
   },
-  mounted() {},
+  mounted() {
+  },
   methods: {
     toDelete(datas) {
       this.$msg.confirm(`确认删除选中的${datas.length}条数据?`, {

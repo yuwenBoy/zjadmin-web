@@ -38,6 +38,7 @@
           </el-form>
           <el-table
             :data="crud.data"
+            :max-height="tableMaxHeight"
             row-key="id"
             stripe
             @selection-change="crud.selectionChangeHandler"
@@ -111,6 +112,8 @@ const defaultForm = {
   description: "",
   isDefault: 0,
 };
+import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
+
 export default {
   components: { OPTOperation, pagination, addGroupMenu },
   cruds() {
@@ -121,11 +124,11 @@ export default {
       sort: "sort",
     });
   },
-  mixins: [presenter(), form(defaultForm)],
+  mixins: [presenter(), form(defaultForm), tableHeightMixin],
   data() {
-    return {};
+    return {
+    };
   },
-  mounted() {},
   methods: {
     toDelete(datas) {
       this.$msg.confirm(`确认删除选中的${datas.length}条数据?`, {

@@ -137,6 +137,7 @@
         <el-table
           ref="table"
           v-loading="crud.loading"
+          :max-height="tableMaxHeight"
           :data="crud.data"
           stripe
           @selection-change="crud.selectionChangeHandler"
@@ -387,6 +388,8 @@ import {
   getUserOperLog,
 } from "@/api/monitor/onlineUser";
 
+import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
+
 export default {
   name: "OnlineUser",
   components: {
@@ -403,7 +406,7 @@ export default {
       queryParams: {},
     });
   },
-  mixins: [presenter()],
+  mixins: [presenter(), tableHeightMixin],
   data() {
     return {
       stats: {
@@ -433,7 +436,6 @@ export default {
     this.crud.optShow.edit = false;
     this.getStats();
   },
-  mounted() {},
   methods: {
     // 获取统计数据
     async getStats() {

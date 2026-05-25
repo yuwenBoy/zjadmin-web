@@ -66,6 +66,7 @@
           v-if="refreshTable"
           ref="table"
           :data="crud.data"
+          :max-height="tableMaxHeight"
           row-key="id"
           :default-expand-all="isExpandAll"
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
@@ -237,6 +238,8 @@ const defaultForm = {
   sort: 0,
   parent_id: 0,
 };
+import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
+
 export default {
   components: { treeSelect, OPTOperation },
   cruds() {
@@ -247,7 +250,7 @@ export default {
       sort: "sort",
     });
   },
-  mixins: [presenter(), form(defaultForm)],
+  mixins: [presenter(), form(defaultForm), tableHeightMixin],
   data() {
     return {
       // type: 1,
@@ -260,14 +263,14 @@ export default {
           { required: true, message: "请输入部门组织名称", trigger: "blur" },
         ],
         department_type: [
-          { required: true, message: "请输入组织类型", trigger: "blur" },
+          { required: true, message: "请选择部门类型", trigger: "change" },
         ],
         sort: [{ required: true, message: "请选择排序", trigger: "blur" }],
       },
       deptEntity: [],
-      department_typeList: [
+      departmentTypeList: [
         {
-          label: "机构",
+          label: "公司",
           value: 1,
         },
         {

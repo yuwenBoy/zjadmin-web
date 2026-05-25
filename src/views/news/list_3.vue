@@ -17,7 +17,7 @@
             </el-col>
           </el-row>
         </div>
-        <el-table ref="table" :data="crud.data" stripe @selection-change="crud.selectionChangeHandler">
+        <el-table ref="table" :data="crud.data" :max-height="tableMaxHeight" stripe @selection-change="crud.selectionChangeHandler">
           <el-table-column type="selection" align="center" width="55" />
           <el-table-column type="index" label="序号" align="center" width="50" />
           <el-table-column prop="title" label="公告标题" align="center" show-overflow-tooltip>
@@ -69,6 +69,8 @@ import OPTOperation from '@crud/OPT.operation'
 import pagination from '@crud/Pagination'
 import jForm from './newsEdit'
 import { Notification } from 'element-ui'
+import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
+
 export default {
   components: {
     OPTOperation,
@@ -82,7 +84,7 @@ export default {
       crudMethod: { ...crudNews }
     })
   },
-  mixins: [presenter()],
+  mixins: [presenter(), tableHeightMixin],
   data() {
     return {
     }

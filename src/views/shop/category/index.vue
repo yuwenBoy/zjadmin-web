@@ -66,6 +66,7 @@
           v-if="refreshTable"
           ref="table"
           :data="crud.data"
+          :max-height="tableMaxHeight"
           row-key="id"
           :default-expand-all="isExpandAll"
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
@@ -232,6 +233,8 @@ const defaultForm = {
   parent_id: 0,
   pic: "",
 };
+import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
+
 export default {
   components: { treeSelect, OPTOperation, picUpload },
   cruds() {
@@ -242,7 +245,7 @@ export default {
       sort: "sort",
     });
   },
-  mixins: [presenter(), form(defaultForm)],
+  mixins: [presenter(), form(defaultForm), tableHeightMixin],
   data() {
     return {
       // type: 1,

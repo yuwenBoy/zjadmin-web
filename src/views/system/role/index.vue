@@ -63,6 +63,7 @@
                   <el-table
                     ref="table"
                     :data="crud.data"
+                    :max-height="tableMaxHeight"
                     highlight-current-row
                     @selection-change="crud.selectionChangeHandler"
                     @current-change="handleCurrentChange"
@@ -140,6 +141,7 @@
             checkStrictly
             :data="menuEntity"
             ref="deptTree"
+            class="role-source-wapper"
             :checkValue="setCheckList"
           />
         </div>
@@ -155,6 +157,8 @@ import jForm from "./roleEdit";
 import api from "@/api/system/module";
 import OPTOperation from "@crud/OPT.operation";
 import DeptTree from "@/components/dept-tree/dept-tree.vue";
+import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
+
 export default {
   components: { OPTOperation, pagination, jForm, DeptTree },
   cruds() {
@@ -164,7 +168,7 @@ export default {
       crudMethod: { ...crudRole },
     });
   },
-  mixins: [presenter()],
+  mixins: [presenter(), tableHeightMixin],
   data() {
     return {
       tText: "展开所有",
@@ -331,5 +335,8 @@ export default {
   padding: 0 12px 0 0;
   box-sizing: border-box;
   font-weight: 500;
+}
+.tree-content .el-tree{
+    max-height: calc(100vh - 120px) !important
 }
 </style>

@@ -110,6 +110,7 @@
           ref="table"
           v-loading="crud.loading"
           :data="crud.data"
+          :max-height="tableMaxHeight"
           stripe
           @selection-change="crud.selectionChangeHandler"
         >
@@ -271,6 +272,8 @@ import {
 } from "@/api/monitor/errorLog";
 import { excelDownload } from "@/utils";
 
+import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
+
 export default {
   name: "ErrorLog",
   components: {
@@ -287,7 +290,7 @@ export default {
       queryParams: {}
     });
   },
-  mixins: [presenter()],
+  mixins: [presenter(), tableHeightMixin],
   data() {
     return {
       dateRange: [],

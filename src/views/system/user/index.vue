@@ -1,46 +1,41 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="24">
-      <el-col :xs="treeCollapsed ? 1 : 9" :sm="treeCollapsed ? 1 : 6" :md="treeCollapsed ? 1 : 5" :lg="treeCollapsed ? 1 : 4" :xl="treeCollapsed ? 1 : 4">
-        <div class="tree-wrapper" :class="{ 'is-collapsed': treeCollapsed }">
-          <div v-show="!treeCollapsed" class="tree-content">
-            <dept-tree
-              :data="deptEntity"
-              :checkValue="[]"
-              @change="change"
-              :defaultSelectedKey="3"
-            />
-          </div>
-          <el-tooltip :content="treeCollapsed ? '展开' : '收起'" placement="right">
-            <div class="collapse-btn" @click="toggleTree">
-              <i :class="treeCollapsed ? 'el-icon-arrow-right' : 'el-icon-arrow-left'"></i>
-            </div>
-          </el-tooltip>
+    <div class="user-page-list">
+      <div class="tree-wrapper" :class="{ 'is-collapsed': treeCollapsed }">
+        <div v-show="!treeCollapsed" class="tree-content">
+          <dept-tree
+            :data="deptEntity"
+            :checkValue="[]"
+            @change="change"
+            :defaultSelectedKey="3"
+          />
         </div>
-      </el-col>
-      <el-col
-        :xs="treeCollapsed ? 23 : 15"
-        :sm="treeCollapsed ? 23 : 18"
-        :md="treeCollapsed ? 23 : 20"
-        :lg="treeCollapsed ? 23 : 20"
-        :xl="treeCollapsed ? 23 : 20"
-        style="padding-left: 0px"
-      >
-        <div class="head-container right-content">
-          <div class="content-box">
-            <div class="text item">
-              <el-form label-width="0px" inline>
-                <el-form-item>
-                  <el-input
-                    v-model="crud.query.cname"
-                    clearable
-                    size="mini"
-                    autofocus
-                    placeholder="姓名、手机、邮箱"
-                    class="filter-item round-left"
-                  />
-                </el-form-item>
-                <!-- <el-form-item>
+        <el-tooltip
+          :content="treeCollapsed ? '展开' : '收起'"
+          placement="right"
+        >
+          <div class="collapse-btn" @click="toggleTree">
+            <i
+              :class="treeCollapsed ? 'el-icon-arrow-right' : 'el-icon-arrow-left'"
+            ></i>
+          </div>
+        </el-tooltip>
+      </div>
+      <div class="head-container right-content">
+        <div class="content-box">
+          <div class="text item">
+            <el-form label-width="0px" inline>
+              <el-form-item>
+                <el-input
+                  v-model="crud.query.cname"
+                  clearable
+                  size="mini"
+                  autofocus
+                  placeholder="姓名、手机、邮箱"
+                  class="filter-item round-left"
+                />
+              </el-form-item>
+              <!-- <el-form-item>
                       <Department
                         v-model="crud.query.departmentId"
                         :is-lazy="isLazy"
@@ -49,234 +44,235 @@
                         @input="updateLyDeptId"
                       />
                     </el-form-item> -->
-                <el-form-item>
-                  <el-select
-                    v-model="crud.query.disabled"
-                    clearable
-                    placeholder="用户状态"
-                    class="wt100"
-                  >
-                    <el-option label="启用" value="1" />
-                    <el-option label="锁定" value="2" />
-                  </el-select>
-                </el-form-item>
-                <OPTOperation />
-                <el-button v-if="crud.optShow.add"
-                    v-authority="['user:add']"
-                    class="filter-item"
-                    size="mini"
-                    round
-                    type="primary"
-                    icon="el-icon-plus"
-                    @click="crud.toAdd"
-                    >新增</el-button
-                  >
-                  <el-button
-                    v-authority="['user:delete']"
-                    class="filter-item"
-                    size="mini"
-                    round
-                    type="danger"
-                    icon="el-icon-delete"
-                    :loading="crud.delAllLoading"
-                    :disabled="crud.selections.length === 0"
-                    @click="toDelete(crud.selections)"
-                    >删除</el-button
-                  >
-                  <el-button
-                    type="info"
-                    class="filter-item"
-                    round
-                    plain
-                    icon="el-icon-upload2"
-                    size="mini"
-                    @click="handleImport"
-                    >导入</el-button
-                  >
-                  <el-button
-                    type="warning"
-                    class="filter-item"
-                    round
-                    icon="el-icon-download"
-                    size="mini"
-                    @click="handleExport"
-                    >导出</el-button>
-              </el-form>
-               
-            </div>
-            <el-table
-              ref="table"
-              :data="crud.data"
-              stripe
-              @selection-change="crud.selectionChangeHandler"
-            >
-              <el-table-column
-                type="selection"
-                :selectable="checkboxT"
-                align="center"
-                width="55"
-              />
-              <!-- <el-table-column
+              <el-form-item>
+                <el-select
+                  v-model="crud.query.disabled"
+                  clearable
+                  placeholder="用户状态"
+                  class="wt100"
+                >
+                  <el-option label="启用" value="1" />
+                  <el-option label="锁定" value="2" />
+                </el-select>
+              </el-form-item>
+              <OPTOperation />
+              <el-button
+                v-if="crud.optShow.add"
+                v-authority="['user:add']"
+                class="filter-item"
+                size="mini"
+                round
+                type="primary"
+                icon="el-icon-plus"
+                @click="crud.toAdd"
+                >新增</el-button
+              >
+              <el-button
+                v-authority="['user:delete']"
+                class="filter-item"
+                size="mini"
+                round
+                type="danger"
+                icon="el-icon-delete"
+                :loading="crud.delAllLoading"
+                :disabled="crud.selections.length === 0"
+                @click="toDelete(crud.selections)"
+                >删除</el-button
+              >
+              <el-button
+                type="info"
+                class="filter-item"
+                round
+                plain
+                icon="el-icon-upload2"
+                size="mini"
+                @click="handleImport"
+                >导入</el-button
+              >
+              <el-button
+                type="warning"
+                class="filter-item"
+                round
+                icon="el-icon-download"
+                size="mini"
+                @click="handleExport"
+                >导出</el-button
+              >
+            </el-form>
+          </div>
+          <el-table
+            ref="table"
+            :data="crud.data"
+            size="medium"
+            stripe
+            @selection-change="crud.selectionChangeHandler"
+            :max-height="tableMaxHeight"
+          >
+            <el-table-column
+              type="selection"
+              :selectable="checkboxT"
+              align="center"
+              width="55"
+            />
+            <!-- <el-table-column
                 type="index"
                 label="序号"
                 align="center"
                 width="50"
               /> -->
-              <el-table-column prop="avatar" label="头像" width="80">
-                <template slot-scope="scope">
-                  <div
-                    v-if="!scope.row.avatar"
-                    style="
-                      width: 36px;
-                      height: 36px;
-                      border-radius: 50%;
-                      background: rgb(24, 144, 255);
-                      line-height: 36px;
-                      text-align: center;
-                      font-size: 12px;
-                      color: #fff;
-                      border: 1px solid rgb(24, 144, 255);
-                    "
-                  >
-                    <span v-if="scope.row.cname.length > 2">{{
-                      scope.row.cname.substr(
-                        scope.row.cname.length - 2,
-                        scope.row.cname.length - 1
-                      )
-                    }}</span>
-                    <span v-else>{{ scope.row.cname }}</span>
-                  </div>
-                  <el-image
-                    v-else  style="
-                      width: 36px;
-                      height: 36px;
-                      border-radius: 50%;
-                      line-height: 36px;
-                      text-align: center;
-                    "
-                    :src="scope.row.avatar"
-                    :preview-src-list="[
-                     scope.row.avatar,
-                    ]"
-                  ></el-image>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="username"
-                width="120"
-                label="账号"
-                align="center"
-              />
-              <el-table-column prop="cname" label="姓名" align="center" width="100"/>
-              <el-table-column
-                prop="sex"
-                label="性别"
-                width="70"
-                align="center"
-              >
-                <template slot-scope="scope">
-                  <span v-if="scope.row.sex == 1" class="text-primary">男</span>
-                  <span v-else-if="scope.row.sex == 2" class="text-success"
-                    >女</span
-                  >
-                  <span v-else class="text-primary">未识别</span>
-                </template>
-              </el-table-column>
+            <el-table-column prop="avatar" label="头像" width="80">
+              <template slot-scope="scope">
+                <div
+                  v-if="!scope.row.avatar"
+                  style="
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    background: rgb(24, 144, 255);
+                    line-height: 36px;
+                    text-align: center;
+                    font-size: 12px;
+                    color: #fff;
+                    border: 1px solid rgb(24, 144, 255);
+                  "
+                >
+                  <span v-if="scope.row.cname.length > 2">{{
+                    scope.row.cname.substr(
+                      scope.row.cname.length - 2,
+                      scope.row.cname.length - 1
+                    )
+                  }}</span>
+                  <span v-else>{{ scope.row.cname }}</span>
+                </div>
+                <el-image
+                  v-else
+                  style="
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    line-height: 36px;
+                    text-align: center;
+                  "
+                  :src="scope.row.avatar"
+                  :preview-src-list="[scope.row.avatar]"
+                ></el-image>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="username"
+              width="120"
+              label="账号"
+              align="center"
+            />
+            <el-table-column
+              prop="cname"
+              label="姓名"
+              align="center"
+              width="100"
+            />
+            <el-table-column prop="sex" label="性别" width="70" align="center">
+              <template slot-scope="scope">
+                <span v-if="scope.row.sex == 1" class="text-primary">男</span>
+                <span v-else-if="scope.row.sex == 2" class="text-success"
+                  >女</span
+                >
+                <span v-else class="text-primary">未识别</span>
+              </template>
+            </el-table-column>
 
-              <!-- <el-table-column prop="birthday" label="年龄" align="center">
+            <!-- <el-table-column prop="birthday" label="年龄" align="center">
                 <template slot-scope="scope">
                   <span>{{ parseTime(scope.row.birthday) | fmt_age }}</span>
                 </template>
               </el-table-column> -->
-              <!-- <el-table-column prop="dept.departmentName" width="150" align="center" show-overflow-tooltip label="部门/职位">
+            <!-- <el-table-column prop="dept.departmentName" width="150" align="center" show-overflow-tooltip label="部门/职位">
             <template slot-scope="scope">
               {{ scope.row.dept.departmentName }}<span>/</span>{{ scope.row.position.name }}
             </template>
           </el-table-column> -->
-              <el-table-column
-                prop=""
-                label="手机号"
-                width="120"
-                align="center"
-              >
-                <template slot-scope="scope">
-                  <span v-if="scope.row.phone">{{
-                    scope.row.phone | fmt_phone
-                  }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="dept_id.department_name"
-                label="机构"
-                width="120"
-                align="center"
-              />
-              <el-table-column
-                prop="position_id.name"
-                label="职位"
-                width="120"
-                align="center"
-              />
-              <el-table-column prop="disabled" label="状态" align="center">
-                <template slot-scope="scope">
-                  <el-tooltip
-                    :content="scope.row.disabled == 1 ? '正常' : '锁定'"
-                    placement="top"
+            <el-table-column prop="" label="手机号" width="120" align="center">
+              <template slot-scope="scope">
+                <span v-if="scope.row.phone">{{
+                  scope.row.phone | fmt_phone
+                }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="dept_id.department_name"
+              label="机构"
+              width="120"
+              align="center"
+            />
+            <el-table-column
+              prop="position_id.name"
+              label="职位"
+              width="120"
+              align="center"
+            />
+            <el-table-column prop="disabled" label="状态" align="center">
+              <template slot-scope="scope">
+                <el-tooltip
+                  :content="scope.row.disabled == 1 ? '正常' : '锁定'"
+                  placement="top"
+                >
+                  <el-switch
+                    v-model="scope.row.disabled"
+                    active-color="#ff4949"
+                    inactive-color="#13ce66"
+                    :active-value="2"
+                    :inactive-value="1"
+                    :disabled="scope.row.id == 19"
+                    @change="setUserDisabled(scope.row)"
                   >
-                    <el-switch
-                      v-model="scope.row.disabled"
-                      active-color="#ff4949"
-                      inactive-color="#13ce66"
-                      :active-value="2"
-                      :inactive-value="1"
-                      :disabled="scope.row.id == 19"
-                      @change="setUserDisabled(scope.row)"
-                    >
-                    </el-switch>
-                  </el-tooltip>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="create_time"
-                width="160"
-                label="创建时间"
-                align="center"
-              />
-              <!--   编辑与删除   -->
-              <el-table-column label="操作" align="left" width="150" fixed="right">
-                <template slot-scope="scope">
-                  <el-link
-                    v-authority="['user:edit']"
-                    type="info"
-                    :underline="false"
-                    @click="crud.toEdit(scope.row)"
-                    >编辑</el-link
-                  >
-                  <el-link
-                    v-authority="['user:delete']"
-                    type="info"
-                    :underline="false"
-                    :disabled="scope.row.id === user.id"
-                    @click="remove(scope.row)"
-                    >删除</el-link
-                  >
-                  <el-link
-                    v-authority="['user:setRole']"
-                    type="info"
-                    :underline="false"
-                    @click="setRole(scope.row)"
-                    >设置角色</el-link
-                  >
-                </template>
-              </el-table-column>
-            </el-table>
-            <!--分页组件-->
-            <pagination />
-            <jForm />
-          </div>
+                  </el-switch>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="create_time"
+              width="160"
+              label="创建时间"
+              align="center"
+            />
+            <!--   编辑与删除   -->
+            <el-table-column
+              label="操作"
+              align="left"
+              width="150"
+              fixed="right"
+            >
+              <template slot-scope="scope">
+                <el-link
+                  v-authority="['user:edit']"
+                  type="info"
+                  :underline="false"
+                  @click="crud.toEdit(scope.row)"
+                  >编辑</el-link
+                >
+                <el-link
+                  v-authority="['user:delete']"
+                  type="info"
+                  :underline="false"
+                  :disabled="scope.row.id === user.id"
+                  @click="remove(scope.row)"
+                  >删除</el-link
+                >
+                <el-link
+                  v-authority="['user:setRole']"
+                  type="info"
+                  :underline="false"
+                  @click="setRole(scope.row)"
+                  >设置角色</el-link
+                >
+              </template>
+            </el-table-column>
+          </el-table>
+          <!--分页组件-->
+          <pagination />
+          <jForm />
         </div>
-      </el-col>
-    </el-row>
+      </div>
+    </div>
 
     <el-dialog
       append-to-body
@@ -369,6 +365,7 @@ import jForm from "./userEdit";
 import { mapGetters } from "vuex";
 import { getToken } from "@/utils/storage";
 import { excelDownload } from "@/utils";
+import tableHeightMixin from "@/layout/mixin/tableHeightMixin";
 
 export default {
   components: {
@@ -384,10 +381,11 @@ export default {
       crudMethod: { ...crudUser },
     });
   },
-  mixins: [presenter()],
+  mixins: [presenter(), tableHeightMixin],
   data() {
     return {
       request: false,
+      windowHeight: window.innerHeight,
       status: 0,
       roles: [],
       roleList: [],
@@ -591,58 +589,64 @@ export default {
   },
 };
 </script>
-<style scoped>
-
-
-/* 树形面板容器 */
-.tree-wrapper {
+<style lang="scss" scoped>
+.user-page-list {
   display: flex;
-  align-items: center;
-  position: relative;
-  padding-top: 10px;
-  height: calc(100vh - 120px);
-}
+  padding: 15px;
+  /* 树形面板容器 */
+  .tree-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 20%;
+    flex: 0 0 20%;
+    height: calc(100vh - 120px);
+    flex-shrink: 0;
+    transition: width 0.3s, flex 0.3s;
+  }
 
-/* 树形内容区域 */
-.tree-content {
-  flex: 1;
-  overflow: auto;
-  max-height: calc(100vh - 120px);
-}
+  /* 树收起时的状态 */
+  .tree-wrapper.is-collapsed {
+    width: 24px;
+    flex: 0 0 24px;
+  }
 
-/* 收起按钮 */
-.collapse-btn {
-  width: 24px;
-  height: 60px;
-  background: #f5f7fa;
-  border: 1px solid #e4e7ed;
-  border-left: none;
-  border-radius: 0 4px 4px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s;
-}
+  /* 树形内容区域 */
+  .tree-content {
+    flex: 1;
+    overflow: auto;
+    max-height: calc(100vh - 120px);
+  }
 
-.collapse-btn:hover {
-  background: #e6f7ff;
-  color: #1890ff;
-}
+  /* 收起按钮 */
+  .collapse-btn {
+    width: 24px;
+    height: 60px;
+    background: #f5f7fa;
+    border: 1px solid #e4e7ed;
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
 
-/* 收起状态 */
-.tree-wrapper.is-collapsed .collapse-btn {
-  border-radius: 0 4px 4px 0;
-  border-left: 1px solid #e4e7ed;
-}
+  .collapse-btn:hover {
+    background: #e6f7ff;
+    color: #1890ff;
+  }
 
-/* 右侧内容区域 */
-.right-content {
-  height: calc(100vh - 120px);
-  overflow-y: auto;
-}
+  /* 收起状态 */
+  .tree-wrapper.is-collapsed .collapse-btn {
+    border-radius: 0 4px 4px 0;
+    border-left: 1px solid #e4e7ed;
+  }
 
-.right-content .content-box {
-  padding-bottom: 20px;
+   .right-content {
+      flex: 1;
+      min-width: 0;
+  }
 }
 </style>

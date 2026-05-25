@@ -22,7 +22,7 @@
               </el-col>
             </el-row>
           </div>
-          <el-table ref="table" :data="crud.data" stripe @selection-change="crud.selectionChangeHandler">
+          <el-table ref="table" :data="crud.data" stripe @selection-change="crud.selectionChangeHandler" :max-height="tableMaxHeight">
             <el-table-column type="selection" align="center" width="55" />
             <el-table-column type="index" label="序号" align="center" width="50" />
             <el-table-column prop="id" label="员工ID" align="center" width="80" />
@@ -63,26 +63,27 @@
   import OPTOperation from '@crud/OPT.operation'
   import pagination from '@crud/Pagination'
   import jForm from './employeeEdit';
+import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
 
-  export default {
-    components: {
-      OPTOperation,
-      pagination,
-      jForm
-    },
-    cruds() {
-      return CRUD({
-        title: '员工',
-        url: '/employee/getByCondition',
-        crudMethod: { ...curdEmployee }
-      })
-    },
-    mixins: [presenter()],
-    data() {
-      return {
-      }
-    },
-    methods: {
+export default {
+  components: {
+    OPTOperation,
+    pagination,
+    jForm
+  },
+  cruds() {
+    return CRUD({
+      title: '员工',
+      url: '/employee/getByCondition',
+      crudMethod: { ...curdEmployee }
+    })
+  },
+  mixins: [presenter(), tableHeightMixin],
+  data() {
+    return {
+    }
+  },
+  methods: {
       toDelete(datas) {
         this.$msg.confirm(
           `确认删除选中的${datas.length}条数据?`,

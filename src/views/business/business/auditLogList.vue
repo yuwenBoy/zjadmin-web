@@ -131,6 +131,7 @@
         <el-table
           v-if="refreshTable"
           ref="table"
+          :max-height="tableMaxHeight"
           :data="crud.data"
           row-key="id"
           @selection-change="crud.selectionChangeHandler"
@@ -264,6 +265,8 @@ const defaultForm = {
   created_at: undefined,
   updated_at: undefined,
 };
+import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
+
 export default {
   components: { OPTOperation },
   cruds() {
@@ -273,7 +276,7 @@ export default {
       sort: "sort",
     });
   },
-  mixins: [presenter(), form(defaultForm)],
+  mixins: [presenter(), form(defaultForm), tableHeightMixin],
   data() {
     return {
       // 重新渲染表格状态
@@ -669,7 +672,7 @@ export default {
 }
 
 .pagination-container >>> .el-pagination {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .pagination-container >>> .el-pagination__total {

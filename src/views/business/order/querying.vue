@@ -44,8 +44,9 @@
         :data="orderList"
         style="width: 100%"
         border
-      >
-        <el-table-column
+        stripe
+        :max-height="tableMaxHeight"
+      >  <el-table-column
           prop="orderId"
           label="订单号"
           width="180"
@@ -178,8 +179,11 @@ const OrderStatusText = {
   8: "已退款"
 };
 
+import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
+
 export default {
   name: "Querying",
+  mixins: [tableHeightMixin],
   data() {
     return {
       searchForm: {

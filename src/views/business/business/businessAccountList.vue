@@ -24,6 +24,7 @@
             v-if="refreshTable"
             ref="table"
             :data="crud.data"
+            :max-height="tableMaxHeight"
           >
             <el-table-column
               type="selection"
@@ -75,33 +76,33 @@
     created_at:undefined,
     updated_at:undefined,
   };
-  export default {
-    components: { OPTOperation },
-    cruds() {
-      return CRUD({
-        title: "",
-        url: "/account/pageQuery",
-        sort: "sort",
-      });
-    },
-    mixins: [presenter(), form(defaultForm)],
-    data() {
-      return {
-        // 重新渲染表格状态
-        refreshTable: true,
-        rules: {
-          name: [{ required: true, message: "请输入品类名称", trigger: "blur" }],
-          sort: [{ required: true, message: "请选择排序", trigger: "blur" }],
-        },
-        treeEntity: [],
-      };
-    },
-    mounted() {
-    },
-    methods: {
+  import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
 
-    }
-  };
+export default {
+  components: { OPTOperation },
+  cruds() {
+    return CRUD({
+      title: "",
+      url: "/account/pageQuery",
+      sort: "sort",
+    });
+  },
+  mixins: [presenter(), form(defaultForm), tableHeightMixin],
+  data() {
+    return {
+      // 重新渲染表格状态
+      refreshTable: true,
+      rules: {
+        name: [{ required: true, message: "请输入品类名称", trigger: "blur" }],
+        sort: [{ required: true, message: "请选择排序", trigger: "blur" }],
+      },
+      treeEntity: [],
+    };
+  },
+  methods: {
+
+  }
+};
   </script>
     
     <style>

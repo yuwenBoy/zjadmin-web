@@ -23,6 +23,7 @@
             <el-table
               ref="table"
               :data="crud.data"
+              :max-height="tableMaxHeight"
               style="width: 100%"
               @selection-change="crud.selectionChangeHandler"
             >
@@ -82,6 +83,8 @@ import CRUD, { presenter } from "@crud/crud";
 import crudOperation from "@crud/CRUD.operation";
 import { getDeptTree } from "@/api/system/department";
 import pagination from "@crud/Pagination";
+import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
+
 export default {
   name: "Position",
   components: { jHeader, jForm, crudOperation, pagination, DeptTree },
@@ -93,7 +96,7 @@ export default {
       sort: "sort",
     });
   },
-  mixins: [presenter()],
+  mixins: [presenter(), tableHeightMixin],
   data() {
     return {
       deptEntity: [],

@@ -5,8 +5,7 @@
   .content-box{
     background-color: $bgColor_1;
     border-radius: 5px;
-    margin-top: 10px;
-    padding: 10px;
+    padding: 20px;
   }
 
   .filter-item {
@@ -125,7 +124,8 @@
   margin-bottom: 25px;
 }
 .el-pagination{
-  text-align: center !important;
+  text-align: right !important;
+  margin-top:20px;
 }
 .el-form--inline .el-form-item:first-child .el-input__inner{
   border-top-left-radius: 15px;

@@ -60,6 +60,7 @@
           v-if="refreshTable"
           ref="table"
           :data="crud.data"
+          :max-height="tableMaxHeight"
           row-key="id"
           :default-expand-all="isExpandAll"
           @select="crud.selectChange"
@@ -356,6 +357,8 @@ import IconSelect from "@/components/IconSelect";
 import treeSelect from "@/components/tree-select/tree-select.vue";
 import CRUD, { presenter, form } from "@crud/crud";
 import OPTOperation from "@crud/OPT.operation";
+import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
+
 const defaultForm = {
   id: null,
   name: "",
@@ -380,7 +383,7 @@ export default {
       sort: "indexNo",
     });
   },
-  mixins: [presenter(), form(defaultForm)],
+  mixins: [presenter(), form(defaultForm), tableHeightMixin],
   data() {
     return {
       rules: {

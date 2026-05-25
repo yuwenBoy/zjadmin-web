@@ -22,7 +22,7 @@
               </el-col>
             </el-row>
           </div>
-          <el-table ref="table" :data="crud.data" stripe @selection-change="crud.selectionChangeHandler">
+          <el-table ref="table" :data="crud.data" stripe @selection-change="crud.selectionChangeHandler" :max-height="tableMaxHeight">
             <el-table-column type="selection" align="center" width="55" />
             <el-table-column type="index" label="序号" align="center" width="50" />
             <el-table-column prop="id" label="门店ID" align="center" width="80" />
@@ -68,7 +68,9 @@
   import pagination from '@crud/Pagination'
   import jForm from './storeEdit';
 
-  export default {
+  import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
+
+export default {
     components: {
       OPTOperation,
       pagination,
@@ -81,7 +83,7 @@
         crudMethod: { ...curdStore }
       })
     },
-    mixins: [presenter()],
+    mixins: [presenter(), tableHeightMixin],
     data() {
       return {
       }

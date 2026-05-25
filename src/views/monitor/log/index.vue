@@ -37,6 +37,7 @@
             <el-table
               ref="table"
               :data="crud.data"
+              :max-height="tableMaxHeight"
               stripe
               @selection-change="crud.selectionChangeHandler"
             >
@@ -134,26 +135,27 @@
   import CRUD, { presenter } from "@crud/crud";
   import OPTOperation from "@crud/OPT.operation";
   import pagination from "@crud/Pagination";
-  export default {
-    components: {
-      OPTOperation,
-      pagination,
-    },
-    cruds() {
-      return CRUD({
-        title: "操作日志",
-        url: "/log/getByCondition",
-      });
-    },
-    mixins: [presenter()],
-    data() {
-      return {
-        detailVisible: false,
-        currentLog: {},
-      };
-    },
-    mounted() {},
-    methods: {
+  import tableHeightMixin from '@/layout/mixin/tableHeightMixin';
+
+export default {
+  components: {
+    OPTOperation,
+    pagination,
+  },
+  cruds() {
+    return CRUD({
+      title: "操作日志",
+      url: "/log/getByCondition",
+    });
+  },
+  mixins: [presenter(), tableHeightMixin],
+  data() {
+    return {
+      detailVisible: false,
+      currentLog: {},
+    };
+  },
+  methods: {
       showDetail(row) {
         this.currentLog = row;
         this.detailVisible = true;
