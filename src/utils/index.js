@@ -167,9 +167,8 @@ export function getQueryObject(url) {
  * @returns {number} output value
  */
 export function byteLength(str) {
-  // returns the byte length of an utf8 string
   let s = str.length;
-  for (var i = str.length - 1; i >= 0; i--) {
+  for (let i = str.length - 1; i >= 0; i--) {
     const code = str.charCodeAt(i);
     if (code > 0x7f && code <= 0x7ff) s++;
     else if (code > 0x7ff && code <= 0xffff) s += 2;
@@ -450,21 +449,21 @@ export function regEmail(email) {
     const str = email.split("@");
     let _s = "";
     if (str[0].length > 3) {
-      for (var i = 0; i < str[0].length - 3; i++) {
+      for (let i = 0; i < str[0].length - 3; i++) {
         _s += "*";
       }
     }
-    var new_email = str[0].substr(0, 3) + _s + "@" + str[1];
+    let new_email = str[0].substr(0, 3) + _s + "@" + str[1];
   }
   return new_email;
 }
 
-// 替换手机字符
 export function regMobile(mobile) {
   if (mobile.length > 7) {
-    var new_mobile = mobile.substr(0, 3) + "****" + mobile.substr(7);
+    const new_mobile = mobile.substr(0, 3) + "****" + mobile.substr(7);
+    return new_mobile;
   }
-  return new_mobile;
+  return mobile;
 }
 
 // 下载文件
@@ -557,8 +556,8 @@ export function handleTree(data, id, parentId, children) {
     childrenList: children || 'children'
   }
 
-  var childrenListMap = {}
-  var tree = []
+  const childrenListMap = {}
+  const tree = []
   for (let d of data) {
     let id = d[config.id]
     childrenListMap[id] = d

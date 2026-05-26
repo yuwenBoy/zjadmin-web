@@ -22,7 +22,7 @@
               </el-col>
             </el-row>
           </div>
-          <el-table ref="table" :data="crud.data" stripe @selection-change="crud.selectionChangeHandler" :max-height="tableMaxHeight">
+          <el-table ref="table" size="medium" :data="crud.data" stripe @selection-change="crud.selectionChangeHandler" :max-height="tableMaxHeight">
             <el-table-column type="selection" align="center" width="55" />
             <el-table-column type="index" label="序号" align="center" width="50" />
             <el-table-column prop="id" label="门店ID" align="center" width="80" />
@@ -34,7 +34,7 @@
             </el-table-column>
             <el-table-column prop="longitude" label="门店纬度" align="center" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="address" label="门店地址" align="center" show-overflow-tooltip>
+            <el-table-column prop="detail_address" label="门店地址" align="center" show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="status" width="120" label="门店状态" align="center">
               <template slot-scope="scope">
@@ -45,7 +45,7 @@
             </el-table-column>
             <el-table-column prop="updatedAt" width="160" label="更新时间" align="center">
             </el-table-column>
-            <el-table-column label="操作" align="left" width="170">
+            <el-table-column label="操作" align="left" width="120" fixed="right">
               <template slot-scope="scope">
                 <el-link type="info" :underline="false" @click="crud.toEdit(scope.row)">修改</el-link>
                 <el-link type="info" :underline="false" @click="remove(scope.row)">删除</el-link>

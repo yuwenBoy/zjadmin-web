@@ -5,42 +5,38 @@ import Vue from 'vue'
  */
 
 Vue.filter('fmt_age', function getAge(str) {
-  var r = str.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})/)
+  const r = str.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})/)
   if (r == null) return '__'
 
-  var d = new Date(r[1], r[3] - 1, r[4])
-  var returnStr = '输入的日期格式错误！'
+  const d = new Date(r[1], r[3] - 1, r[4])
+  let returnStr = '输入的日期格式错误！'
 
   if (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[4]) {
-    var date = new Date()
-    var yearNow = date.getFullYear()
-    var monthNow = date.getMonth() + 1
-    var dayNow = date.getDate()
+    const date = new Date()
+    const yearNow = date.getFullYear()
+    const monthNow = date.getMonth() + 1
+    const dayNow = date.getDate()
 
-    var largeMonths = [1, 3, 5, 7, 8, 10, 12] // 大月， 用于计算天，只在年月都为零时，天数有效
-    var lastMonth = monthNow - 1 > 0 ? monthNow - 1 : 12 // 上一个月的月份
-    var isLeapYear = false // 是否是闰年
-    var daysOFMonth = 0 // 当前日期的上一个月多少天
+    const largeMonths = [1, 3, 5, 7, 8, 10, 12]
+    const lastMonth = monthNow - 1 > 0 ? monthNow - 1 : 12
+    let isLeapYear = false
+    let daysOFMonth = 0
 
-    if ((yearNow % 4 === 0 && yearNow % 100 !== 0) || yearNow % 400 === 0) { // 是否闰年， 用于计算天，只在年月都为零时，天数有效
+    if ((yearNow % 4 === 0 && yearNow % 100 !== 0) || yearNow % 400 === 0) {
       isLeapYear = true
     }
 
     if (largeMonths.indexOf(lastMonth) > -1) {
       daysOFMonth = 31
     } else if (lastMonth === 2) {
-      if (isLeapYear) {
-        daysOFMonth = 29
-      } else {
-        daysOFMonth = 28
-      }
+      daysOFMonth = isLeapYear ? 29 : 28
     } else {
       daysOFMonth = 30
     }
 
-    var Y = yearNow - parseInt(r[1])
-    var M = monthNow - parseInt(r[3])
-    var D = dayNow - parseInt(r[4])
+    let Y = yearNow - parseInt(r[1])
+    let M = monthNow - parseInt(r[3])
+    let D = dayNow - parseInt(r[4])
     if (D < 0) {
       D = D + daysOFMonth // 借一个月
       M--

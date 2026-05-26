@@ -188,15 +188,12 @@ export default {
                         // 处理响应
                         this.$msg.success('商家入驻申请已提交，请等待平台审核！');
                     }).catch(error => {
-                        // 处理错误
-                        console.error('Error submitting form:', error);
                         this.$msg.error('提交失败：'+error.msg);
                     });
                 },
             cancel: () => {},
       });
           } else {
-            console.log('error submit!!');
             return false;
           }
         });

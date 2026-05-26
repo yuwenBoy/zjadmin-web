@@ -655,7 +655,7 @@ function lookupCrud(vm, tag) {
  */
 function presenter(crud) {
     if (crud) {
-        console.warn('[CRUD warn]: ' + 'please use $options.cruds() { return CRUD(...) or [CRUD(...), ...] }')
+        // 警告：建议使用 $options.cruds() { return CRUD(...) or [CRUD(...), ...] }
     }
     return {
         data() {
@@ -672,7 +672,7 @@ function presenter(crud) {
             }
             cruds.forEach(ele => {
                 if (this.$crud[ele.tag]) {
-                    console.error('[CRUD error]: ' + 'crud with tag [' + ele.tag + ' is already exist')
+                    // 错误：crud with tag [' + ele.tag + ' is already exist
                 }
                 this.$crud[ele.tag] = ele
                 ele.registerVM('presenter', this, 0)

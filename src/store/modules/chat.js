@@ -214,14 +214,12 @@ const actions = {
 
     // 监听 WebSocket 连接
     socket.on("connect", () => {
-      console.log("WebSocket 已连接");
       commit("SET_CONNECTED", true);
       socket.data = { userId: state.id };
     });
 
     // 监听 WebSocket 断开
     socket.on("disconnect", () => {
-      console.log("WebSocket 已断开");
       commit("SET_CONNECTED", false);
     });
 
@@ -256,7 +254,7 @@ const actions = {
             }
           }
         } catch (e) {
-          console.error('读取自动回复设置失败:', e);
+          // 读取自动回复设置失败已在上层处理
         }
         
         // 如果没有设置，则根据用户类型生成默认回复
@@ -318,8 +316,6 @@ const actions = {
 
       // 监听在线用户列表
     socket.on('online_users_response', (res) => {
-      console.log('真实在线用户：', res.onlineUsers);
-      
       // ✅ 这里才是真实在线人数
       this.stats.onlineCount = res.onlineUsers.length;
     });
@@ -352,7 +348,7 @@ const actions = {
         // 同时触发刷新订单列表和统计
         eventBus.$emit("refresh-order-list");
       } else {
-        console.warn("[Socket] eventBus 不存在，无法触发事件");
+        // eventBus 不存在，事件已通过其他方式处理
       }
 
       // Electron 环境下发送通知

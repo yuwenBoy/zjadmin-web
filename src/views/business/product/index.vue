@@ -627,8 +627,7 @@ export default {
                  this.$refs.table.clearSelection();
                  this.crud.refresh();
               }).catch(error => {
-                 console.error('Error submitting form:', error);
-                //  this.$msg.error('操作失败，原因！'+error.me);
+                // 错误已在上层处理
             });
           } 
         });

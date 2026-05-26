@@ -182,7 +182,6 @@ export default {
         
       } catch (error) {
         this.$message.error('加载门店状态失败：' + error.message);
-        console.error('加载失败：', error);
       }
     },
 

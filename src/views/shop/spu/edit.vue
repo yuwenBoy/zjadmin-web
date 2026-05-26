@@ -143,9 +143,8 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert("submit!");
+          this.$message.success("提交成功");
         } else {
-          console.log("error submit!!");
           return false;
         }
       });

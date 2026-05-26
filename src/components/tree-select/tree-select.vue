@@ -91,8 +91,6 @@ export default {
         this.treeList.forEach(item=>{
             item.children = arrayToTree(val, 0)
         })
-        console.log(this.treeList);
-
       }
       
     },

@@ -1,11 +1,10 @@
 
-export function randomColor()
-{
-    var r=random(0,256),
-    g=random(0,256),
-    b=random(0,256);
-    var result="rgb("+r+","+g+","+b+")";
-    return result;
+export function randomColor() {
+    const r = random(0, 256)
+    const g = random(0, 256)
+    const b = random(0, 256)
+    const result = `rgb(${r},${g},${b})`
+    return result
 }
 function random(lower,upper){
   return Math.floor(Math.random()*(upper-lower+1)+lower)

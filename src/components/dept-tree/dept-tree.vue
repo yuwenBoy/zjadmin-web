@@ -120,7 +120,7 @@ export default {
     },
     nodeExpand(expend) {
       this.isExpandAll = !expend;
-      for (var i = 0; i < this.$refs.tree.store._getAllNodes().length; i++) {
+      for (let i = 0; i < this.$refs.tree.store._getAllNodes().length; i++) {
         this.$refs.tree.store._getAllNodes()[i].expanded =  this.isExpandAll;
       }
     },

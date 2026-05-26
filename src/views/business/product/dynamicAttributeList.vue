@@ -120,7 +120,6 @@ import OPTOperation from "@crud/OPT.operation";
     methods: {
         // 表格刷新之后
         [CRUD.HOOK.beforeRefresh](crud, form) {
-            console.log('表格刷新之后');
             crud.params.categoryId = this.$route.query.categoryId;
             crud.params.type = this.$route.query.type;
         },
@@ -208,8 +207,6 @@ import OPTOperation from "@crud/OPT.operation";
                             that.crud.delAllLoading = false;
                             that.crud.toQuery();
                     }).catch(error => {
-                            // 处理错误
-                       console.error('Error submitting form:', error);
                        this.$msg.error('操作失败，原因！'+error.msg);
             });
         },

@@ -102,7 +102,6 @@ import { hasDuplicateProperty } from '@/utils'
           const data = await fetchProperties();
           this.storePropertiesList = data.result || [];
         } catch (error) {
-          console.error('获取属性列表失败:', error)
           this.storePropertiesList = [];
         }
     },
@@ -178,8 +177,8 @@ import { hasDuplicateProperty } from '@/utils'
         this.isPopoverVisible =false;
     },
     querySearch(queryString, cb) {
-      var restaurants = this.storePropertiesList;
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      const restaurants = this.storePropertiesList;
+      const results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
       // 调用 callback 返回建议列表的数据
       cb(results);
     },

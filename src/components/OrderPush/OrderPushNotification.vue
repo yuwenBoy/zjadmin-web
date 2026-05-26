@@ -292,16 +292,7 @@ export default {
       
       // 检查订单数据有效性
       if (!adaptedData || !adaptedData.orderId) {
-        console.warn("[OrderPush] 订单数据无效，原始数据:", orderData);
         return;
-      }
-      
-      // 检查关键字段是否为空
-      if (!adaptedData.addressName || adaptedData.addressName === '未知顾客') {
-        console.warn("[OrderPush] ⚠️ 顾客姓名为空，请检查后端返回字段名");
-      }
-      if (!adaptedData.addressPhone || adaptedData.addressPhone === '无电话') {
-        console.warn("[OrderPush] ⚠️ 顾客电话为空，请检查后端返回字段名");
       }
       
       // 检查是否已存在
@@ -335,7 +326,6 @@ export default {
     // 显示浏览器通知
     showBrowserNotification(order) {
       if (!("Notification" in window)) {
-        console.warn('[OrderPush] 浏览器不支持 Notification API');
         return;
       }
       
@@ -382,7 +372,7 @@ export default {
           };
           
         } catch (err) {
-          console.error('[OrderPush] 显示浏览器通知失败:', err);
+          // 显示浏览器通知失败已在上层处理
         }
       };
       
@@ -395,10 +385,8 @@ export default {
             showNotification();
           }
         }).catch(err => {
-          console.error('[OrderPush] 请求通知权限失败:', err);
+          // 请求通知权限失败已在上层处理
         });
-      } else {
-        console.warn('[OrderPush] 通知权限被拒绝');
       }
     },
 

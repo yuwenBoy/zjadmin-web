@@ -142,8 +142,6 @@ mounted(){
                             that.crud.toQuery();
                             // this.$emit('update:visible', false); // 关闭时同步状态
                     }).catch(error => {
-                            // 处理错误
-                            console.error('Error submitting form:', error);
                             this.$msg.error('操作失败，原因！'+error.msg);
             });
         },

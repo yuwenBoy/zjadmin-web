@@ -34,9 +34,7 @@ export default {
   },
   watch: {
     viewName() {
-      console.log("开始监听viewName=================");
       this.initEcharts();
-      console.log("结束监听viewName=================");
     }
   },
   // mounted(){

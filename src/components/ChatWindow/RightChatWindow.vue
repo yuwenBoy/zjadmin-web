@@ -291,7 +291,7 @@ export default {
           });
         });
       } catch (error) {
-        console.error("加载失败:", error);
+        // 加载失败已在上层处理
       } finally {
         this.isLoadingMore = false;
         this.isLoadingHistory = false;
@@ -597,6 +597,11 @@ export default {
       const prevTime = new Date(this.messages[index - 1].createdAt).getTime();
       return currentTime - prevTime > 5 * 60 * 1000;
     },
+  },
+  beforeDestroy() {
+    clearTimeout(this.scrollDebounce);
+    document.removeEventListener("click", this.handleClickOutside);
+    document.removeEventListener("click", this.hideContextMenu);
   },
   watch: {
     messages: {

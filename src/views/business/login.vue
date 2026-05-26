@@ -164,7 +164,6 @@
               this.loading = false
               this.$router.push({ path: this.redirect || '/' })
             }).catch(error => {
-              console.log(error);
               msg.alert('账号密码错误，请重新登录','error');
               this.loading = false
               // this.getCode()

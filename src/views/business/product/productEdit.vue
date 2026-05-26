@@ -513,7 +513,6 @@ async created(){
                   this.$router.replace('index')
                 }
             }).catch(error => {
-                 console.error('Error submitting form:', error);
                 this.$msg.error('操作失败，原因！'+error.msg);
             });
           } 

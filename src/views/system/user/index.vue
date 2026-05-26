@@ -461,14 +461,14 @@ export default {
     },
     // 获取所有角色
     getRoleData(userId) {
-      var that = this;
+      const that = this;
       that.request = false;
       getRoleAllList({ userId: userId })
         .then((res) => {
           if (res.success) {
             that.request = true;
             that.roleList = res.result.roleList;
-            for (var i = 0; i < res.result.checkList.length; i++) {
+            for (let i = 0; i < res.result.checkList.length; i++) {
               that.rolesIds.push(res.result.checkList[i].id);
             }
             that.roles = that.rolesIds;

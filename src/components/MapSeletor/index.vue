@@ -177,7 +177,7 @@ export default {
         this.createUserMarker()
         this.regeoCode(this.initialCenter[0], this.initialCenter[1])
       } catch (err) {
-        console.error('地图初始化失败', err)
+        // 地图初始化失败已在上层处理
       }
     },
 

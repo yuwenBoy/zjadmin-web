@@ -122,7 +122,6 @@ import jForm from "./dynamicAttributeValueEdit";
     methods: {
         // 表格刷新之后
         [CRUD.HOOK.beforeRefresh](crud, form) {
-            console.log('表格刷新之后');
             this.attributeId = this.$route.query.id;
             crud.params.attributeId = this.attributeId
         },

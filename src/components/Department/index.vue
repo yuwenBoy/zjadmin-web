@@ -109,15 +109,13 @@ export default {
       })
 
       // 将数据存储为 以 value 为 KEY 的 map 索引数据列
-      var map = {}
+      const map = {}
       data.forEach(function(item) {
         map[item.value] = item
       })
-      var val = []
+      const val = []
       data.forEach(function(item) {
-        // 以当前遍历项，的pid,去map对象中找到索引的id
-        var parent = map[item.pid]
-        // 好绕啊，如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
+        const parent = map[item.pid]
         if (parent) {
           (parent.children || (parent.children = [])).push(item)
         } else {
@@ -128,11 +126,11 @@ export default {
       return val
     },
     loadDeptData() {
-      var that = this
+      const that = this
       getDepartmentAll()
         .then((res) => {
           if (res.success) {
-            var data = res.result
+            const data = res.result
             console.time()
             that.options = this.toTree(data)
             console.timeEnd()

@@ -95,22 +95,18 @@ service.interceptors.response.use(
     }
   },
   async error => {
+    endLoading();
+    if (error.toString().indexOf("Error: timeout") !== -1) {
+      Notification.error({
+        title: "网络请求超时",
+        duration: 5000
+      });
+      return Promise.reject(error);
+    }
+    
     const response = error.response;
     const config = response.config;
     let code = response.status;
-    try {
-    } catch (e) {
-      if (error.toString().indexOf("Error: timeout") !== -1) {
-        Notification.error({
-          title: "网络请求超时",
-          duration: 5000
-        });
-        return Promise.reject(error);
-      }
-    }
-    finally {
-      endLoading()
-    }
     if (code) {
       if (code === 401) {
         // 如果刷新的过期时间小于当前时间，刷新token再请求一次获取新token

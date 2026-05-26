@@ -238,7 +238,7 @@ export default {
       });
     },
     nodeExpand(expend) {
-      for (var i = 0; i < this.$refs.tree.store._getAllNodes().length; i++) {
+      for (let i = 0; i < this.$refs.tree.store._getAllNodes().length; i++) {
         this.$refs.tree.store._getAllNodes()[i].expanded = expend;
       }
     },
@@ -263,7 +263,7 @@ export default {
         api.getModuleIdsByRoleId({ roleId: val.id }).then((res) => {
             if (res.success) {
               that.setCheckList = [];
-              for (var i = 0; i < res.result.length; i++) {
+              for (let i = 0; i < res.result.length; i++) {
                 that.setCheckList.push(res.result[i].id);
               }
             }
@@ -277,9 +277,9 @@ export default {
      * description：保存权限
      */
     saveRoleModule() {
-      var roleModule = { roleId: this.currentRoleId, moduleId: [] };
-      var nodeList = this.$refs.deptTree.getCheckedNode();
-      for (var i = 0; i < nodeList.length; i++) {
+      const roleModule = { roleId: this.currentRoleId, moduleId: [] };
+      const nodeList = this.$refs.deptTree.getCheckedNode();
+      for (let i = 0; i < nodeList.length; i++) {
         roleModule.moduleId.push(nodeList[i].id);
       }
       this.optInfo.loading = true;

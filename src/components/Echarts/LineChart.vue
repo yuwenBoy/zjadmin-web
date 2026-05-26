@@ -54,14 +54,11 @@ export default {
   watch: {
     viewName() {
       this.initEcharts();
-      console.log("监听viewName=================");
     },
     seriesData(val){
-       console.log("父组件传过来的seriesData值："+val);
         this.initEcharts();
     },
     xData(val) {
-        console.log("父组件传过来的xData值："+val);
          this.initEcharts();
     }
   },
@@ -81,7 +78,6 @@ export default {
   //   window.addEventListener("resize", this.__resizeHandler);
   // },
   activated(){
-    console.log("activated========柱状图==========")
     this.viewName = this.index;
     this.series = this.seriesData;
     this.xData = this.xData;
