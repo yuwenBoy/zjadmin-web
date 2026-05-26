@@ -6,9 +6,16 @@
         <user-avatar :src="currentContact.avatar" class="contact-avatar" />
         <div class="contact-info">
           <span class="contact-name">{{ currentContact.name }}</span>
-          <span class="contact-status" :class="contactOnlineStatus">
-            {{ contactStatusText }}
-          </span>
+          <div class="status-row">
+            <span class="contact-status" :class="contactOnlineStatus">
+              {{ contactStatusText }}
+            </span>
+            <span class="status-divider">|</span>
+            <span class="connection-status" :class="connectionStatusClass">
+              <i class="el-icon-circle"></i>
+              {{ connectionStatusText }}
+            </span>
+          </div>
         </div>
       </div>
       <div class="header-actions">
@@ -208,7 +215,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("chat", ["messages", "currentContact", "contactList", "userStatus"]),
+    ...mapState("chat", ["messages", "currentContact", "contactList", "userStatus", "isConnected"]),
     ...mapGetters(["user"]),
     contactOnlineStatus() {
       const status = this.userStatus[this.currentContact.id];
@@ -224,6 +231,12 @@ export default {
         default:
           return "离线";
       }
+    },
+    connectionStatusClass() {
+      return this.isConnected ? 'connected' : 'disconnected';
+    },
+    connectionStatusText() {
+      return this.isConnected ? '已连接' : '连接中...';
     },
   },
   mounted() {
@@ -247,6 +260,17 @@ export default {
     const savedBg = localStorage.getItem("chatBackground");
     if (savedBg) {
       this.chatBackground = savedBg;
+    }
+  },
+  watch: {
+    isConnected(newVal, oldVal) {
+      if (oldVal !== undefined) {
+        if (!newVal) {
+          this.$message.warning('连接已断开，正在尝试重连...');
+        } else {
+          this.$message.success('连接已恢复');
+        }
+      }
     }
   },
   methods: {
@@ -680,6 +704,13 @@ export default {
   color: #303133;
 }
 
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
 .contact-status {
   font-size: 12px;
   color: #909399;
@@ -691,6 +722,45 @@ export default {
 
 .contact-status.busy {
   color: #e6a23c;
+}
+
+.status-divider {
+  font-size: 12px;
+  color: #e4e7ed;
+}
+
+.connection-status {
+  font-size: 12px;
+  color: #909399;
+  display: flex;
+  align-items: center;
+}
+
+.connection-status i {
+  font-size: 8px;
+  margin-right: 3px;
+  animation: pulse 2s infinite;
+}
+
+.connection-status.connected {
+  color: #67c23a;
+}
+
+.connection-status.connected i {
+  animation: none;
+}
+
+.connection-status.disconnected {
+  color: #e6a23c;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .header-actions {

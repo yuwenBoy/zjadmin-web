@@ -37,6 +37,7 @@
             <el-table
               ref="table"
               :data="crud.data"
+              size="medium"
               :max-height="tableMaxHeight"
               stripe
               @selection-change="crud.selectionChangeHandler"

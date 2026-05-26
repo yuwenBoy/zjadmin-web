@@ -136,6 +136,7 @@
         <!-- 数据表格 -->
         <el-table
           ref="table"
+          size="medium"
           v-loading="crud.loading"
           :max-height="tableMaxHeight"
           :data="crud.data"
