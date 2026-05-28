@@ -24,7 +24,8 @@ const state = {
   currentContact: {}, // 当前联系人
   userStatus: {}, // 用户状态映射 { userId: 'online' | 'busy' | 'offline' }
   pendingMessages: [], // 待发送消息队列（关闭状态下的消息）
-  currentUserStatus: 'offline' // 当前用户状态
+  currentUserStatus: 'offline', // 当前用户状态
+  autoRepliedUsers: {} // ✅ 记录已发送自动回复的用户 { userId: timestamp }
 };
 function getIpcRenderer() {
   // 第1层：判断是否在 Electron 环境
@@ -128,6 +129,14 @@ const mutations = {
   // 添加待发送消息
   ADD_PENDING_MESSAGE(state, message) {
     state.pendingMessages.push(message);
+  },
+  
+  // 记录已发送自动回复的用户
+  SET_AUTO_REPLIED(state, { userId }) {
+    state.autoRepliedUsers = {
+      ...state.autoRepliedUsers,
+      [userId]: Date.now()
+    };
   },
   
   UPDATE_CONTACT_LAST_MSG(
@@ -273,6 +282,17 @@ const actions = {
       
       // 如果当前用户是忙碌状态，自动回复
       if (state.currentUserStatus === 'busy' && !message.isAutoReply) {
+        // ✅ 检查是否已经给该用户发送过自动回复（5分钟内不再回复）
+        const FIVE_MINUTES = 5 * 60 * 1000;
+        const lastReplyTime = state.autoRepliedUsers[message.senderId];
+        if (lastReplyTime && Date.now() - lastReplyTime < FIVE_MINUTES) {
+          // 5分钟内已经回复过，不再重复回复
+          return;
+        }
+        
+        // 记录已回复
+        commit("SET_AUTO_REPLIED", { userId: message.senderId });
+        
         // 从localStorage读取忙碌状态自动回复内容
         let busyAutoReply = '您好，我现在忙碌中，会尽快回复您的消息。';
         try {
