@@ -16,7 +16,7 @@
                         </el-badge> 
                     </div>
                     <div class="contact-info">
-                       <div class="merchant-name">{{ user.userType == 1? merchant.name : merchant.role_name ? (merchant.role_name  +'-'+ merchant.name): merchant.name }}</div>
+                       <div class="merchant-name">{{ getContactName(merchant) }}</div>
                        <div class="last-message">{{ merchant.last_message }}</div>
                     </div>
                     <div class="last-time">
@@ -83,6 +83,18 @@ export default {
         default:
           return 'offline';
       }
+    },
+    // 获取联系人名称
+    getContactName(merchant) {
+      // 如果 user_type = 3 且 name 为空，显示 phone 后四位
+      if (merchant.user_type === 3 && (!merchant.name || merchant.name.trim() === '')) {
+         return merchant.nick_name;
+      }
+      // 原有逻辑
+      if (this.user.userType === 1) {
+        return merchant.name;
+      }
+      return merchant.role_name ? (merchant.role_name + '-' + merchant.name) : merchant.name;
     }
   },
 };

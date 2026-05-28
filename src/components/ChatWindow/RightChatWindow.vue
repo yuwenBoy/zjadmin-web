@@ -5,7 +5,7 @@
       <div class="header-left">
         <user-avatar :src="currentContact.avatar" class="contact-avatar" />
         <div class="contact-info">
-          <span class="contact-name">{{ currentContact.name }}</span>
+          <span class="contact-name">{{ contactDisplayName }}</span>
           <div class="status-row">
             <span class="contact-status" :class="contactOnlineStatus">
               {{ contactStatusText }}
@@ -237,6 +237,12 @@ export default {
     },
     connectionStatusText() {
       return this.isConnected ? '已连接' : '连接中...';
+    },
+    contactDisplayName() {
+      const contact = this.currentContact;
+      if (!contact) return '';
+      // 默认显示 name
+      return contact.name || contact.nick_name || '未知';
     },
   },
   mounted() {

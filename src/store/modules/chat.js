@@ -209,7 +209,9 @@ const actions = {
       path: "/socket.io",
       transports: ["websocket"], // 明确指定传输方式
       auth: { token: _token },
-      reconnection: true
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000
     });
 
     // 监听 WebSocket 连接
@@ -221,6 +223,34 @@ const actions = {
     // 监听 WebSocket 断开
     socket.on("disconnect", () => {
       commit("SET_CONNECTED", false);
+    });
+
+    // 监听连接错误（包括认证失败 401）
+    socket.on("connect_error", async (error) => {
+      commit("SET_CONNECTED", false);
+      // 检查是否是认证错误（Token过期）
+      if (error && (error.message.includes("401") || error.message.includes("Unauthorized"))) {
+        try {
+          // 尝试刷新 Token
+          const refreshRes = await Vue.prototype.$http.post("/auth/updateToken");
+          if (refreshRes && refreshRes.result) {
+            const { accessToken, refreshToken } = refreshRes.result;
+            setToken(accessToken, refreshToken);
+            // Token 刷新成功，重新初始化 Socket 连接
+            dispatch("initSocket");
+          }
+        } catch (e) {
+          // Token 刷新失败，提示用户重新登录
+          Vue.prototype.$message.error('登录已过期，请重新登录');
+        }
+      }
+    });
+
+    // 监听认证失败事件
+    socket.on("unauthorized", (error) => {
+      commit("SET_CONNECTED", false);
+      // 尝试刷新 Token 并重连
+      dispatch("handleTokenExpired", { socket });
     });
 
     // 监听消息状态更新
@@ -504,6 +534,25 @@ const actions = {
 
     if (unreadMessageIds.length > 0) {
       dispatch("markAsRead", unreadMessageIds);
+    }
+  },
+
+  /**
+   * ✅ 处理 Token 过期，刷新并重连
+   */
+  async handleTokenExpired({ dispatch }) {
+    try {
+      // 尝试刷新 Token
+      const refreshRes = await Vue.prototype.$http.post("/auth/updateToken");
+      if (refreshRes && refreshRes.result) {
+        const { accessToken, refreshToken } = refreshRes.result;
+        setToken(accessToken, refreshToken);
+        // Token 刷新成功，重新初始化 Socket 连接
+        dispatch("initSocket");
+      }
+    } catch (e) {
+      // Token 刷新失败，提示用户重新登录
+      Vue.prototype.$message.error('登录已过期，请重新登录');
     }
   }
 };
