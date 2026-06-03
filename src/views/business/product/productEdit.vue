@@ -379,10 +379,23 @@ async created(){
       this.$nextTick(() => {
         const targetElement = this.$refs[contentRef];
         if (targetElement) {
-          // 直接使用scrollIntoView方法，确保元素可见
-          targetElement.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
+          const container = this.$refs.container;
+          const stickyTabsHeight = 50;
+          
+          // ✅ 使用 getBoundingClientRect 获取精确位置
+          const elementRect = targetElement.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+          
+          // 计算元素相对于容器顶部的偏移（需要考虑页面滚动）
+          const elementOffsetTop = elementRect.top - containerRect.top;
+          
+          // 计算目标滚动位置：让元素顶部刚好在 sticky tabs 下方
+          const targetScrollTop = container.scrollTop + elementOffsetTop - stickyTabsHeight;
+          
+          // 平滑滚动
+          container.scrollTo({
+            top: targetScrollTop,
+            behavior: 'smooth'
           });
         }
       });
