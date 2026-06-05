@@ -408,21 +408,52 @@ const actions = {
       }
     });
 
-    // ✅ 监听自己发送的消息确认
+    // ✅ 监听自己发送的消息确认（已发送）
     socket.on("message_sent", message => {
+      // 更新状态为已发送（1）
+      commit("UPDATE_MESSAGE_STATUS", { messageId: message.id, status: 1 });
+      
+      // 发送已送达确认请求
       setTimeout(() => {
         socket.emit("mark_as_delivered", { messageIds: [message.id] });
       }, 1000);
+      
       if (state.currentChat) {
         // 检查是否已经存在相同的消息（避免重复添加，比如自动回复消息）
         const exists = state.messages.find(m => m.id === message.id || 
           (m.senderId === message.senderId && m.content === message.content && m.createdAt === message.createdAt));
         if (!exists) {
           commit("ADD_MESSAGE", message);
-        } else {
-          // 如果已存在，更新状态即可
-          commit("UPDATE_MESSAGE_STATUS", { messageId: exists.id, status: 1 });
         }
+      }
+    });
+    
+    // ✅ 监听已送达确认
+    socket.on("message_delivered", data => {
+      if (data.messageIds && data.messageIds.length > 0) {
+        data.messageIds.forEach(messageId => {
+          commit("UPDATE_MESSAGE_STATUS", { messageId, status: 2 });
+        });
+      }
+    });
+    
+    // ✅ 监听已读确认（当对方阅读消息后，服务器推送已读状态）
+    socket.on("message_read", data => {
+      if (data.messageIds && data.messageIds.length > 0) {
+        data.messageIds.forEach(messageId => {
+          commit("UPDATE_MESSAGE_STATUS", { messageId, status: 3, readAt: data.readAt || Date.now() });
+        });
+      }
+    });
+    
+    // ✅ 监听消息状态同步响应
+    socket.on("message_status_sync", data => {
+      if (data.statusMap) {
+        Object.entries(data.statusMap).forEach(([messageId, statusData]) => {
+          const status = statusData.status;
+          const readAt = statusData.readAt;
+          commit("UPDATE_MESSAGE_STATUS", { messageId: parseInt(messageId), status, readAt });
+        });
       }
     });
 

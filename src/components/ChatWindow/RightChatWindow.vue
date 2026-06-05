@@ -78,9 +78,8 @@
               <span class="message-text">{{ msg.content }}</span>
             </div>
             <div class="message-meta" v-if="msg.senderId === user.id">
-              <span class="message-status" :class="getMessageStatusClass(msg)" :title="getMessageStatusText(msg)">
-                <i :class="getMessageStatusIcon(msg)"></i>
-                <i v-if="isDeliveredOrRead(msg)" class="el-icon-check status-second-check"></i>
+              <span class="message-status" :class="getMessageStatusClass(msg)">
+                {{ getMessageStatusText(msg) }}
               </span>
             </div>
           </div>
@@ -212,6 +211,7 @@ export default {
       contextMenuPosition: { x: 0, y: 0 },
       contextMenuMessage: null,
       replyingMessage: null,
+      statusSyncTimer: null,
     };
   },
   computed: {
@@ -255,6 +255,8 @@ export default {
       this.$nextTick(() => {
         setTimeout(() => {
           this.scrollToBottom(true);
+          // 加载完成后自动标记已读
+          this.markMessagesAsRead();
         }, 50);
       });
     });
@@ -267,6 +269,11 @@ export default {
     if (savedBg) {
       this.chatBackground = savedBg;
     }
+
+    // 定时同步消息状态（每5秒检查一次未确认的消息）
+    this.statusSyncTimer = setInterval(() => {
+      this.syncMessageStatus();
+    }, 5000);
   },
   watch: {
     isConnected(newVal, oldVal) {
@@ -418,6 +425,30 @@ export default {
         }, 100);
       }
     },
+    markMessagesAsRead() {
+      const unreadMessages = this.messages.filter(msg => 
+        msg.senderId !== this.user.id && 
+        (msg.status === 1 || msg.status === 2 || !msg.status)
+      );
+      if (unreadMessages.length > 0) {
+        const messageIds = unreadMessages.map(m => m.id);
+        this.$store.dispatch("chat/markAsRead", messageIds);
+      }
+    },
+    syncMessageStatus() {
+      // 获取当前用户发送的、状态还未达到已读的消息
+      const pendingMessages = this.messages.filter(msg => 
+        msg.senderId === this.user.id && 
+        msg.status !== 3 && 
+        typeof msg.id === 'number'
+      );
+      
+      if (pendingMessages.length > 0 && this.$store.state.chat.socket) {
+        // 请求服务器同步消息状态
+        const messageIds = pendingMessages.map(m => m.id);
+        this.$store.state.chat.socket.emit("sync_message_status", { messageIds });
+      }
+    },
     formatChatTimestamp,
     scrollToBottom(force = false) {
       this.$nextTick(() => {
@@ -438,7 +469,7 @@ export default {
       const status = this.$store.state.chat.messageStatus[message.id] || message.status;
       switch (status) {
         case 0:
-          return "待发送";
+          return "";
         case 1:
           return "已发送";
         case 2:
@@ -446,7 +477,7 @@ export default {
         case 3:
           return "已读";
         default:
-          return "未发送";
+          return "";
       }
     },
     getMessageStatusIcon(message) {
@@ -630,6 +661,7 @@ export default {
   },
   beforeDestroy() {
     clearTimeout(this.scrollDebounce);
+    clearInterval(this.statusSyncTimer);
     document.removeEventListener("click", this.handleClickOutside);
     document.removeEventListener("click", this.hideContextMenu);
   },
@@ -923,69 +955,28 @@ export default {
 }
 
 .message-status {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  position: relative;
-  font-size: 10px;
-}
-
-.message-status i {
-  font-size: 9px;
-  font-weight: bold;
-}
-
-.status-second-check {
-  position: absolute;
-  left: 5px;
-  font-size: 9px;
+  font-size: 12px;
+  line-height: 1;
 }
 
 .status-pending {
-  background: #f5f5f5;
-  color: #bfbfbf;
-  animation: spin 1s linear infinite;
-}
-
-.status-pending i {
-  font-size: 10px;
+  display: none;
 }
 
 .status-sent {
-  background: rgba(82, 196, 26, 0.15);
-  color: rgba(82, 196, 26, 0.7);
+  color: #fa8c16;
 }
 
 .status-delivered {
-  background: rgba(82, 196, 26, 0.2);
-  color: rgba(82, 196, 26, 0.9);
-}
-
-.status-delivered .status-second-check {
-  color: rgba(82, 196, 26, 0.9);
+  color: #fa8c16;
 }
 
 .status-read {
-  background: rgba(82, 196, 26, 0.15);
-  color: #52c41a;
-}
-
-.status-read .status-second-check {
-  color: #52c41a;
+  color: #909399;
 }
 
 .status-failed {
-  background: rgba(255, 77, 79, 0.15);
-  color: #ff4d4f;
-  cursor: pointer;
-}
-
-.status-failed:hover {
-  background: rgba(255, 77, 79, 0.25);
-  color: #ff7875;
+  display: none;
 }
 
 .sender-self {
