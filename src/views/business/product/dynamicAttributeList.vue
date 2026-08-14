@@ -54,7 +54,7 @@
                         </el-table-column>
                         <el-table-column prop="createdAt" label="创建时间" width="160" />
                         <!--   编辑与删除   -->
-                        <el-table-column label="操作" align="left" :width="relevanceRequest.categoryId ? 80:300">
+                        <el-table-column label="操作" align="left" :width="relevanceRequest.categoryId ? 80:320">
                             <template slot-scope="scope">
                                 <el-link type="info" :underline="false" v-if="type==='add'" @click="batchRelevance(scope.row)">关联属性</el-link>
                                 <el-link type="info" :underline="false" v-else-if="type==='remove'" @click="batchRemoveRelevance(scope.row)">移除属性</el-link>

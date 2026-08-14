@@ -136,8 +136,8 @@ return request({
 /**
  * 门店下线
  * case 4
- * @param {*} data 
- * @returns 
+ * @param {*} data
+ * @returns
  */
 export function offlineShop(data){
     return request({
@@ -145,6 +145,64 @@ export function offlineShop(data){
         method: "post",
         data
     });
+}
+
+
+// =========================
+// 特殊营业时间管理（节假日等）
+// 后端实体类已就绪，接口路径待后端确认，下方路径为约定，后续按实际接口调整
+// =========================
+
+/**
+ * 分页查询特殊营业时间列表
+ * @param {*} params { storeId, specialDate, type, page, size }
+ * @returns
+ */
+export function getSpecialHoursList(params) {
+  return request({
+    url: "/specialHours/getByCondition",
+    method: "post",
+    data: params
+  });
+}
+
+/**
+ * 新增特殊营业时间
+ * @param {*} params { storeId, specialDate, type, businessHours, remark }
+ * @returns
+ */
+export function addSpecialHours(params) {
+  return request({
+    url: "/specialHours/add",
+    method: "post",
+    data: params
+  });
+}
+
+/**
+ * 编辑特殊营业时间
+ * @param {*} params
+ * @returns
+ */
+export function editSpecialHours(params) {
+  return request({
+    url: "/specialHours/edit",
+    method: "post",
+    data: params
+  });
+}
+
+/**
+ * 删除特殊营业时间
+ * @param {*} params { id }
+ * @returns
+ */
+export function delSpecialHours(params) {
+  return request({
+    url: "/specialHours/delete",
+    method: "post",
+    data: params
+  });
 }
 
 
@@ -156,4 +214,8 @@ export default {
   updateShopServingTime,
   queryShopServingTime,
   detail,
+  getSpecialHoursList,
+  addSpecialHours,
+  editSpecialHours,
+  delSpecialHours,
 };

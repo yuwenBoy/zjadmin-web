@@ -238,7 +238,7 @@
             <el-table-column
               label="操作"
               align="left"
-              width="150"
+              width="180"
               fixed="right"
             >
               <template slot-scope="scope">

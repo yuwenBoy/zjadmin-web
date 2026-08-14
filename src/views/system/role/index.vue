@@ -98,7 +98,7 @@
                       show-overflow-tooltip
                     />
                     <!--   编辑与删除   -->
-                    <el-table-column label="操作" align="left" width="150">
+                    <el-table-column label="操作" align="left" width="180">
                       <template slot-scope="scope">
                         <el-link
                           v-authority="['role:edit']"

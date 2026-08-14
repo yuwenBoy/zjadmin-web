@@ -67,7 +67,7 @@
                       width="160"
                     />
                     <!--   编辑与删除   -->
-                    <el-table-column label="操作" align="left" width="150">
+                    <el-table-column label="操作" align="left" width="180">
                       <template slot-scope="scope">
                         <el-link type="info" :underline="false" @click="addChilder(scope.row)" >新增子级</el-link>
                         <el-link

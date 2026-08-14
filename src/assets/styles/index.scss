@@ -241,6 +241,56 @@ aside {
   overflow-x: hidden;
 }
 
+// 全局表格布局：让表格+分页容器撑满右侧区域
+// 使用简单方案：给容器设置固定高度，表格内部滚动
+.head-container {
+  height: calc(100vh - 84px); // 减去导航栏(50) + 标签页(34)
+  display: flex;
+  flex-direction: column;
+}
+
+.head-container > .content-box {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// 提示条固定
+.head-container .page-tip {
+  flex-shrink: 0;
+}
+
+// text.item 固定（搜索区域）
+.head-container > .content-box > .text.item,
+.head-container > .content-box > .text {
+  flex-shrink: 0;
+}
+
+// 表格填充剩余空间（el-table 可能是 content-box 的直接子元素）
+.head-container > .content-box > .el-table,
+.head-container > .content-box > .text.item > .el-table,
+.head-container > .content-box > .text > .el-table {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  
+  .el-table__body-wrapper {
+    flex: 1;
+    max-height: none !important;
+    overflow-y: auto;
+  }
+}
+
+// 分页固定底部
+.head-container > .content-box .pagination-container,
+.head-container > .content-box .el-pagination,
+.head-container > .pagination-container,
+.head-container > .el-pagination {
+  flex-shrink: 0;
+  margin-top: 16px !important;
+}
 .components-container {
   margin: 30px 50px;
   position: relative;
